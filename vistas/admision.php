@@ -137,7 +137,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 					<button class="btn btn-primary ml-2" type="submit" id="registrar_productos"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Productos</button>	
 				</div>			
 				<div class="form-group">
-					<button class="btn btn-primary ml-2" type="submit" id="ver_muestras"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Muestras</button>	
+					<button class="btn btn-primary ml-2" type="submit" id="ver_muestras"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i> Muestras</button>	
 				</div>	
 			</div>
    
@@ -151,43 +151,40 @@ $mysqli->close();//CERRAR CONEXIÓN
 		<nav aria-label="Page navigation example">
 			<ul class="pagination justify-content-center" id="pagination"></ul>
 		</nav>
-
 	</div>
 
     <div id="main_admision_muestras" style="display:none;">
 		<form class="form-inline" id="form_main_admision_muestras">
-
-			<div class="form-group mr-1">
-				<div class="input-group">				
-					<div class="input-group-append">				
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Cliente</span>
-					</div>
-					<select id="tipo_paciente_grupo" name="tipo_paciente_grupo" class="custom-select" style="width:100px;" data-toggle="tooltip" data-placement="top" title="Empresa">   				   		 
-						<option value="">Tipo</option>
-					</select>		
+			<div class="form-group mx-sm-3 mb-1">
+				<div class="input-group">
+					<div class="input-group-append">
+						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+						<select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
+						</select>
+					</div>	
 				</div>
 			</div>
-			  <div class="form-group mr-1">
+			<div class="form-group mx-sm-3 mb-1">
 				<div class="input-group">
-				  <select id="pacientesIDGrupo" name="pacientesIDGrupo" class="custom-select" style="width:170px;" data-toggle="tooltip" data-placement="top" title="Pacientes" required>
-					<option value="">Cliente</option>
-				  </select>
-				  <div class="input-group-append" id="buscar_cliente_muestras">				
-					<a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-				  </div>
-				</div>			 
-			  </div>
-			  <div class="form-group mr-1">
-				<div class="input-group">				
-					<div class="input-group-append">				
+					<div class="input-group-append">
+						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
+						<select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
+						</select>
+					</div>	
+				</div>
+			</div>
+
+			<div class="form-group mx-sm-3 mb-1">
+				<div class="input-group">
+					<div class="input-group-append">
 						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Muestra</span>
-					</div>
-					<select id="tipo_muestra" name="tipo_muestra" class="custom-select" style="width:150px;" data-toggle="tooltip" data-placement="top" title="Tipo Muestra">
-					  <option value="">Tipo Muestra</option>
-					 </select>		
-				</div>		 			 
-			  </div>		  
-			  <div class="form-group mr-1">
+						<select id="tipo_muestra" name="tipo_muestra" class="selectpicker" title="Muestra" data-live-search="true">
+						</select>
+					</div>	
+				</div>
+			</div>	
+			
+			<div class="form-group mr-1">
 				<div class="input-group">				
 					<div class="input-group-append">				
 						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Inicio</span>
@@ -209,21 +206,18 @@ $mysqli->close();//CERRAR CONEXIÓN
 							echo $fecha_inicial;
 						?>" class="form-control"/>	
 				</div>
-			  </div>
-			  <div class="form-group mr-1">
+			</div>
+			<div class="form-group mr-1">
 				<div class="input-group">				
 					<div class="input-group-append">				
 						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Fin</span>
 					</div>
 					<input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" class="form-control"/>		
 				</div>				  
-			  </div>
-			  <div class="form-group mr-1">
-				 <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="42"/>
-			  </div>
-			  <div class="form-group">
-				<button class="btn btn-primary ml-1" type="submit" id="nuevo_registro"><div class="sb-nav-link-icon"></div><i class="fas fa-vials fa-lg"></i> Crear</button>
-			  </div>
+			</div>
+			<div class="form-group mr-1">
+			 <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="42"/>
+			</div>
 		</form>	
 		<hr/>   
 		<div class="form-group">
@@ -234,8 +228,9 @@ $mysqli->close();//CERRAR CONEXIÓN
 		<nav aria-label="Page navigation example">
 			<ul class="pagination justify-content-center" id="pagination_miestras"></ul>
 		</nav>
-
-	</div>
+	</div>	
+	
+	
 	<?php include("templates/factura.php"); ?>
 	<?php include("templates/footer.php"); ?>	
 	<?php include("templates/footer_facturas.php"); ?>
