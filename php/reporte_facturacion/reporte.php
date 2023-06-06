@@ -29,7 +29,7 @@ $año=date("Y", strtotime($desde));
 $año2=date("Y", strtotime($hasta));
 $type = $_SESSION['type'];
 
-if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
+/*if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
 	if($profesional == ""){
 		$where = "WHERE f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in;	
 	}else{
@@ -41,6 +41,12 @@ if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR 
 	}else{
 		$where = "WHERE f.colaborador_id = '$profesional' AND f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in." AND f.usuario = '$usuario'";
 	}
+}*/
+
+if($profesional == ""){
+	$where = "WHERE f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in;	
+}else{
+	$where = "WHERE f.colaborador_id = '$profesional' AND f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in;
 }
 
 //EJECUTAMOS LA CONSULTA DE BUSQUEDA

@@ -38,6 +38,12 @@ $(document).ready(function(){
 
 /*INICIO DE FUNCIONES PARA ESTABLECER EL FOCUS PARA LAS VENTANAS MODALES*/
 $(document).ready(function(){
+    $("#modal_historico_muestras").on('shown.bs.modal', function(){
+        $(this).find('#form_main_historico_muestras #bs_regis').focus();
+    });
+});
+
+$(document).ready(function(){
     $("#modal_admision_clientes").on('shown.bs.modal', function(){
         $(this).find('#formulario_admision #name').focus();
     });
@@ -65,6 +71,10 @@ function getEstado(){
 			$('#form_main_admision #estado').html("");
 			$('#form_main_admision #estado').html(data);
 			$('#form_main_admision #estado').selectpicker('refresh');
+
+			$('#form_main_admision_muestras #estado').html("");
+			$('#form_main_admision_muestras #estado').html(data);
+			$('#form_main_admision_muestras #estado').selectpicker('refresh');			
 		}
    });
    return false;
@@ -79,6 +89,10 @@ function getTipoMuestra(){
 			$('#formulario_admision #tipo_muestra').html("");
 			$('#formulario_admision #tipo_muestra').html(data);
 			$('#formulario_admision #tipo_muestra').selectpicker('refresh');
+			
+			$('#form_main_admision_muestras #tipo_muestra').html("");
+			$('#form_main_admision_muestras #tipo_muestra').html(data);
+			$('#form_main_admision_muestras #tipo_muestra').selectpicker('refresh');			
 		}
    });
    return false;
@@ -212,6 +226,10 @@ function getTipoPacienteSelect(){
 			$('#form_main_admision #tipo').html("");
 			$('#form_main_admision #tipo').html(data);
 			$('#form_main_admision #tipo').selectpicker('refresh');
+
+			$('#form_main_admision_muestras #tipo').html("");
+			$('#form_main_admision_muestras #tipo').html(data);
+			$('#form_main_admision_muestras #tipo').selectpicker('refresh');			
 		}
    });
    return false;
@@ -288,6 +306,26 @@ $('#formulario_admision #tipo_muestra').on('change', function(){
 });
 
 function pagination(partida){
+	var url = '<?php echo SERVERURL; ?>php/admision/paginar.php';
+    var tipo = $('#form_main_admision #tipo').val();
+	var dato = $('#form_main_admision #bs_regis').val();
+	var estado = $('#form_main_admision #estado').val();
+
+	$.ajax({
+		type:'POST',
+		url:url,
+		async: true,
+		data:'partida='+partida+'&tipo='+tipo+'&dato='+dato+'&estado='+estado,
+		success:function(data){
+			var array = eval(data);
+			$('#agrega-registros').html(array[0]);
+			$('#pagination').html(array[1]);
+		}
+	});
+	return false;
+}
+
+function paginationMuestras(partida){
 	var url = '<?php echo SERVERURL; ?>php/admision/paginar.php';
     var tipo = $('#form_main_admision #tipo').val();
 	var dato = $('#form_main_admision #bs_regis').val();
@@ -610,15 +648,24 @@ function showModalhistoriaMuestrasEmpresas(pacientes_id, tipo){
 	}	
 }
 
+$('#form_main_historico_muestras #bs_regis').on('keyup',function(){
+	if($('#form_main_admision #tipo').val(pacientes_id) == 1){
+		historiaMuestrasPacientes(1);
+	}else{
+		historiaMuestrasEmpresas(1);
+	}	
+});
+
 function historiaMuestrasEmpresas(partida){
 	var url = '<?php echo SERVERURL; ?>php/admision/paginar_historico_muestras_empresas.php';
 	var pacientes_id = $('#modal_historico_muestras #pacientes_id_muestras').val();
+    var dato = $('#form_main_historico_muestras #bs_regis').val();
 
 	$.ajax({
 		type:'POST',
 		url:url,
 		async: true,
-		data:'partida='+partida+'&pacientes_id='+pacientes_id,
+		data:'partida='+partida+'&pacientes_id='+pacientes_id+'&dato='+dato,
 		success:function(data){
 			var array = eval(data);
 			$('#detalles-historico-muestras').html(array[0]);
@@ -631,12 +678,13 @@ function historiaMuestrasEmpresas(partida){
 function historiaMuestrasPacientes(partida){
 	var url = '<?php echo SERVERURL; ?>php/admision/paginar_historico_muestras_pacientes.php';
 	var pacientes_id = $('#modal_historico_muestras #pacientes_id_muestras').val();
+    var dato = $('#form_main_historico_muestras #bs_regis').val();
 
 	$.ajax({
 		type:'POST',
 		url:url,
 		async: true,
-		data:'partida='+partida+'&pacientes_id='+pacientes_id,
+		data:'partida='+partida+'&pacientes_id='+pacientes_id+'&dato='+dato,
 		success:function(data){
 			var array = eval(data);
 			$('#detalles-historico-muestras').html(array[0]);
@@ -703,11 +751,15 @@ $('#formulario_admision #add_empresa').on('click', function(e){
 $('#form_main_admision #ver_muestras').on('click', function(e){
 	e.preventDefault();
 	swal({
-		title: "Desarrollo",
-		text: "Lo sentimos esta función se encuentra en desarrollo",
-		type: "warning",
+		title: "Opción en desarrollo", 
+		text: "Opción en desarrollo",
+		type: "warning", 
 		confirmButtonClass: 'btn-warning'
-	});
+	});			
+	/*
+	$('#main_facturacion').hide();
+	$('#facturacion').hide();
+	$('#main_admision_muestras').show();*/
 });
 
 function modaEmpresa(){
@@ -991,6 +1043,7 @@ function pago(facturas_id){
 }
 
 $(document).ready(function(){
+
 	$("#tab1").on("click", function(){	
 		$("#modal_pagos").on('shown.bs.modal', function(){
            $(this).find('#formTarjetaBill #efectivo_bill').focus();

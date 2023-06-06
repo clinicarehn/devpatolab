@@ -200,6 +200,14 @@
         </button>
       </div>
       <div class="modal-body">
+		<form class="form-inline" id="form_main_historico_muestras">  
+			<div class="form-group mr-1">
+				<label for="bs_regis">Buscar: </label>
+				<input type="text" placeholder="Buscar por: Muestra, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Muestra, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="52"/>
+			</div>	   
+		</form>	
+		<hr/>   
+
 		<div class="form-group">
 		  <div class="col-sm-12">
 			<input type="hidden" readonly id="pacientes_id_muestras" name="pacientes_id_muestras" class="form-control"/>

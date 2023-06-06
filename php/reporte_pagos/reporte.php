@@ -22,7 +22,7 @@ $mes1=nombremes(date("m", strtotime($hasta)));
 $año=date("Y", strtotime($desde));
 $año2=date("Y", strtotime($hasta));
 
-if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
+/*if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
   if($profesional != ""){
     $where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND f.colaborador_id = '$profesional' AND p.estado = '$estado'";
   }else if($dato != ""){
@@ -38,6 +38,14 @@ if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR 
     }else{
       $where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '$estado' AND p.usuario = '$usuario'";
     }
+}*/
+
+if($profesional != ""){
+  $where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND f.colaborador_id = '$profesional' AND p.estado = '$estado'";
+}else if($dato != ""){
+  $where = "WHERE p.estado = '$estado' AND (CONCAT(pac.nombre,' ',pac.apellido) LIKE '%$dato%' OR pac.apellido LIKE '$dato%' OR pac.identidad LIKE '$dato%')";
+}else{
+  $where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '$estado'";
 }
 
 //EJECUTAMOS LA CONSULTA DE BUSQUEDA

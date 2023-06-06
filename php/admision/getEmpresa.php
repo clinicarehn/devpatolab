@@ -8,7 +8,7 @@ $mysqli = connect_mysqli();
 //CONSULTA LOS DATOS DE LA ENTIDAD CORPORACION
 $consulta = "SELECT pacientes_id, CONCAT(nombre, ' ', apellido) AS 'nombre'
 FROM pacientes
-WHERE tipo_paciente_id = 2";
+WHERE tipo_paciente_id = 2 AND estado = 1";
 
 $result = $mysqli->query($consulta);	
 

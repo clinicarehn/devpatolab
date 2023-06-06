@@ -23,7 +23,7 @@ if($estado == 1){
 	$in = "IN(3)";
 }
 
-if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
+/*if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
 	if($profesional != ""){
 		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.colaborador_id = '$profesional' AND f.estado ".$in;
 	}else if($dato != ""){
@@ -39,6 +39,14 @@ if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR 
 	}else{
 		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado ".$in." AND f.usuario = '$usuario'";
 	}
+}*/
+
+if($profesional != ""){
+	$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.colaborador_id = '$profesional' AND f.estado ".$in;
+}else if($dato != ""){
+	$where = "WHERE f.estado ".$in." AND (CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.apellido LIKE '$dato%' OR p.identidad LIKE '$dato%' OR f.number LIKE '$dato%' OR m.number LIKE '$dato%')";
+}else{
+	$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado ".$in;
 }
 
 $query = "SELECT f.facturaS_id AS 'factura_id', f.fecha AS 'fecha', p.identidad AS 'identidad', CONCAT(p.nombre,' ',p.apellido) AS 'paciente', sc.prefijo AS 'prefijo', f.number AS 'numero', s.nombre AS 'servicio', CONCAT(c.nombre,'',c.apellido) AS 'profesional', sc.relleno AS 'relleno', DATE_FORMAT(f.fecha, '%d/%m/%Y') AS 'fecha1', f.pacientes_id AS 'pacientes_id', f.cierre AS 'cierre', (CASE WHEN f.tipo_factura = 1 THEN 'Contado' ELSE 'Crédito' END) AS 'tipo_documento', f.tipo_factura, m.number AS 'muestra'

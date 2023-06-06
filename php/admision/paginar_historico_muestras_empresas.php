@@ -8,14 +8,22 @@ $mysqli = connect_mysqli();
 $colaborador_id = $_SESSION['colaborador_id'];
 $paginaActual = $_POST['partida'];
 $pacientes_id = $_POST['pacientes_id'];
-	
-$where = "WHERE m.pacientes_id= '$pacientes_id'";
+$dato = $_POST['dato'];
+
+if($dato == ""){
+	$where = "WHERE m.pacientes_id= '$pacientes_id'";
+}else{
+	$where = "WHERE m.pacientes_id= '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+}
+
 
 $query = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) AS paciente, m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
 (CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero'
 	FROM muestras AS m
 	INNER JOIN pacientes AS p
 	ON m.pacientes_id = p.pacientes_id
+	INNER JOIN tipo_muestra AS tm
+	ON m.tipo_muestra_id = tm.tipo_muestra_id
 	".$where."
 	ORDER BY m.fecha DESC";	
 $result = $mysqli->query($query) or die($mysqli->error);
@@ -53,6 +61,8 @@ $registro = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.ap
 	FROM muestras AS m
 	INNER JOIN pacientes AS p
 	ON m.pacientes_id = p.pacientes_id
+	INNER JOIN tipo_muestra AS tm
+	ON m.tipo_muestra_id = tm.tipo_muestra_id	
 	".$where."
 	ORDER BY m.fecha DESC
 	LIMIT $limit, $nroLotes";

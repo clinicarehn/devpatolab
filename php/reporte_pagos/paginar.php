@@ -15,7 +15,7 @@ $estado = $_POST['estado'];
 $usuario = $_SESSION['colaborador_id'];
 $type = $_SESSION['type'];
 
-if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
+/*if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
 	if($profesional != ""){
 		$where = "WHERE p.fecha BETWEEN '$fechai' AND '$fechaf' AND f.colaborador_id = '$profesional' AND p.estado = '$estado'";
 	}else if($dato != ""){
@@ -31,6 +31,14 @@ if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR 
 	}else{
 		$where = "WHERE p.fecha BETWEEN '$fechai' AND '$fechaf' AND p.estado = '$estado' AND p.usuario = '$usuario'";
 	}
+}*/
+
+if($profesional != ""){
+	$where = "WHERE p.fecha BETWEEN '$fechai' AND '$fechaf' AND f.colaborador_id = '$profesional' AND p.estado = '$estado'";
+}else if($dato != ""){
+	$where = "WHERE p.estado = '$estado' AND (CONCAT(pac.nombre,' ',pac.apellido) LIKE '%$dato%' OR pac.apellido LIKE '$dato%' OR pac.identidad LIKE '$dato%' OR f.number LIKE '$dato%')";
+}else{
+	$where = "WHERE p.fecha BETWEEN '$fechai' AND '$fechaf' AND p.estado = '$estado'";
 }
 
 $query = "SELECT p.facturas_id AS 'facturas_id', p.pagos_id AS 'pagos_id', p.fecha AS 'fecha_pago', p.importe AS 'importe', sc.prefijo AS 'prefijo', f.number AS 'numero', CONCAT(pac.nombre,' ',pac.apellido) AS 'paciente', pac.identidad AS 'identidad', sc.relleno AS 'relleno', tp.nombre AS 'tipo_pago', p.efectivo AS 'efectivo', p.tarjeta AS 'tarjeta', tp.tipo_pago_id AS 'tipo_pago_id'

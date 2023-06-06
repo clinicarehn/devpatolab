@@ -78,6 +78,24 @@ if($result_factura->num_rows==0){
 			WHERE facturas_id = '$facturas_id'";
 		$mysqli->query($update_factura) or die($mysqli->error);	
 
+		//CONSULTAMOS EL NUMERO DE LA MUESTRA
+		$query_muestra = "SELECT muestras_id
+			FROM facturas
+			WHERE facturas_id = '$facturas_id'";
+		$result_muestras = $mysqli->query($query_muestra) or die($mysqli->error);
+
+		if($result_muestras->num_rows>0){
+			$consulta2Muestras = $result_muestras->fetch_assoc();
+			$muestras_id = $consulta2Muestras['muestras_id'];
+
+			//ACTUALIZAMOS EL ESTADO DE LA MUESTRA
+			$update_muestra = "UPDATE muestras
+				SET
+					estado = '1'
+				WHERE muestras_id = '$muestras_id'";
+			$mysqli->query($update_muestra) or die($mysqli->error);
+		}		
+
 		//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
 		$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
 		

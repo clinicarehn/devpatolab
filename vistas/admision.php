@@ -226,7 +226,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 		</div>		   
 		</div>
 		<nav aria-label="Page navigation example">
-			<ul class="pagination justify-content-center" id="pagination_miestras"></ul>
+			<ul class="pagination justify-content-center" id="pagination_muestras"></ul>
 		</nav>
 	</div>	
 	
