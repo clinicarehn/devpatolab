@@ -41,7 +41,7 @@
 	  ?>
 
 	  <?php
-		 if ($_SESSION['type']==5){//CONTADOR GENERAL
+		 if ($_SESSION['type']==4){//CONTADOR GENERAL
 	  ?>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-chart-bar fa-lg"></i>&nbsp;Reportes</a>
