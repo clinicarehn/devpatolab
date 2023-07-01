@@ -1,5 +1,5 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
 
 //CONEXION A DB
@@ -12,7 +12,7 @@ $query = "SELECT p.pacientes_id, CONCAT(p.nombre,' ',p.apellido) AS 'empresa'
 	FROM facturas AS f
 	INNER JOIN pacientes AS p
 	ON f.pacientes_id = p.pacientes_id
-	WHERE p.tipo_paciente_id = '$tipo_paciente' AND pestado = 1
+	WHERE p.tipo_paciente_id = '$tipo_paciente' AND p.estado = 1
 	GROUP BY p.pacientes_id";
 $result = $mysqli->query($query) or die($mysqli->error);
 

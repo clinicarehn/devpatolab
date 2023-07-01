@@ -61,24 +61,24 @@ function getColaboradorConsulta(){
 //INICIO MODAL PAGOS GRUPAL
 function pagoGrupal(facturas_grupal_id){
 	var url = '<?php echo SERVERURL; ?>php/facturacion/editarPagoGrupal.php';
-	
+
 	$.ajax({
 		type:'POST',
 		url:url,
 		data:'facturas_grupal_id='+facturas_grupal_id,
 		success: function(valores){
 			var datos = eval(valores);
-			$('#formEfectivoBillGrupal .border-right a:eq(0) a').tab('show');			
+			$('#formEfectivoBillGrupal .border-right a:eq(0) a').tab('show');
 			$("#customer-name-bill-grupal").html("<b>Cliente:</b> " + datos[0]);
 		    $("#customer_bill_pay_grupal-grupal").val(datos[2]);
 			$('#bill-pay-grupal').html("L. " + parseFloat(datos[2]).toFixed(2));
-			
+
 			//EFECTIVO
-			$('#formEfectivoBillGrupal')[0].reset();			
+			$('#formEfectivoBillGrupal')[0].reset();
 			$('#formEfectivoBillGrupal #monto_efectivo').val(datos[2]);
 			$('#formEfectivoBillGrupal #factura_id_efectivo').val(facturas_grupal_id);
 			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', true);
-			
+
 			//TARJETA
 			$('#formTarjetaBillGrupal')[0].reset();
 			$('#formTarjetaBillGrupal #monto_efectivo').val(datos[2]);
@@ -88,18 +88,18 @@ function pagoGrupal(facturas_grupal_id){
 			$('#formMixtoBillGrupal')[0].reset();
 			$('#formMixtoBillGrupal #monto_efectivo_mixto').val(datos[2]);
 			$('#formMixtoBillGrupal #factura_id_mixto').val(facturas_grupal_id);
-			$('#formMixtoBillGrupal #pago_efectivo_mixto_grupal').attr('disabled', true);			
+			$('#formMixtoBillGrupal #pago_efectivo_mixto_grupal').attr('disabled', true);
 
 			//TRANSFERENCIA
 			$('#formTransferenciaBillGrupal')[0].reset();
 			$('#formTransferenciaBillGrupal #monto_efectivo').val(datos[2]);
-			$('#formTransferenciaBillGrupal #factura_id_transferencia').val(facturas_grupal_id);	
-			
+			$('#formTransferenciaBillGrupal #factura_id_transferencia').val(facturas_grupal_id);
+
 			//CHEQUES
 			$('#formChequeBillGrupal')[0].reset();
 			$('#formChequeBillGrupal #monto_efectivo').val(datos[2]);
-			$('#formChequeBillGrupal #factura_id_cheque').val(facturas_grupal_id);			
-			
+			$('#formChequeBillGrupal #factura_id_cheque').val(facturas_grupal_id);
+
 			$('#modal_grupo_pagos').modal({
 				show:true,
 				keyboard: false,
@@ -108,39 +108,39 @@ function pagoGrupal(facturas_grupal_id){
 
 			return false;
 		}
-	});	
+	});
 }
 
 $(document).ready(function(){
-	$("#tabGrupal1").on("click", function(){	
+	$("#tabGrupal1").on("click", function(){
 		$("#modal_grupo_pagos").on('shown.bs.modal', function(){
            $(this).find('#formEfectivoBillGrupal #efectivo_bill').focus();
-		});			
+		});
 	});
-	
-	$("#tabGrupal2").on("click", function(){	
+
+	$("#tabGrupal2").on("click", function(){
 		$("#modal_grupo_pagos").on('shown.bs.modal', function(){
            $(this).find('#formTarjetaBillGrupal #cr_bill').focus();
-		});	
-	});	
-	
-	$("#tabGrupal3").on("click", function(){	
+		});
+	});
+
+	$("#tabGrupal3").on("click", function(){
 		$("#modal_grupo_pagos").on('shown.bs.modal', function(){
            $(this).find('#formTarjetaBillGrupal #bk_nm').focus();
-		});	
-	});	
-	
-	$("#tabGrupal4").on("click", function(){	
+		});
+	});
+
+	$("#tabGrupal4").on("click", function(){
 		$("#modal_grupo_pagos").on('shown.bs.modal', function(){
            $(this).find('#formChequeBillGrupal #check_num').focus();
-		});	
-	});	
-	
-	$("#tabGrupal5").on("click", function(){	
+		});
+	});
+
+	$("#tabGrupal5").on("click", function(){
 		$("#modal_pagos").on('shown.bs.modal', function(){
            $(this).find('#formMixtoBillGrupal #efectivo_bill_mixto').focus();
-		});	
-	});		
+		});
+	});
 });
 
 $(document).ready(function(){
@@ -169,63 +169,63 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-	$("#formEfectivoBillGrupal #efectivo_bill").on("keyup", function(){	
+	$("#formEfectivoBillGrupal #efectivo_bill").on("keyup", function(){
 		var efectivo = parseFloat($("#formEfectivoBillGrupal #efectivo_bill").val()).toFixed(2);
 		var monto = parseFloat($("#formEfectivoBillGrupal #monto_efectivo").val()).toFixed(2);
-		
-		var total = efectivo - monto;				
-		
-		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){			
+
+		var total = efectivo - monto;
+
+		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){
 			$('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(total).toFixed(2));
-			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', false);				
+			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', false);
 		}else{
 			$('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(0).toFixed(2));
 			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', true);
-		}				
+		}
 	});
 
 	//MIXTO
-	$("#formMixtoBillGrupal #efectivo_bill_mixto").on("keyup", function(){	
+	$("#formMixtoBillGrupal #efectivo_bill_mixto").on("keyup", function(){
 		var efectivo = parseFloat($("#formMixtoBillGrupal #efectivo_bill_mixto").val()).toFixed(2);
 		var monto = parseFloat($("#formMixtoBillGrupal #monto_efectivo_mixto").val()).toFixed(2);
-		
-		var total = efectivo - monto;				
-		
-		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){			
-			$('#formMixtoBillGrupal #pago_efectivo_mixto_grupal').attr('disabled', true);	
+
+		var total = efectivo - monto;
+
+		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){
+			$('#formMixtoBillGrupal #pago_efectivo_mixto_grupal').attr('disabled', true);
 			$('#formMixtoBillGrupal #monto_tarjeta').val(parseFloat(0).toFixed(2));
-			$('#formMixtoBillGrupal #monto_tarjeta').attr('disabled', true);			
+			$('#formMixtoBillGrupal #monto_tarjeta').attr('disabled', true);
 		}else{
 			var tarjeta = monto - efectivo;
 			$('#formMixtoBillGrupal #monto_tarjeta').val(parseFloat(tarjeta).toFixed(2))
 			$('#formMixtoBillGrupal #cambio_efectivo_mixto').val(parseFloat(0).toFixed(2));
 			$('#formMixtoBillGrupal #pago_efectivo_mixto_grupal').attr('disabled', false);
-		}				
-	});		
+		}
+	});
 });
 //FIN PAGO GRUPAL
 
 //INICIO MODAL PAGOS
 function pago(facturas_id){
 	var url = '<?php echo SERVERURL; ?>php/facturacion/editarPago.php';
-	
+
 	$.ajax({
 		type:'POST',
 		url:url,
 		data:'facturas_id='+facturas_id,
 		success: function(valores){
 			var datos = eval(valores);
-			$('#formEfectivoBill .border-right a:eq(0) a').tab('show');			
+			$('#formEfectivoBill .border-right a:eq(0) a').tab('show');
 			$("#customer-name-bill").html("<b>Cliente:</b> " + datos[0]);
 		    $("#customer_bill_pay").val(datos[2]);
 			$('#bill-pay').html("L. " + parseFloat(datos[2]).toFixed(2));
-			
+
 			//EFECTIVO
-			$('#formEfectivoBill')[0].reset();			
+			$('#formEfectivoBill')[0].reset();
 			$('#formEfectivoBill #monto_efectivo').val(datos[2]);
 			$('#formEfectivoBill #factura_id_efectivo').val(facturas_id);
 			$('#formEfectivoBill #pago_efectivo').attr('disabled', true);
-			
+
 			//TARJETA
 			$('#formTarjetaBill')[0].reset();
 			$('#formTarjetaBill #monto_efectivo').val(datos[2]);
@@ -235,17 +235,17 @@ function pago(facturas_id){
 			$('#formTransferenciaBill')[0].reset();
 			$('#formTransferenciaBill #monto_efectivo').val(datos[2]);
 			$('#formTransferenciaBill #factura_id_transferencia').val(facturas_id);
-			
+
 			//MIXTO
 			$('#formMixtoBill')[0].reset();
 			$('#formMixtoBill #monto_efectivo_mixto').val(datos[2]);
 			$('#formMixtoBill #factura_id_mixto').val(facturas_id);
-			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', true);			
-			
+			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', true);
+
 			//CHEQUES
 			$('#formChequeBill')[0].reset();
 			$('#formChequeBill #monto_efectivo').val(datos[2]);
-			$('#formChequeBill #factura_id_cheque').val(facturas_id);	
+			$('#formChequeBill #factura_id_cheque').val(facturas_id);
 
 			$('#modal_pagos').modal({
 				show:true,
@@ -255,39 +255,39 @@ function pago(facturas_id){
 
 			return false;
 		}
-	});	
+	});
 }
 
 $(document).ready(function(){
-	$("#tab1").on("click", function(){	
+	$("#tab1").on("click", function(){
 		$("#modal_pagos").on('shown.bs.modal', function(){
            $(this).find('#formTarjetaBill #efectivo_bill').focus();
-		});			
+		});
 	});
-	
-	$("#tab2").on("click", function(){	
+
+	$("#tab2").on("click", function(){
 		$("#modal_pagos").on('shown.bs.modal', function(){
            $(this).find('#formTarjetaBill #cr_bill').focus();
-		});	
-	});	
-	
-	$("#tab3").on("click", function(){	
+		});
+	});
+
+	$("#tab3").on("click", function(){
 		$("#modal_pagos").on('shown.bs.modal', function(){
            $(this).find('#formTarjetaBill #bk_nm').focus();
-		});	
-	});	
-	
-	$("#tab4").on("click", function(){	
+		});
+	});
+
+	$("#tab4").on("click", function(){
 		$("#modal_pagos").on('shown.bs.modal', function(){
            $(this).find('#formChequeBill #bk_nm_chk').focus();
-		});	
-	});	
-	
-	$("#tab5").on("click", function(){	
+		});
+	});
+
+	$("#tab5").on("click", function(){
 		$("#modal_pagos").on('shown.bs.modal', function(){
            $(this).find('#formMixtoBill #efectivo_bill_mixto').focus();
-		});	
-	});			
+		});
+	});
 });
 
 //mixto
@@ -316,39 +316,39 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-	$("#formEfectivoBill #efectivo_bill").on("keyup", function(){	
+	$("#formEfectivoBill #efectivo_bill").on("keyup", function(){
 		var efectivo = parseFloat($("#formEfectivoBill #efectivo_bill").val()).toFixed(2);
 		var monto = parseFloat($("#formEfectivoBill #monto_efectivo").val()).toFixed(2);
-		
-		var total = efectivo - monto;				
-		
-		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){			
+
+		var total = efectivo - monto;
+
+		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){
 			$('#formEfectivoBill #cambio_efectivo').val(parseFloat(total).toFixed(2));
-			$('#formEfectivoBill #pago_efectivo').attr('disabled', false);				
+			$('#formEfectivoBill #pago_efectivo').attr('disabled', false);
 		}else{
 			$('#formEfectivoBill #cambio_efectivo').val(parseFloat(0).toFixed(2));
 			$('#formEfectivoBill #pago_efectivo').attr('disabled', true);
-		}				
+		}
 	});
 
 	//MIXTO
-	$("#formMixtoBill #efectivo_bill_mixto").on("keyup", function(){	
+	$("#formMixtoBill #efectivo_bill_mixto").on("keyup", function(){
 		var efectivo = parseFloat($("#formMixtoBill #efectivo_bill_mixto").val()).toFixed(2);
 		var monto = parseFloat($("#formMixtoBill #monto_efectivo_mixto").val()).toFixed(2);
-		
-		var total = efectivo - monto;				
-		
-		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){			
-			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', true);	
+
+		var total = efectivo - monto;
+
+		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){
+			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', true);
 			$('#formMixtoBill #monto_tarjeta').val(parseFloat(0).toFixed(2));
-			$('#formMixtoBill #monto_tarjeta').attr('disabled', true);			
+			$('#formMixtoBill #monto_tarjeta').attr('disabled', true);
 		}else{
 			var tarjeta = monto - efectivo;
 			$('#formMixtoBill #monto_tarjeta').val(parseFloat(tarjeta).toFixed(2))
 			$('#formMixtoBill #cambio_efectivo_mixto').val(parseFloat(0).toFixed(2));
 			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', false);
-		}				
-	});		
+		}
+	});
 });
 //FIN MODAL PAGOS
 
@@ -466,28 +466,28 @@ function getEstado(){
 }
 //FIN FUNCION PARA OBTENER LOS BANCOS DISPONIBLES
 
-//INICIO FUNCION PARA OBTENER LOS BANCOS DISPONIBLES	
+//INICIO FUNCION PARA OBTENER LOS BANCOS DISPONIBLES
 function getBanco(){
-    var url = '<?php echo SERVERURL; ?>php/facturacion/getBanco.php';		
-		
+    var url = '<?php echo SERVERURL; ?>php/facturacion/getBanco.php';
+
 	$.ajax({
         type: "POST",
         url: url,
 	    async: true,
         success: function(data){
 		    $('#formTransferenciaBill #bk_nm').html("");
-			$('#formTransferenciaBill #bk_nm').html(data);	
-			
+			$('#formTransferenciaBill #bk_nm').html(data);
+
 		    $('#formChequeBill #bk_nm_chk').html("");
-			$('#formChequeBill #bk_nm_chk').html(data);	
-			
+			$('#formChequeBill #bk_nm_chk').html(data);
+
 		    $('#formTransferenciaBillGrupal #bk_nm').html("");
-			$('#formTransferenciaBillGrupal #bk_nm').html(data);	
-			
+			$('#formTransferenciaBillGrupal #bk_nm').html(data);
+
 		    $('#formChequeBillGrupal #bk_nm_chk').html("");
-			$('#formChequeBillGrupal #bk_nm_chk').html(data);				
+			$('#formChequeBillGrupal #bk_nm_chk').html(data);
         }
-     });		
+     });
 }
 //FIN FUNCION PARA OBTENER LOS BANCOS DISPONIBLES
 
@@ -680,7 +680,7 @@ $('#acciones_atras').on('click', function(e){
 			$('#formulario_facturacion')[0].reset();
 			swal.close();
 			$('.footer').show();
-    		$('.footer1').hide();			
+    		$('.footer1').hide();
 		});
 	 }else{
 		 $('#main_facturacion').show();
@@ -690,7 +690,7 @@ $('#acciones_atras').on('click', function(e){
 		 $('#acciones_atras').addClass("breadcrumb-item active");
 		 $('#acciones_factura').removeClass("active");
 		 $('.footer').show();
-    	 $('.footer1').hide();		 
+    	 $('.footer1').hide();
 	 }
 });
 
@@ -723,15 +723,15 @@ function formFactura(){
 	 $('#formulario_facturacion #removeRows').show();
 	 $('#formulario_facturacion #buscar_paciente').show();
 	 $('#formulario_facturacion #buscar_colaboradores').show();
-	 $('#formulario_facturacion #buscar_servicios').show();	 	 	 
+	 $('#formulario_facturacion #buscar_servicios').show();
 }
 
 $(document).ready(function() {
 	$('#form_main_facturas #nuevo_registro').on('click',function(e){
 		e.preventDefault();
 		$('.footer').hide();
-    	$('.footer1').show();		
-		formFacturaGrupo();			
+    	$('.footer1').show();
+		formFacturaGrupo();
 	});
 });
 
@@ -756,7 +756,7 @@ function formFacturaGrupo(){
 
 	$('#formGrupoFacturacion #buscar_pacienteGrupo').hide();
 	$('#formGrupoFacturacion #buscar_colaboradoresGrupo').hide();
-	$('#formGrupoFacturacion #buscar_serviciosGrupo').hide();	 	
+	$('#formGrupoFacturacion #buscar_serviciosGrupo').hide();
 
 	var tamaño = 0;
 	var subTotal = 0;
@@ -798,7 +798,7 @@ function formFacturaGrupo(){
 	$('#subTotalFooter').val(parseFloat(subTotal).toFixed(2));
 	$('#taxAmountFooter').val(parseFloat(ISVGrupo).toFixed(2));
 	$('#taxDescuentoFooter').val(parseFloat(descuentoGrupo).toFixed(2));
-	$('#totalAftertaxFooter').val(parseFloat(netoGrupo).toFixed(2));	
+	$('#totalAftertaxFooter').val(parseFloat(netoGrupo).toFixed(2));
 }
 
 function llenarTablaFacturaFacturaGrupo(count){
@@ -1068,7 +1068,7 @@ function volver(){
 	$('#acciones_atras').addClass("breadcrumb-item active");
 	$('#acciones_factura').removeClass("active");
 	$('.footer').show();
-	$('.footer1').hide();	
+	$('.footer1').hide();
 }
 
 function getTipoPacienteGrupo(){
@@ -1089,13 +1089,13 @@ function getPacienteGrupo(tipo_paciente){
     var url = '<?php echo SERVERURL; ?>php/facturacion/getPacienteGrupo.php';
 
 	$.ajax({
-        type: "POST",
-        url: url,
-		data:'tipo_paciente='+tipo_paciente,
-        success: function(data){
-		    $('#form_main_facturas #pacientesIDGrupo').html("");
-			$('#form_main_facturas #pacientesIDGrupo').html(data);
-		}
+				type: "POST",
+				url: url,
+				data:'tipo_paciente='+tipo_paciente,
+				success: function(data){
+					$('#form_main_facturas #pacientesIDGrupo').html("");
+					$('#form_main_facturas #pacientesIDGrupo').html(data);
+				}
      });
 }
 
@@ -1140,11 +1140,11 @@ $('#form_main_facturas #buscar_cliente_muestras').on('click', function(e){
 
 var listar_pacientesfacturas_tipo_buscar = function(){
 	var tipo_paciente = 1;
-	
+
 	if($("#form_main_facturas #tipo_paciente_grupo").val() != ""){
 		tipo_paciente = $("#form_main_facturas #tipo_paciente_grupo").val();
 	}
-	
+
 	var table_pacientes_facturas_tipo_buscar = $("#dataTablePacientes").DataTable({
 		"destroy":true,
 		"ajax":{
@@ -1152,7 +1152,7 @@ var listar_pacientesfacturas_tipo_buscar = function(){
 			"url":"<?php echo SERVERURL; ?>php/muestras/getPacienteGrupoTabla.php",
 			"data":{
 				"tipo_paciente":tipo_paciente
-			}			
+			}
 		},
 		"columns":[
 			{"defaultContent":"<button class='view btn btn-primary'><span class='fas fa-copy'></span></button>"},
@@ -1189,10 +1189,10 @@ var view_pacientes_facturas_tipo_busqueda_dataTable = function(tbody, table){
 ###########################################################################################################################################################
 ###########################################################################################################################################################
 */
-$(document).ready(function() {		
+$(document).ready(function() {
 	$('#formulario_facturacion #label_facturas_activo').html("Contado");
-	
-    $('#formulario_facturacion .switch').change(function(){    
+
+    $('#formulario_facturacion .switch').change(function(){
         if($('input[name=facturas_activo]').is(':checked')){
             $('#formulario_facturacion #label_facturas_activo').html("Contado");
             return true;
@@ -1201,11 +1201,11 @@ $(document).ready(function() {
             $('#formulario_facturacion #label_facturas_activo').html("Crédito");
             return false;
         }
-    });	
+    });
 
 	$('#formGrupoFacturacion #label_facturas_grupal_activo').html("Contado");
-	
-    $('#formGrupoFacturacion .switch').change(function(){    
+
+    $('#formGrupoFacturacion .switch').change(function(){
         if($('input[name=facturas_grupal_activo]').is(':checked')){
             $('#formGrupoFacturacion #label_facturas_grupal_activo').html("Contado");
             return true;
@@ -1214,7 +1214,7 @@ $(document).ready(function() {
             $('#formGrupoFacturacion #label_facturas_grupal_activo').html("Crédito");
             return false;
         }
-    });		
+    });
 });
 
 //INICIO CONTROLES MODAL PAGO
@@ -1239,13 +1239,13 @@ $("#menu-toggle1").click(function(e) {
 $("#menu-toggle2").click(function(e) {
 	e.preventDefault();
 	$("#wrapper").toggleClass("toggled");
-});	
+});
 
 $(document).ready(function(){
 	$(".menu-toggle2").hide();
 	$("#tab1").addClass("active1");
 	$("#sidebar-wrapper").toggleClass("toggled");
-	
+
 	//Menu Toggle Script
 	$("#menu-toggle").click(function(e) {
 		e.preventDefault();
@@ -1279,14 +1279,14 @@ $(document).ready(function(){
 		$(".tabs").addClass("bg-light");
 		$("#tab4").addClass("active1");
 		$("#tab4").removeClass("bg-light");
-	});	
-	
+	});
+
 	$("#tab5").click(function () {
 		$(".tabs").removeClass("active1");
 		$(".tabs").addClass("bg-light");
 		$("#tab5").addClass("active1");
 		$("#tab5").removeClass("bg-light");
-	});		
+	});
 })
 //FIN CONTROLES MODAL PAGO
 
@@ -1312,13 +1312,13 @@ $("#menu-toggleGrupal1").click(function(e) {
 $("#menu-toggleGrupal2").click(function(e) {
 	e.preventDefault();
 	$("#wrapper").toggleClass("toggled");
-});	
+});
 
 $(document).ready(function(){
 	$(".menu-toggleGrupal2").hide();
 	$("#tabGrupal1").addClass("active1");
 	$("#sidebar-wrapper").toggleClass("toggled");
-	
+
 	//Menu Toggle Script
 	$("#menu-toggle").click(function(e) {
 		e.preventDefault();
@@ -1352,14 +1352,14 @@ $(document).ready(function(){
 		$(".tabs").addClass("bg-light");
 		$("#tabGrupal4").addClass("active1");
 		$("#tabGrupal4").removeClass("bg-light");
-	});	
-	
+	});
+
 	$("#tabGrupal5").click(function () {
 		$(".tabs").removeClass("active1");
 		$(".tabs").addClass("bg-light");
 		$("#tabGrupal5").addClass("active1");
 		$("#tabGrupal5").removeClass("bg-light");
-	});		
+	});
 })
 //FIN CONTROLES MODAL PAGO GRUPAL
 
@@ -1402,7 +1402,7 @@ function pay(facturas_id){
 				$('#formulario_facturacion #eliminar').hide();
 				$('#formulario_facturacion #buscar_paciente').hide();
 	 			$('#formulario_facturacion #buscar_colaboradores').hide();
-				$('#formulario_facturacion #buscar_servicios').hide();				
+				$('#formulario_facturacion #buscar_servicios').hide();
 
 				$('#grupo_facturacion').hide();
 				$('#main_facturacion').hide();
@@ -1413,7 +1413,7 @@ function pay(facturas_id){
 				$('#formulario_facturacion').attr({ 'action': '<?php echo SERVERURL; ?>php/facturacion/addFacturaporUsuario.php' });
 
 				$('.footer').hide();
-     			$('.footer1').show();	
+     			$('.footer1').show();
 				return false;
 			}
 		});
@@ -1453,7 +1453,7 @@ function pay(facturas_id){
 					$('#formulario_facturacion #invoiceItem #discount_'+ fila).attr("readonly", true);
 					$('#formulario_facturacion #invoiceItem #grupo_buscar_productos').hide();
 					$('#formulario_facturacion #addRows').hide();
-					$('#formulario_facturacion #removeRows').hide();					
+					$('#formulario_facturacion #removeRows').hide();
 				}
 				$('#formulario_facturacion #taxAmount').val(isv_valor);
 				calculateTotal();
@@ -1480,7 +1480,7 @@ $('#formulario_facturacion #buscar_paciente').on('click', function(e){
 		show:true,
 		keyboard: false,
 		backdrop:'static'
-	});		 
+	});
 });
 
 var listar_pacientes_buscar = function(){
@@ -1491,13 +1491,13 @@ var listar_pacientes_buscar = function(){
 	}
 
 	var table_pacientes_buscar = $("#dataTablePacientes_main_muestras").DataTable({
-		"destroy":true,	
+		"destroy":true,
 		"ajax":{
 			"method":"POST",
 			"url":"<?php echo SERVERURL; ?>php/muestras/getPacientesTabla.php",
 			"data":{
 				"tipo_paciente":tipo_paciente
-			}				
+			}
 		},
 		"columns":[
 			{"defaultContent":"<button class='view btn btn-primary'><span class='fas fa-copy'></span></button>"},
@@ -1520,7 +1520,7 @@ var listar_pacientes_buscar = function(){
 				action: 	function(){
 					listar_pacientes_buscar();
 				}
-			}		
+			}
 		],
 	});
 	table_pacientes_buscar.search('').draw();
@@ -1568,7 +1568,7 @@ function getTotalFacturasDisponibles(){
 				$("#mensajeFacturas").attr("disabled", true);
 				$("#formulario_facturacion #validar").attr("disabled", false);
 				$("#formulario_facturacion #cobrar").attr("disabled", false);
-				$("#formGrupoFacturacion #validar").attr("disabled", false);	
+				$("#formGrupoFacturacion #validar").attr("disabled", false);
 			}else if(valores[0] >=0 && valores[0] <= 9){
 				mensaje = "Total Facturas disponibles: " + valores[0];
 				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");
@@ -1576,16 +1576,16 @@ function getTotalFacturasDisponibles(){
 				$("#mensajeFacturas").attr("disabled", true);
 				$("#formulario_facturacion #validar").attr("disabled", false);
 				$("#formulario_facturacion #cobrar").attr("disabled", false);
-				$("#formGrupoFacturacion #validar").attr("disabled", false);	
+				$("#formGrupoFacturacion #validar").attr("disabled", false);
 			}
 			else{
 				mensaje = "";
 
-				$("#formulario_facturacion #validar").attr("disabled", false);	
+				$("#formulario_facturacion #validar").attr("disabled", false);
 				$("#formulario_facturacion #cobrar").attr("disabled", false);
-				$("#formGrupoFacturacion #validar").attr("disabled", false);			
+				$("#formGrupoFacturacion #validar").attr("disabled", false);
 				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");
-				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");				
+				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");
 			}
 
 			if(valores[0] ==0){
@@ -1594,7 +1594,7 @@ function getTotalFacturasDisponibles(){
 				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");
 				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");
 				$("#mensajeFacturas").attr("disabled", true);
-				$("#formulario_facturacion #validar").attr("disabled", false);	
+				$("#formulario_facturacion #validar").attr("disabled", false);
 				$("#formulario_facturacion #cobrar").attr("disabled", false);
 				$("#formGrupoFacturacion #validar").attr("disabled", false);
 			}
@@ -1602,36 +1602,36 @@ function getTotalFacturasDisponibles(){
 			if(valores[0] < 0){
 				mensaje = "No puede seguir facturando";
 
-				$("#formulario_facturacion #cobrar").attr("disabled", true);	
+				$("#formulario_facturacion #cobrar").attr("disabled", true);
 				$("#formulario_facturacion #validar").attr("disabled", true);
-				$("#formGrupoFacturacion #validar").attr("disabled", true);			
+				$("#formGrupoFacturacion #validar").attr("disabled", true);
 				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");
 				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");
 			}
-			
+
 			if(valores[1] == 1){
 				mensaje += "<br/>Su fecha límite es: " + valores[2];
-				$("#formulario_facturacion #validar").attr("disabled", false);	
-				$("#formulario_facturacion #cobrar").attr("disabled", false);	
-				$("#formGrupoFacturacion #validar").attr("disabled", false);			
+				$("#formulario_facturacion #validar").attr("disabled", false);
+				$("#formulario_facturacion #cobrar").attr("disabled", false);
+				$("#formGrupoFacturacion #validar").attr("disabled", false);
 				$("#mensajeFacturas").html(mensaje).addClass("alert alert-warning");
-				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-danger");			
+				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-danger");
 			}
 
 			if(valores[1] == 0){
-				mensaje += "<br/>Su fecha limite de facturación es hoy";				
-				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");	
-				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");		
+				mensaje += "<br/>Su fecha limite de facturación es hoy";
+				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");
+				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");
 			}
-			
+
 			if(valores[1] < 0){
 				mensaje += "<br/>Ya alcanzo su fecha límite";
-				$("#formulario_facturacion #validar").attr("disabled", true);	
-				$("#formulario_facturacion #cobrar").attr("disabled", true);	
-				$("#formGrupoFacturacion #validar").attr("disabled", true);			
-				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");	
-				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");		
-			}				
+				$("#formulario_facturacion #validar").attr("disabled", true);
+				$("#formulario_facturacion #cobrar").attr("disabled", true);
+				$("#formGrupoFacturacion #validar").attr("disabled", true);
+				$("#mensajeFacturas").html(mensaje).addClass("alert alert-danger");
+				$("#mensajeFacturas").html(mensaje).removeClass("alert alert-warning");
+			}
 	   }
 	});
 }
