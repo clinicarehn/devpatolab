@@ -1,6 +1,6 @@
 <?php
 echo "
-   <option value='1'>Activo</option>
-   <option value='2'>Inactivo</option>  
+   <option value='0'>Pendientes</option>
+   <option value='1'>Procesadas</option>  
   ";
 ?>

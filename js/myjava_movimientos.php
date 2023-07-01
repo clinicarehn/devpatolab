@@ -262,4 +262,69 @@ var view_productos_busqueda_dataTable = function(tbody, table){
 		$('#modal_busqueda_productos_facturas').modal('hide');
 	});
 }
+
+//INICIO TEXTAREA CON AUDIO
+$('#formularioMovimientos #comentario').keyup(function() {
+	    var max_chars = 1000;
+        var chars = $(this).val().length;
+        var diff = max_chars - chars;
+
+		$('#formularioMovimientos #charNum_comentario').html(diff + ' Caracteres');
+
+		if(diff == 0){
+			return false;
+		}
+});
+
+function caracteresComentarioMovimientos(){
+	var max_chars = 1000;
+	var chars = $('#formularioMovimientos #comentario').val().length;
+	var diff = max_chars - chars;
+
+	$('#formularioMovimientos #charNum_comentario').html(diff + ' Caracteres');
+
+	if(diff == 0){
+		return false;
+	}
+}
+
+$(document).ready(function() {
+	//INICIO FORMULARIO ATENCIONES EXPEDIENTE CLINICO
+	$('#formularioMovimientos #search_cirugia_abdominal_expediente_stop').hide();
+
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = "es";
+
+    $('#formularioMovimientos #search_comentario_movimientos_start').on('click',function(event){
+		$('#formularioMovimientos #search_comentario_movimientos_start').hide();
+		$('#formularioMovimientos #search_comentario_movimientos_stop').show();
+		recognition.start();
+
+		recognition.onresult = function (event) {
+			finalResult = '';
+			var valor_anterior  = $('#formularioMovimientos #comentario').val();
+			for (var i = event.resultIndex; i < event.results.length; ++i) {
+				if (event.results[i].isFinal) {
+					finalResult = event.results[i][0].transcript;
+					if(valor_anterior != ""){
+						$('#formularioMovimientos #comentario').val(valor_anterior + ' ' + finalResult);
+						caracteresComentarioMovimientos();
+					}else{
+						$('#formularioMovimientos #comentario').val(finalResult);
+						caracteresComentarioMovimientos();
+					}
+				}
+			}
+		};
+		return false;
+    });
+
+	  $('#formularioMovimientos #search_comentario_movimientos_stop').on("click", function(event){
+		$('#formularioMovimientos #search_comentario_movimientos_start').show();
+		$('#formularioMovimientos #search_comentario_movimientos_stop').hide();
+		recognition.stop();
+	});
+});
+//FIN TEXTAREA CON AUDIO
 </script>

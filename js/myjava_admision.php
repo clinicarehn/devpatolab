@@ -365,7 +365,7 @@ function paginationMuestras(partida){
 	var estado = 2;
 
   if($('#form_main_admision_muestras #estado').val() == ""){
-		estado = 1
+		estado = 0
 	}else{
 		estado = $('#form_main_admision_muestras #estado').val();
 	}
@@ -1029,6 +1029,7 @@ function createBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 					$('#totalAftertaxFooter').val(neto);
 
 					$('#main_facturacion').hide();
+					$('#main_admision_muestras').hide();					
 					$('#label_acciones_factura').html("Factura");
 					$('#facturacion').show();
 
