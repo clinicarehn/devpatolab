@@ -1,16 +1,16 @@
 <?php
-session_start(); 
+session_start();
 include('../funtions.php');
-	
+
 //CONEXION A DB
-$mysqli = connect_mysqli(); 
+$mysqli = connect_mysqli();
 
 //CONSULTA LOS DATOS DE LA ENTIDAD CORPORACION
 $consulta = "SELECT pacientes_id, CONCAT(nombre, ' ', apellido) AS 'nombre'
 FROM pacientes
 WHERE tipo_paciente_id = 2 AND estado = 1";
 
-$result = $mysqli->query($consulta);	
+$result = $mysqli->query($consulta);
 
 if($result->num_rows>0){
 	while($consulta2 = $result->fetch_assoc()){

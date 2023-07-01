@@ -1081,7 +1081,7 @@ $(document).ready(function(){
 	getTotalProductos();
 	
 	setInterval('getClientes()',2000);
-	setInterval('getEmpresas()',2000);
+	//setInterval('getEmpresas()',2000);
 	setInterval('getTotalMuestras()',2000);
 	setInterval('getTotalAtenciones()',2000);
 	setInterval('getPendientesAtencion()',2000);

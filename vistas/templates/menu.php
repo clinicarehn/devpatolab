@@ -17,7 +17,6 @@
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/pacientes.php">Clientes</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/citas.php">Calendario</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/hospitales.php">Hospitales</a>
-          <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/muestras.php">Muestras</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/facturacion.php">Facturación</a>
         </div>
       </li>
@@ -69,7 +68,7 @@
 	  ?>
 
 	  <?php
-		 if ($_SESSION['type']==1 || $_SESSION['type']==2){//Super Administrador y Administrador 
+		 if ($_SESSION['type']==1 || $_SESSION['type']==2){//Super Administrador y Administrador
 	  ?>
       <li class="nav-item active active">
         <a class="nav-link" href="<?php echo SERVERURL; ?>vistas/inicio.php"><i class="fa-solid fa-gauge fa-lg"></i>&nbsp;Dashboard <span class="sr-only">(current)</span></a>
@@ -81,7 +80,6 @@
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/pacientes.php">Clientes</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/citas.php">Calendario</a>
 		  <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/hospitales.php">Hospitales</a>
-          <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/muestras.php">Muestras</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/facturacion.php">Facturación</a>
         </div>
       </li>

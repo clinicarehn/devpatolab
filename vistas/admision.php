@@ -1,31 +1,31 @@
 <?php
-session_start(); 
+session_start();
 include "../php/funtions.php";
 
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
 if( isset($_SESSION['colaborador_id']) == false ){
-   header('Location: login.php'); 
-}    
+   header('Location: login.php');
+}
 
 $_SESSION['menu'] = "Clientes";
 
 if(isset($_SESSION['colaborador_id'])){
- $colaborador_id = $_SESSION['colaborador_id'];  
+ $colaborador_id = $_SESSION['colaborador_id'];
 }else{
    $colaborador_id = "";
 }
 
 $type = $_SESSION['type'];
 
-$nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME	
-$fecha = date("Y-m-d H:i:s"); 
-$comentario = mb_convert_case("Ingreso al Modulo de Clientes", MB_CASE_TITLE, "UTF-8");   
+$nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME
+$fecha = date("Y-m-d H:i:s");
+$comentario = mb_convert_case("Ingreso al Modulo de Clientes", MB_CASE_TITLE, "UTF-8");
 
 if($colaborador_id != "" || $colaborador_id != null){
-   historial_acceso($comentario, $nombre_host, $colaborador_id);  
-}  
+   historial_acceso($comentario, $nombre_host, $colaborador_id);
+}
 
 //OBTENER NOMBRE DE EMPRESA
 $usuario = $_SESSION['colaborador_id'];
@@ -44,7 +44,7 @@ if($result->num_rows>0){
   $empresa = $consulta_registro['nombre'];
 }
 
-$mysqli->close();//CERRAR CONEXIÓN     
+$mysqli->close();//CERRAR CONEXIÓN
  ?>
 
 <!DOCTYPE html>
@@ -57,12 +57,12 @@ $mysqli->close();//CERRAR CONEXIÓN
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Clientes :: <?php echo $empresa; ?></title>
-	<?php include("script_css.php"); ?>			
+	<?php include("script_css.php"); ?>
 </head>
 <body>
    <!--Ventanas Modales-->
-   <!-- Small modal -->  
-  <?php include("templates/modals.php"); ?>    
+   <!-- Small modal -->
+  <?php include("templates/modals.php"); ?>
 
 <div class="modal fade" id="mensaje_show" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -74,27 +74,27 @@ $mysqli->close();//CERRAR CONEXIÓN
         </button>
       </div>
       <div class="modal-body">
-			<form id="mensaje_sistema">		
+			<form id="mensaje_sistema">
 				<div class="form-row">
 					<div class="col-md-12 mb-3">
 					   <div class="modal-title" id="mensaje_mensaje_show"></div>
-					</div>					
-				</div>				
+					</div>
+				</div>
 			</form>
       </div>
 	  <div class="modal-footer">
-		<button class="btn btn-success ml-2" type="submit" id="okay" data-dismiss="modal"><div class="sb-nav-link-icon"></div><i class="fas fa-thumbs-up fa-lg"></i> Okay</button>	
-		<button class="btn btn-danger ml-2" type="submit" id="bad" data-dismiss="modal"><div class="sb-nav-link-icon"></div><i class="fas fa-thumbs-up fa-lg"></i> Okay</button>				
-	  </div>	  
+		<button class="btn btn-success ml-2" type="submit" id="okay" data-dismiss="modal"><div class="sb-nav-link-icon"></div><i class="fas fa-thumbs-up fa-lg"></i> Okay</button>
+		<button class="btn btn-danger ml-2" type="submit" id="bad" data-dismiss="modal"><div class="sb-nav-link-icon"></div><i class="fas fa-thumbs-up fa-lg"></i> Okay</button>
+	  </div>
     </div>
   </div>
 </div>
 
 <!--FIN MODAL PARA EL INGRESO DE Clientes-->
-   <?php include("modals/modals.php");?>	
-<!--FIN VENTANAS MODALES-->	
+   <?php include("modals/modals.php");?>
+<!--FIN VENTANAS MODALES-->
 
-<?php include("templates/menu.php"); ?> 
+<?php include("templates/menu.php"); ?>
 
 <br><br><br>
 <div class="container-fluid">
@@ -111,7 +111,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
 						<select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
 						</select>
-					</div>	
+					</div>
 				</div>
 			</div>
 			<div class="form-group mx-sm-3 mb-1">
@@ -120,33 +120,33 @@ $mysqli->close();//CERRAR CONEXIÓN
 						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
 						<select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
 						</select>
-					</div>	
+					</div>
 				</div>
-			</div>				  
+			</div>
 			<div class="form-group">
 				<input type="text" placeholder="Buscar por: Nombre, Apellido, Identidad o Teléfono Principal" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Teléfono Principal" id="bs_regis" autofocus class="form-control" size="70" autofocus />
 			</div>
 			<div class="form-group mr-1">
 				<div class="form-group">
-					<button class="btn btn-primary ml-2" type="submit" id="registrar_cliente"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Clientes</button>	  	  
-				</div> 
+					<button class="btn btn-primary ml-2" type="submit" id="registrar_cliente"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Clientes</button>
+				</div>
 				<div class="form-group">
-				   <button class="btn btn-primary ml-2" type="submit" id="registrar_empresa"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Empresa</button>	  	  
-				</div> 	  	  
+				   <button class="btn btn-primary ml-2" type="submit" id="registrar_empresa"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Empresa</button>
+				</div>
 				<div class="form-group">
-					<button class="btn btn-primary ml-2" type="submit" id="registrar_productos"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Productos</button>	
-				</div>			
+					<button class="btn btn-primary ml-2" type="submit" id="registrar_productos"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Productos</button>
+				</div>
 				<div class="form-group">
-					<button class="btn btn-primary ml-2" type="submit" id="ver_muestras"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i> Muestras</button>	
-				</div>	
+					<button class="btn btn-primary ml-2" type="submit" id="ver_muestras"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i> Muestras</button>
+				</div>
 			</div>
-   
-		</form>	
-		<hr/>   
+
+		</form>
+		<hr/>
 		<div class="form-group">
 		<div class="col-sm-12">
 			<div class="registros overflow-auto" id="agrega-registros"></div>
-		</div>		   
+		</div>
 		</div>
 		<nav aria-label="Page navigation example">
 			<ul class="pagination justify-content-center" id="pagination"></ul>
@@ -154,99 +154,109 @@ $mysqli->close();//CERRAR CONEXIÓN
 	</div>
 
     <div id="main_admision_muestras" style="display:none;">
-		<form class="form-inline" id="form_main_admision_muestras">
-			<div class="form-group mx-sm-3 mb-1">
-				<div class="input-group">
-					<div class="input-group-append">
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
-						<select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
-						</select>
-					</div>	
-				</div>
-			</div>
-			<div class="form-group mx-sm-3 mb-1">
-				<div class="input-group">
-					<div class="input-group-append">
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
-						<select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
-						</select>
-					</div>	
-				</div>
-			</div>
+		    <form class="form-inline" id="form_main_admision_muestras">
+          <div class="form-group row">
+            <div class="form-group mx-sm-3 mb-1">
+      				<div class="input-group">
+      					<div class="input-group-append">
+      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+      						<select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
+      						</select>
+      					</div>
+      				</div>
+      			</div>
+      			<div class="form-group mx-sm-3 mb-1">
+      				<div class="input-group">
+      					<div class="input-group-append">
+      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
+      						<select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
+      						</select>
+      					</div>
+      				</div>
+      			</div>
+            <div class="form-group mx-sm-3 mb-1">
+      				<div class="input-group">
+      					<div class="input-group-append">
+      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Cliente</span>
+      						<select id="cliente" name="cliente" class="selectpicker" title="Cliente" data-live-search="true">
+      						</select>
+      					</div>
+      				</div>
+      			</div>
+            <div class="form-group mx-sm-3 mb-1">
+      				<div class="input-group">
+      					<div class="input-group-append">
+      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Muestra</span>
+      						<select id="tipo_muestra" name="tipo_muestra" class="selectpicker" title="Muestra" data-live-search="true">
+      						</select>
+      					</div>
+      				</div>
+      			</div>
+            <div class="form-group mr-1">
+      				<div class="input-group">
+      					<div class="input-group-append">
+      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Inicio</span>
+      					</div>
+      					<input type="date" required="required" id="fecha_i" name="fecha_i" style="width:160px;" value="<?php
+      							$fecha = date ("Y-m-d");
 
-			<div class="form-group mx-sm-3 mb-1">
-				<div class="input-group">
-					<div class="input-group-append">
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Muestra</span>
-						<select id="tipo_muestra" name="tipo_muestra" class="selectpicker" title="Muestra" data-live-search="true">
-						</select>
-					</div>	
-				</div>
-			</div>	
-			
-			<div class="form-group mr-1">
-				<div class="input-group">				
-					<div class="input-group-append">				
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Inicio</span>
-					</div>
-					<input type="date" required="required" id="fecha_i" name="fecha_i" style="width:160px;" value="<?php 
-							$fecha = date ("Y-m-d");
-							
-							$año = date("Y", strtotime($fecha));
-							$mes = date("m", strtotime($fecha));
-							$dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
+      							$año = date("Y", strtotime($fecha));
+      							$mes = date("m", strtotime($fecha));
+      							$dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
 
-							$dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
-							$dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
+      							$dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
+      							$dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
 
-							$fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
-							$fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));						
-							
-							
-							echo $fecha_inicial;
-						?>" class="form-control"/>	
-				</div>
-			</div>
-			<div class="form-group mr-1">
-				<div class="input-group">				
-					<div class="input-group-append">				
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Fin</span>
-					</div>
-					<input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" class="form-control"/>		
-				</div>				  
-			</div>
-			<div class="form-group mr-1">
-			 <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="42"/>
-			</div>
-		</form>	
-		<hr/>   
+      							$fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
+      							$fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));
+
+
+      							echo $fecha_inicial;
+      						?>" class="form-control"/>
+      				</div>
+      			</div>
+            <div class="form-group mr-1">
+      				<div class="input-group">
+      					<div class="input-group-append">
+      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Fin</span>
+      					</div>
+      					<input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" class="form-control"/>
+      				</div>
+      			</div>
+          </div>
+
+          <div class="form-group mr-1">
+            <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="65"/>
+          </div>
+		   </form>
+		<hr/>
 		<div class="form-group">
 		<div class="col-sm-12">
 			<div class="registros overflow-auto" id="agrega-registros_muestras"></div>
-		</div>		   
+		</div>
 		</div>
 		<nav aria-label="Page navigation example">
 			<ul class="pagination justify-content-center" id="pagination_muestras"></ul>
 		</nav>
-	</div>	
-	
-	
-	<?php include("templates/factura.php"); ?>
-	<?php include("templates/footer.php"); ?>	
-	<?php include("templates/footer_facturas.php"); ?>
-</div>	  
+	</div>
 
-    <!-- add javascripts -->	
-	<?php 
-		include "script.php"; 
-		
-		include "../js/main.php"; 
-		include "../js/invoice.php"; 
-		include "../js/myjava_productos.php"; 
-		include "../js/myjava_admision.php"; 
-		include "../js/select.php"; 	
-		include "../js/functions.php"; 
-		include "../js/myjava_cambiar_pass.php"; 		
-	?>	
+
+	<?php include("templates/factura.php"); ?>
+	<?php include("templates/footer.php"); ?>
+	<?php include("templates/footer_facturas.php"); ?>
+</div>
+
+    <!-- add javascripts -->
+	<?php
+		include "script.php";
+
+		include "../js/main.php";
+		include "../js/invoice.php";
+		include "../js/myjava_productos.php";
+		include "../js/myjava_admision.php";
+		include "../js/select.php";
+		include "../js/functions.php";
+		include "../js/myjava_cambiar_pass.php";
+	?>
 </body>
 </html>

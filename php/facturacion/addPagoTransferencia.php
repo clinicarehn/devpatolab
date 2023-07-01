@@ -1,9 +1,9 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
-$mysqli = connect_mysqli(); 
+$mysqli = connect_mysqli();
 
 $fecha = date("Y-m-d");
 $fecha_registro = date("Y-m-d H:i:s");
@@ -11,15 +11,15 @@ $facturas_id = $_POST['factura_id_transferencia'];
 $fecha = date("Y-m-d");
 $importe = $_POST['monto_efectivo'];
 $cambio = 0;
-$empresa_id = $_SESSION['empresa_id'];	
-$usuario = $_SESSION['colaborador_id'];				
-$tipo_pago_id = 4;//TRANSFERENCIA		
-$banco_id = 0;//SIN BANCO	
-$tipo_pago = 1;//1. CONTADO 2. CRÉDITO	
+$empresa_id = $_SESSION['empresa_id'];
+$usuario = $_SESSION['colaborador_id'];
+$tipo_pago_id = 4;//TRANSFERENCIA
+$banco_id = 0;//SIN BANCO
+$tipo_pago = 1;//1. CONTADO 2. CRÉDITO
 $estado = 2;//FACTURA PAGADA
-$estado_pago = 1;//ACTIVO	
+$estado_pago = 1;//ACTIVO
 $efectivo = 0;
-$tarjeta = 0;	
+$tarjeta = 0;
 
 $referencia_pago1 = cleanStringConverterCase($_POST['ben_nm']);//TARJETA DE CREDITO
 $referencia_pago2 = "";
@@ -42,43 +42,42 @@ $incremento = "";
 $no_factura = "";
 
 if($result->num_rows>0){
-	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];	
+	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];
 	$prefijo = $consulta2['prefijo'];
 	$numero = $consulta2['numero'];
 	$rango_final = $consulta2['rango_final'];
-	$fecha_limite = $consulta2['fecha_limite'];	
+	$fecha_limite = $consulta2['fecha_limite'];
 	$incremento = $consulta2['incremento'];
-	$no_factura = $consulta2['prefijo']."".str_pad($consulta2['numero'], $consulta2['relleno'], "0", STR_PAD_LEFT);		
+	$no_factura = $consulta2['prefijo']."".str_pad($consulta2['numero'], $consulta2['relleno'], "0", STR_PAD_LEFT);
 }
 
 //VERIFICAMOS QUE NO SE HA INGRESADO EL PAGO, SI NO SE HA REALIZADO EL INGRESO, PROCEDEMOS A ALMACENAR EL PAGO
 $query_factura = "SELECT pagos_id
 	FROM pagos
 	WHERE facturas_id = '$facturas_id'";
-$result_factura = $mysqli->query($query_factura) or die($mysqli->error);	
+$result_factura = $mysqli->query($query_factura) or die($mysqli->error);
 
 //SI NO SE HA INGRESADO ALMACENAOS EL PAGO
 if($result_factura->num_rows==0){
 	$pagos_id  = correlativo('pagos_id', 'pagos');
-	$insert = "INSERT INTO pagos 
+	$insert = "INSERT INTO pagos
 		VALUES ('$pagos_id','$facturas_id','$tipo_pago','$fecha','$importe','$efectivo','$cambio','$tarjeta','$usuario','$estado_pago','$empresa_id','$fecha_registro')";
-	$query = $mysqli->query($insert);	
+	$query = $mysqli->query($insert);
 
 	if($query){
 		//ACTUALIZAMOS LOS DETALLES DEL PAGO
 		$pagos_detalles_id  = correlativo('pagos_detalles_id', 'pagos_detalles');
-		$insert = "INSERT INTO pagos_detalles 
+		$insert = "INSERT INTO pagos_detalles
 			VALUES ('$pagos_detalles_id','$pagos_id','$tipo_pago_id','$banco_id','$importe','$referencia_pago1','$referencia_pago2','$referencia_pago3')";
 		$query = $mysqli->query($insert);
 
-		
 		//ACTUALIZAMOS EL ESTADO DE LA FACTURA
 		$update_factura = "UPDATE facturas
 			SET
 				estado = '$estado',
 				number = '$numero'
 			WHERE facturas_id = '$facturas_id'";
-		$mysqli->query($update_factura) or die($mysqli->error);	
+		$mysqli->query($update_factura) or die($mysqli->error);
 
 		//CONSULTAMOS EL NUMERO DE LA MUESTRA
 		$query_muestra = "SELECT muestras_id
@@ -96,21 +95,21 @@ if($result_factura->num_rows==0){
 					estado = '1'
 				WHERE muestras_id = '$muestras_id'";
 			$mysqli->query($update_muestra) or die($mysqli->error);
-		}		
+		}
 
 		//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
 		$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
-		
-		//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE		
-		$update = "UPDATE secuencia_facturacion 
-		SET 
-			siguiente = '$numero_secuencia_facturacion' 
+
+		//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE
+		$update = "UPDATE secuencia_facturacion
+		SET
+			siguiente = '$numero_secuencia_facturacion'
 		WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
-		$mysqli->query($update);		
+		$mysqli->query($update);
 
 		$datos = array(
-			0 => "Guardar", 
-			1 => "Pago Realizado Correctamente", 
+			0 => "Guardar",
+			1 => "Pago Realizado Correctamente",
 			2 => "info",
 			3 => "btn-primary",
 			4 => "formEfectivoBill",
@@ -119,25 +118,25 @@ if($result_factura->num_rows==0){
 			7 => "modal_pagos", //Modals Para Cierre Automatico
 			8 => $facturas_id, //Modals Para Cierre Automatico
 			9 => "Guardar",
-		);		
+		);
 	}else{
 		$datos = array(
-			0 => "Error", 
-			1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir", 
+			0 => "Error",
+			1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir",
 			2 => "error",
 			3 => "btn-danger",
 			4 => "",
-			5 => "",			
+			5 => "",
 		);
-	}	
+	}
 }else{
 	$datos = array(
-		0 => "Error", 
-		1 => "Lo sentimos, no se puede almacenar el pago por favor valide si existe un pago para esta factura", 
+		0 => "Error",
+		1 => "Lo sentimos, no se puede almacenar el pago por favor valide si existe un pago para esta factura",
 		2 => "error",
 		3 => "btn-danger",
 		4 => "",
-		5 => "",			
+		5 => "",
 	);
 }
 
