@@ -369,6 +369,7 @@ var edit_productos_dataTable = function(tbody, table){
 				$('#formulario_productos #precio_venta3').val(valores[14]);				
 				$('#formulario_productos #precio_venta4').val(valores[15]);			
 				$('#formulario_productos #categoria_producto').val(valores[17]);
+				$('#formulario_productos #categoria_producto').selectpicker('refresh');
 				caracteresDescripcion();
 
 				if(valores[9] == 1){
@@ -449,7 +450,8 @@ var delete_productos_dataTable = function(tbody, table){
 				$('#formulario_productos #precio_venta2').val(valores[13]);
 				$('#formulario_productos #precio_venta3').val(valores[14]);				
 				$('#formulario_productos #precio_venta4').val(valores[15]);	
-				$('#formulario_productos #categoria_producto').val(valores[17]);					
+				$('#formulario_productos #categoria_producto').val(valores[17]);
+				$('#formulario_productos #categoria_producto').selectpicker('refresh');			
 				caracteresDescripcion();
 
 				if(valores[9] == 1){

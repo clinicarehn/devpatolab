@@ -149,7 +149,7 @@ while($registro2 = $result->fetch_assoc()){
 						<a class="btn btn btn-secondary ml-2" href="javascript:createBill('.$registro2['muestras_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-file-invoice fa-lg"></i> Factura</a>
 				</td>
 				<td>
-						<a class="btn btn btn-secondary ml-2" href="javascript:eliminarRegistro('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>
+						<a class="btn btn btn-secondary ml-2" href="javascript:modal_eliminarMuestras('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>
 				</td>
 			</tr>';
 			$i++;

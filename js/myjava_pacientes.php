@@ -661,12 +661,31 @@ function consultarNombre(pacientes_id){
 	return resp;
 }
 
+function getTipoPaciente(pacientes_id){
+    var url = '<?php echo SERVERURL; ?>php/muestras/getTipoPaciente.php';
+	var resp;
+
+	$.ajax({
+	    type:'POST',
+		url:url,
+		data:'pacientes_id='+pacientes_id,
+		async: false,
+		success:function(data){
+        resp = data;
+		}
+	});
+
+	return resp;
+}
+
 function modal_muestras(pacientes_id){
    if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
 
 	  $("#formularioMuestrasPacientes #pacienteIDMuestra").val(pacientes_id);
-	  var tipo_paciente_id = $("#form_main #tipo_paciente_id").val();
 
+		//DEVOLVEMOS EL TIPO DE PACIENTE
+	  var tipo_paciente_id = getTipoPaciente(pacientes_id);
+		
 	  if(tipo_paciente_id == 1){
 		  paginationMuestrasClientes(1);
 	  }else{

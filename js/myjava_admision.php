@@ -475,6 +475,22 @@ function consultarExpediente(pacientes_id){
 	return resp;
 }
 
+function consultarNumeroMuestra(muestras_id){
+    var url = '<?php echo SERVERURL; ?>php/admision/getNumeroMuestra.php';
+	var resp;
+
+	$.ajax({
+	    type:'POST',
+		url:url,
+		data:'muestras_id='+muestras_id,
+		async: false,
+		success:function(data){
+          resp = data;
+		}
+	});
+	return resp;
+}
+
 function consultarNombre(pacientes_id){
     var url = '<?php echo SERVERURL; ?>php/pacientes/getNombre.php';
 	var resp;
@@ -489,6 +505,52 @@ function consultarNombre(pacientes_id){
 		}
 	});
 	return resp;
+}
+
+function eliminarRegistroMuestra(muestras_id, pacientes_id){
+	var url = '<?php echo SERVERURL; ?>php/admision/eliminarMuestras.php';
+	$.ajax({
+		type:'POST',
+		url:url,
+		data:'muestras_id='+muestras_id+'&pacientes_id='+pacientes_id,
+		success: function(registro){
+			if(registro == 1){
+				swal({
+					title: "Success",
+					text: "Registro eliminado correctamente",
+					type: "success",
+					timer: 3000, //timeOut for auto-clos
+				});
+				 paginationMuestras(1);
+			   return false;
+			}else if(registro == 2){
+				swal({
+					title: "Error",
+					text: "No se puede eliminar este registro",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+	           return false;
+			}else if(registro == 3){
+				swal({
+					title: "Error",
+					text: "No se puede eliminar este registro, cuenta con información almacenada",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+	           return false;
+			}else{
+				swal({
+					title: "Error",
+					text: "Error al completar el registro",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+	           return false;
+			}
+  		}
+	});
+	return false;
 }
 
 function eliminarRegistro(pacientes_id){
@@ -561,6 +623,66 @@ function modal_eliminar(pacientes_id){
 	},
 	function(){
 		eliminarRegistro(pacientes_id);
+	});
+  }else if (consultarExpediente(pacientes_id) == 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
+    var nombre_usuario = consultarNombre(pacientes_id);
+    var expediente_usuario = consultarExpediente(pacientes_id);
+    var dato;
+
+    if(expediente_usuario == 0){
+		dato = nombre_usuario;
+	}else{
+		dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
+	}
+
+	swal({
+	  title: "¿Estas seguro?",
+	  text: "¿Desea eliminar este registro: " + dato + "?",
+	  type: "warning",
+	  showCancelButton: true,
+	  confirmButtonClass: "btn-warning",
+	  confirmButtonText: "¡Sí, eliminar el registro!",
+	  cancelButtonText: "Cancelar",
+	  closeOnConfirm: false
+	},
+	function(){
+		eliminarRegistro(pacientes_id);
+	});
+  }else{
+	  swal({
+			title: 'Acceso Denegado',
+			text: 'No tiene permisos para ejecutar esta acción',
+			type: 'error',
+			confirmButtonClass: 'btn-danger'
+	  });
+	 return false;
+  }
+}
+
+function modal_eliminarMuestras(pacientes_id, muestras_id){
+  if (consultarExpediente(pacientes_id) != 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
+    var nombre_usuario = consultarNombre(pacientes_id);
+    var numero_muestra = consultarNumeroMuestra(muestras_id);
+    var dato;
+
+    if(expediente_usuario == 0){
+		dato = nombre_usuario;
+	}else{
+		dato = nombre_usuario + " (Muestra: " + numero_muestra + ")";
+	}
+
+	swal({
+	  title: "¿Estas seguro?",
+	  text: "¿Desea eliminar este registro: " + dato + "?",
+	  type: "warning",
+	  showCancelButton: true,
+	  confirmButtonClass: "btn-warning",
+	  confirmButtonText: "¡Sí, eliminar el registro!",
+	  cancelButtonText: "Cancelar",
+	  closeOnConfirm: false
+	},
+	function(){
+		eliminarRegistroMuestra(muestras_id, pacientes_id);
 	});
   }else if (consultarExpediente(pacientes_id) == 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
     var nombre_usuario = consultarNombre(pacientes_id);
@@ -949,109 +1071,125 @@ function getFacturaEmision(muestras_id){
 	return disponible;
 }
 
+function getEstadoFactura(muestras_id){
+	var url = '<?php echo SERVERURL; ?>php/muestras/getEstadoFactura.php';
+	var disponible;
+
+	$.ajax({
+	    type:'POST',
+		url:url,
+		data:'muestras_id='+muestras_id,
+		async: false,
+		success:function(data){
+          disponible = data;
+		}
+	});
+	return disponible;
+}
+
 function createBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 	if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
-		if(getFacturaEmision(muestras_id) == ""){
-			$('#formulario_facturacion')[0].reset();
-			$("#formulario_facturacion #invoiceItem > tbody").empty();//limpia solo los registros del body
-			var url = '<?php echo SERVERURL; ?>php/muestras/editarFacturasMuestras.php';
+			if(getFacturaEmision(muestras_id) == ""){
+				$('#formulario_facturacion')[0].reset();
+				$("#formulario_facturacion #invoiceItem > tbody").empty();//limpia solo los registros del body
+				var url = '<?php echo SERVERURL; ?>php/muestras/editarFacturasMuestras.php';
 
-			var url = '<?php echo SERVERURL; ?>php/muestras/editarFacturasMuestras.php';
-				$.ajax({
-				type:'POST',
-				url:url,
-				data:'muestras_id='+muestras_id+'&producto='+producto,
-				success: function(valores){
-					var datos = eval(valores);
-					$('#formulario_facturacion #muestras_id').val(muestras_id);
-					$('#formulario_facturacion #pacientes_id').val(datos[0]);
-					$('#formulario_facturacion #cliente_nombre').val(datos[1]);
-					$('#formulario_facturacion #fecha').val(getFechaActual());
-					$('#formulario_facturacion #colaborador_id').val(datos[3]);
-					$('#formulario_facturacion #colaborador_nombre').val(datos[4]);
-					$('#formulario_facturacion #servicio_id').val(datos[5]);
-					$('#formulario_facturacion #material_enviado_muestra').val(datos[6]);
-					$('#formulario_facturacion #paciente_muestra_codigo').val(datos[7]);
-					$('#formulario_facturacion #paciente_muestra').val(datos[8]);
-					$('#formulario_facturacion #muestras_numero').val(datos[9]);
+				var url = '<?php echo SERVERURL; ?>php/muestras/editarFacturasMuestras.php';
+					$.ajax({
+					type:'POST',
+					url:url,
+					data:'muestras_id='+muestras_id+'&producto='+producto,
+					success: function(valores){
+						var datos = eval(valores);
+						$('#formulario_facturacion #muestras_id').val(muestras_id);
+						$('#formulario_facturacion #pacientes_id').val(datos[0]);
+						$('#formulario_facturacion #cliente_nombre').val(datos[1]);
+						$('#formulario_facturacion #fecha').val(getFechaActual());
+						$('#formulario_facturacion #colaborador_id').val(datos[3]);
+						$('#formulario_facturacion #colaborador_nombre').val(datos[4]);
+						$('#formulario_facturacion #servicio_id').val(datos[5]);
+						$('#formulario_facturacion #material_enviado_muestra').val(datos[6]);
+						$('#formulario_facturacion #paciente_muestra_codigo').val(datos[7]);
+						$('#formulario_facturacion #paciente_muestra').val(datos[8]);
+						$('#formulario_facturacion #muestras_numero').val(datos[9]);
 
-					$('#formulario_facturacion #fecha').attr("readonly", true);
-					$('#formulario_facturacion #validar').attr("disabled", false);
-					$('#formulario_facturacion #addRows').attr("disabled", false);
-					$('#formulario_facturacion #removeRows').attr("disabled", false);
-					$('#formulario_facturacion #validar').show();
-					$('#formulario_facturacion #editar').hide();
-					$('#formulario_facturacion #eliminar').hide();
+						$('#formulario_facturacion #fecha').attr("readonly", true);
+						$('#formulario_facturacion #validar').attr("disabled", false);
+						$('#formulario_facturacion #addRows').attr("disabled", false);
+						$('#formulario_facturacion #removeRows').attr("disabled", false);
+						$('#formulario_facturacion #validar').show();
+						$('#formulario_facturacion #editar').hide();
+						$('#formulario_facturacion #eliminar').hide();
 
-					if(getTipoPaciente(datos[0]) == 2){
-						$('#formulario_facturacion #grupo_paciente_factura').show();
-					}else{
-						$('#formulario_facturacion #grupo_paciente_factura').hide();
-					}
+						if(getTipoPaciente(datos[0]) == 2){
+							$('#formulario_facturacion #grupo_paciente_factura').show();
+						}else{
+							$('#formulario_facturacion #grupo_paciente_factura').hide();
+						}
 
-					$('#main_facturacion').hide();
-					$('#facturacion').show();
-					$('#label_acciones_volver').html("Volver");
-					$('#acciones_atras').removeClass("active");
-					$('#acciones_factura').addClass("active");
-					$('#label_acciones_factura').html("Factura");
-					$('#formulario_facturacion #fecha').attr('disabled', false);
+						$('#main_facturacion').hide();
+						$('#facturacion').show();
+						$('#label_acciones_volver').html("Volver");
+						$('#acciones_atras').removeClass("active");
+						$('#acciones_factura').addClass("active");
+						$('#label_acciones_factura').html("Factura");
+						$('#formulario_facturacion #fecha').attr('disabled', false);
 
-					limpiarTabla();
+						limpiarTabla();
 
-					$('#formulario_facturacion #invoiceItem #productoID_0').val(producto);
-					$('#formulario_facturacion #invoiceItem #productName_0').val(nombre_producto);
-					$('#formulario_facturacion #invoiceItem #quantity_0').val(1);
-					$('#formulario_facturacion #invoiceItem #price_0').val(precio_venta);
-					$('#formulario_facturacion #invoiceItem #discount_0').val(0);
-					$('#formulario_facturacion #invoiceItem #total_0').val(precio_venta);
+						$('#formulario_facturacion #invoiceItem #productoID_0').val(producto);
+						$('#formulario_facturacion #invoiceItem #productName_0').val(nombre_producto);
+						$('#formulario_facturacion #invoiceItem #quantity_0').val(1);
+						$('#formulario_facturacion #invoiceItem #price_0').val(precio_venta);
+						$('#formulario_facturacion #invoiceItem #discount_0').val(0);
+						$('#formulario_facturacion #invoiceItem #total_0').val(precio_venta);
 
-					var porcentaje_isv = 0;
-					var porcentaje_calculo = 0;
+						var porcentaje_isv = 0;
+						var porcentaje_calculo = 0;
 
-					if(isv == 1){
-						porcentaje_isv = parseFloat(getPorcentajeISV("Facturas") / 100);
-						porcentaje_calculo = (parseFloat(precio_venta) * porcentaje_isv).toFixed(2);
-						$('#formulario_facturacion #invoiceItem #isv_0').val(isv);
-						$('#formulario_facturacion #invoiceItem #valor_isv_0').val(porcentaje_calculo);
+						if(isv == 1){
+							porcentaje_isv = parseFloat(getPorcentajeISV("Facturas") / 100);
+							porcentaje_calculo = (parseFloat(precio_venta) * porcentaje_isv).toFixed(2);
+							$('#formulario_facturacion #invoiceItem #isv_0').val(isv);
+							$('#formulario_facturacion #invoiceItem #valor_isv_0').val(porcentaje_calculo);
+							$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);
+						}else{
+							$('#formulario_facturacion #invoiceItem #isv_0').val(isv);
+							$('#formulario_facturacion #invoiceItem #valor_isv_0').val(0);
+							$('#formulario_facturacion #taxAmount').val(0);
+						}
+
+						var neto = (parseFloat(precio_venta) + porcentaje_calculo).toFixed(2)
+
+						$('#formulario_facturacion #subTotal').val(precio_venta);
 						$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);
-					}else{
-						$('#formulario_facturacion #invoiceItem #isv_0').val(isv);
-						$('#formulario_facturacion #invoiceItem #valor_isv_0').val(0);
-						$('#formulario_facturacion #taxAmount').val(0);
+						$('#formulario_facturacion #taxDescuento').val(0);
+						$('#formulario_facturacion #totalAftertax').val(neto);
+
+						$('#subTotalFooter').val(precio_venta);
+						$('#taxAmountFooter').val(porcentaje_calculo);
+						$('#taxDescuentoFooter').val(0);
+						$('#totalAftertaxFooter').val(neto);
+
+						$('#main_facturacion').hide();
+						$('#main_admision_muestras').hide();
+						$('#label_acciones_factura').html("Factura");
+						$('#facturacion').show();
+
+						$('.footer').hide();
+							$('.footer1').show();
+
+						return false;
 					}
-
-					var neto = (parseFloat(precio_venta) + porcentaje_calculo).toFixed(2)
-
-					$('#formulario_facturacion #subTotal').val(precio_venta);
-					$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);
-					$('#formulario_facturacion #taxDescuento').val(0);
-					$('#formulario_facturacion #totalAftertax').val(neto);
-
-					$('#subTotalFooter').val(precio_venta);
-					$('#taxAmountFooter').val(porcentaje_calculo);
-					$('#taxDescuentoFooter').val(0);
-					$('#totalAftertaxFooter').val(neto);
-
-					$('#main_facturacion').hide();
-					$('#main_admision_muestras').hide();
-					$('#label_acciones_factura').html("Factura");
-					$('#facturacion').show();
-
-					$('.footer').hide();
-    				$('.footer1').show();
-
-					return false;
-				}
-			});
-		}else{
-			swal({
-				title: "Error",
-				text: "Lo sentimos esta factura ya ha sido generada, por favor diríjase al módulo de facturación y realice le cobro de esta",
-				type: "error",
-				confirmButtonClass: 'btn-danger'
-			});
-		}
+				});
+			}else{
+				swal({
+					title: "Error",
+					text: "Lo sentimos esta factura ya ha sido generada, por favor diríjase al módulo de facturación y realice le cobro de esta",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+			}
 	}else{
 		swal({
 			title: "Acceso Denegado",

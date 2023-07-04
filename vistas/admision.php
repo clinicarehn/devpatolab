@@ -248,7 +248,7 @@ $mysqli->close();//CERRAR CONEXIÓN
               <input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" data-toggle="tooltip" data-placement="top" title="Fecha Final" class="form-control"/>
             </div>
           </div>
-          <div class="form-group mr-1">
+          <div class="form-group mt-2 mr-1">
               <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="65"/>
           </div>
         </form>

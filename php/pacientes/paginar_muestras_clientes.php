@@ -1,12 +1,12 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
 
 header("Content-Type: text/html;charset=utf-8");
 
 //CONEXION A DB
 $mysqli = connect_mysqli();
-	
+
 $paginaActual = $_POST['partida'];
 $pacientes_id = $_POST['pacientes_id'];
 $dato = $_POST['dato'];
@@ -20,7 +20,7 @@ ON mh.muestras_id = m.muestras_id
 LEFT JOIN pacientes AS p1
 ON mh.pacientes_empresa_id = p1.pacientes_id
 WHERE m.pacientes_id = '$pacientes_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR CONCAT(p.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
-UNION 
+UNION
 SELECT m.fecha AS 'fecha', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente', m.number AS 'mustra', m.sitio_muestra AS 'sitio', m.diagnostico_clinico AS 'diagnostico', m.material_eviando AS 'material', m.datos_clinico AS 'datos', CONCAT(p1.nombre, ' ', p1.apellido) AS 'empresa'
 FROM muestras AS m
 INNER JOIN muestras_hospitales AS mh
@@ -28,13 +28,13 @@ ON mh.muestras_id = m.muestras_id
 INNER JOIN pacientes AS p
 ON mh.pacientes_id = p.pacientes_id
 LEFT JOIN pacientes AS p1
-ON mh.pacientes_empresa_id = p1.pacientes_id 
+ON mh.pacientes_empresa_id = p1.pacientes_id
 WHERE mh.pacientes_id = '$pacientes_id'  AND (p1.expediente LIKE '$dato%' OR p1.nombre LIKE '$dato%' OR CONCAT(p1.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
-";	
+";
 
-$result = $mysqli->query($query_row);     
+$result = $mysqli->query($query_row);
 
-$nroProductos=$result->num_rows; 
+$nroProductos=$result->num_rows;
 $nroLotes = 15;
 $nroPaginas = ceil($nroProductos/$nroLotes);
 $lista = '';
@@ -69,7 +69,7 @@ ON m.pacientes_id = p.pacientes_id
 LEFT JOIN muestras_hospitales AS mh
 ON mh.muestras_id = m.muestras_id
 LEFT JOIN pacientes AS p1
-ON mh.pacientes_empresa_id = p1.pacientes_id 
+ON mh.pacientes_empresa_id = p1.pacientes_id
 WHERE m.pacientes_id = '$pacientes_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR CONCAT(p.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
 UNION
 SELECT m.fecha AS 'fecha', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente', m.number AS 'mustra', m.sitio_muestra AS 'sitio', m.diagnostico_clinico AS 'diagnostico', m.material_eviando AS 'material', m.datos_clinico AS 'datos', CONCAT(p1.nombre, ' ', p1.apellido) AS 'empresa'
@@ -83,24 +83,24 @@ ON mh.pacientes_empresa_id = p1.pacientes_id
 WHERE mh.pacientes_id = '$pacientes_id' AND (p1.expediente LIKE '$dato%' OR p1.nombre LIKE '$dato%' OR CONCAT(p1.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
 LIMIT $limit, $nroLotes";
 
-$result = $mysqli->query($query);    
-  
+$result = $mysqli->query($query);
+
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 					<tr>
 					   <th width="1.11%">N°</th>
 					   <th width="11.11%">Fecha</th>
 					   <th width="11.11%">Empresa</th>
 					   <th width="16.11%">Paciente</th>
-					   <th width="16.11%">Muestra</th>					   
+					   <th width="16.11%">Muestra</th>
 					   <th width="11.11%">Sitio</th>
-					   <th width="11.11">Diagnostico</th>	
+					   <th width="11.11">Diagnostico</th>
 					   <th width="11.11%">Material</th>
 					   <th width="11.11%">Datos</th>
 					</tr>';
 
-$i=1;						
+$i=1;
 while($registro2 = $result->fetch_assoc()){
- 
+
 	$tabla = $tabla.'<tr>
 	   <td>'.$i.'</td>
 	   <td>'.$registro2['fecha'].'
@@ -109,8 +109,8 @@ while($registro2 = $result->fetch_assoc()){
 	   <td>'.$registro2['mustra'].'</td>
 	   <td>'.$registro2['sitio'].'</td>
 	   <td>'.$registro2['diagnostico'].'</td>
-	   <td>'.$registro2['material'].'</td>	   
-	   <td>'.$registro2['datos'].'</td>		              		  
+	   <td>'.$registro2['material'].'</td>
+	   <td>'.$registro2['datos'].'</td>
 	</tr>';
 	$i++;
 }
@@ -118,12 +118,12 @@ while($registro2 = $result->fetch_assoc()){
 if($nroProductos == 0){
 	$tabla = $tabla.'<tr>
 	   <td colspan="11" style="color:#C7030D">No se encontraron resultados</td>
-	</tr>';		
+	</tr>';
 }else{
    $tabla = $tabla.'<tr>
 	  <td colspan="11"><b><p ALIGN="center">Total de Registros Encontrados '.number_format($nroProductos).'</p></b>
-   </tr>';		
-}   
+   </tr>';
+}
 
 $tabla = $tabla.'</table>';
 

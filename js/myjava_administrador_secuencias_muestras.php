@@ -104,14 +104,17 @@ function editarRegistro(secuencias_id){
 				$('#formularioAdministradorSecuencias #pro').val('Edición');
                 $('#formularioAdministradorSecuencias #secuencias_id').val(secuencias_id);
 				$('#formularioAdministradorSecuencias #empresa').val(array[0]);	
-                $('#formularioAdministradorSecuencias #tabla').val(array[1]);				
+				$('#formularioAdministradorSecuencias #empresa').selectpicker('refresh');
+                $('#formularioAdministradorSecuencias #tabla').val(array[1]);							
                 $('#formularioAdministradorSecuencias #tipo_muestra_id').val(array[1]);
+				$('#formularioAdministradorSecuencias #tipo_muestra_id').selectpicker('refresh');				
                 $('#formularioAdministradorSecuencias #prefijo').val(array[2]);
 				$('#formularioAdministradorSecuencias #sufijo').val(array[3]);	
                 $('#formularioAdministradorSecuencias #relleno').val(array[4]);
 				$('#formularioAdministradorSecuencias #incremento').val(array[5]);	
                 $('#formularioAdministradorSecuencias #siguiente').val(array[6]);
                 $('#formularioAdministradorSecuencias #estado').val(array[7]);
+				$('#formularioAdministradorSecuencias #estado').selectpicker('refresh');				
 				$('#formularioAdministradorSecuencias #comentario').val(array[8]);
 
 				if(valores[7] == 1){
@@ -173,6 +176,7 @@ function modal_eliminar(secuencias_id){
 				$('#formularioAdministradorSecuencias #pro').val('Desactivar');
                 $('#formularioAdministradorSecuencias #secuencias_id').val(secuencias_id);				
 				$('#formularioAdministradorSecuencias #empresa').val(array[0]);	
+				$('#formularioAdministradorSecuencias #empresa').selectpicker('refresh');
                 $('#formularioAdministradorSecuencias #tabla').val(array[1]);
                 $('#formularioAdministradorSecuencias #entidad').val(array[1]);
                 $('#formularioAdministradorSecuencias #prefijo').val(array[2]);
@@ -181,6 +185,7 @@ function modal_eliminar(secuencias_id){
 				$('#formularioAdministradorSecuencias #incremento').val(array[5]);	
                 $('#formularioAdministradorSecuencias #siguiente').val(array[6]);
                 $('#formularioAdministradorSecuencias #estado').val(array[7]);
+				$('#formularioAdministradorSecuencias #estado').selectpicker('refresh');
 				$('#formularioAdministradorSecuencias #comentario').val(array[8]);			
 				$("#edi").attr('disabled', false);	
 

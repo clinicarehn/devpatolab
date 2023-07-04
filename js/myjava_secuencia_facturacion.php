@@ -363,7 +363,8 @@ function modal_eliminar(secuencia_facturacion_id){
 				$('#formularioSecuenciaFacturacion #pro').val('Eliminar Registro');
 				$("#formularioSecuenciaFacturacion #comentario").val("");
                 $('#formularioSecuenciaFacturacion #secuencia_facturacion_id').val(secuencia_facturacion_id);
-				$('#formularioSecuenciaFacturacion #empresa').val(array[0]);	
+				$('#formularioSecuenciaFacturacion #empresa').val(array[0]);
+				$('#formularioSecuenciaFacturacion #empresa').selectpicker('refresh');								
                 $('#formularioSecuenciaFacturacion #cai').val(array[1]);
                 $('#formularioSecuenciaFacturacion #prefijo').val(array[2]);
 				$('#formularioSecuenciaFacturacion #relleno').val(array[3]);	
@@ -373,6 +374,7 @@ function modal_eliminar(secuencia_facturacion_id){
                 $('#formularioSecuenciaFacturacion #rango_final').val(array[7]);
 				$('#formularioSecuenciaFacturacion #fecha_limite').val(array[8]);	
                 $('#formularioSecuenciaFacturacion #estado').val(array[9]);	
+				$('#formularioSecuenciaFacturacion #estado').selectpicker('refresh');
                 $('#formularioSecuenciaFacturacion #comentario').val(array[10]);					
 				$("#edi").attr('disabled', false);	
 
