@@ -10,7 +10,8 @@ $muestras_id = $_POST['muestras_id'];
 //CONSULTAR FACTURA SEGUN LA MUESTRA
 $query = "SELECT facturas_id
   FROM facturas
-	WHERE muestras_id = '$muestras_id' AND esta IN(1,2,3,4)";
+	WHERE muestras_id = '$muestras_id' AND estado IN(1,2,3,4)";
+
 $result = $mysqli->query($query);
 $consulta2 = $result->fetch_assoc();
 

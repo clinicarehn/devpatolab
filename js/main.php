@@ -278,6 +278,8 @@ var editar_productos_busqueda_dataTable = function(tbody, table){
 					$('#formulario_facturacion #invoiceItem #valor_isv_'+ row).val(porcentaje_calculo);
 				}
 			}
+			
+			//CONSULTAMOS SI EL USUARIO ES DE LA TERCERA EDAD PENDIENTE			
 
 			calculateTotal();
 			addRow();

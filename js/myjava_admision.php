@@ -1099,7 +1099,7 @@ function getEstadoFactura(muestras_id){
 function modalCreateBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 		//CONSULTAMOS SI YA SE EMTIO LA FACTURA PARA LA Muestra
 		if(getEstadoFactura(muestras_id) == ""){
-				createBill(muestras_id, producto, nombre_producto, precio_venta, isv);
+			createBill(muestras_id, producto, nombre_producto, precio_venta, isv);
 		}else{
 			swal({
 				title: "Error",
