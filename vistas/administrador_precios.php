@@ -89,14 +89,12 @@ $mysqli->close();//CERRAR CONEXIÓN
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-8 mb-3">
-            <label for="hospitales_id">Hospital / Clínica</label>
-            <div class="input-group mb-3">
-              <input type="text" name="hospitales_id" id="hospitales_id" class="form-control" placeholder="Hospital / Clínica" data-toggle="tooltip" data-placement="top">
-              <div class="input-group-append">
-                <span class="input-group-text"><div class="sb-nav-link-icon"></div><i class="fas fa-building fa-lg"></i></span>
-              </div>
-             </div>
+          <div class="col-md-8 mb-3">
+					    <label for="empresa">Hospital / Clínica <span class="priority">*<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="hospitales_id" name="hospitales_id" required data-live-search="true" title="Hospital / Clínica">
+							</select>
+						</div>
 					</div>
 					<div class="col-md-4 mb-3">
 					  <label>Precio <span class="priority">*<span/></label>

@@ -207,44 +207,6 @@ $mysqli->close();//CERRAR CONEXIÓN
     </div>
 </div>
 
-
-<div class="modal fade" id="modalPacientesMuestras">
-	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Búsqueda de Muestras</h4>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-        </div><div class="container"></div>
-        <div class="modal-body">
-			<form class="FormularioAjax" id="formularioMuestrasPacientes" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
-				<div class="form-row" id="grupo_expediente">
-					<div class="col-md-12 mb-3">
-					  <input type="hidden" required="required" id="pacienteIDMuestra" name="pacienteIDMuestra" class="form-control" placeholder="Buscar por: Cliente" maxlength="100"/>
-					  <input type="text" required="required" id="pacienteMuestraBuscar" name="pacienteMuestraBuscar" class="form-control" placeholder="Buscar por: Cliente" maxlength="100"/>
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="col-md-12 mb-3">
-						<nav aria-label="Page navigation example">
-							<ul class="pagination" id="agrega_registros_pacientes_muestras"></ul>
-						</nav>
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="col-md-12 mb-3">
-					  <center><ul class="pagination justify-content-center" id="pagination_pacientes_muestras"></ul></center>
-					</div>
-				</div>
-			</form>
-        </div>
-	    <div class="modal-footer">
-		 <button class="btn btn-success ml-2" type="submit" id="exportar_muestras_pacientes" form="formularioMuestrasPacientes"><div class="sb-nav-link-icon"></div><i class="fas fa-download fa-lg"></i> Exportar</button>
-	    </div>
-      </div>
-    </div>
-</div>
 <!--FIN MODAL PARA EL INGRESO DE Clientes-->
    <?php include("modals/modals.php");?>
 <!--FIN VENTANAS MODALES-->

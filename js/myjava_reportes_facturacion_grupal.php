@@ -249,16 +249,16 @@ function agregarCobros(){
 function pagination(partida){
 	var url = '<?php echo SERVERURL; ?>php/reporte_facturacion_grupal/paginar.php';
 
-  var fechai = $('#form_main_facturacion_reportes #fecha_b').val();
-  var fechaf = $('#form_main_facturacion_reportes #fecha_f').val();
-  var dato =  $('#form_main_facturacion_reportes #bs_regis').val()
-  var pacientesIDGrupo = $('#form_main_facturacion_reportes #pacientesIDGrupo').val()
+  var fechai = $('#form_main_grupal #fecha_b').val();
+  var fechaf = $('#form_main_grupal #fecha_f').val();
+  var dato =  $('#form_main_grupal #bs_regis').val()
+  var pacientesIDGrupo = $('#form_main_grupal #pacientesIDGrupo').val()
   var estado = '';
 
-  if($('#form_main_facturacion_reportes #estado').val() == ""){
+  if($('#form_main_grupal #estado').val() == ""){
     estado = 1;
   }else{
-    estado = $('#form_main_facturacion_reportes #estado').val();
+    estado = $('#form_main_grupal #estado').val();
   }
 
 	$.ajax({

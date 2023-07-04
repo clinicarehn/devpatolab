@@ -11,26 +11,36 @@ $paginaActual = $_POST['partida'];
 $pacientes_id = $_POST['pacientes_id'];
 $dato = $_POST['dato'];
 
-$query_row = "SELECT m.fecha AS 'fecha', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente', m.number AS 'mustra', m.sitio_muestra AS 'sitio', m.diagnostico_clinico AS 'diagnostico', m.material_eviando AS 'material', m.datos_clinico AS 'datos', CONCAT(p1.nombre, ' ', p1.apellido) AS 'empresa'
+if($dato == ""){
+	$where1 = " WHERE m.pacientes_id = '$pacientes_id'";
+	$where2 = " WHERE mh.pacientes_id = '$pacientes_id'";
+}else{
+	$where1 = " WHERE m.pacientes_id = '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+	$where2 = " WHERE mh.pacientes_id = '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+}
+
+$query_row = "SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
 FROM muestras AS m
 INNER JOIN pacientes AS p
 ON m.pacientes_id = p.pacientes_id
-LEFT JOIN muestras_hospitales AS mh
-ON mh.muestras_id = m.muestras_id
-LEFT JOIN pacientes AS p1
-ON mh.pacientes_empresa_id = p1.pacientes_id
-WHERE m.pacientes_id = '$pacientes_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR CONCAT(p.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id
+$where1
 UNION
-SELECT m.fecha AS 'fecha', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente', m.number AS 'mustra', m.sitio_muestra AS 'sitio', m.diagnostico_clinico AS 'diagnostico', m.material_eviando AS 'material', m.datos_clinico AS 'datos', CONCAT(p1.nombre, ' ', p1.apellido) AS 'empresa'
+SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
 FROM muestras AS m
 INNER JOIN muestras_hospitales AS mh
-ON mh.muestras_id = m.muestras_id
+ON m.muestras_id = mh.muestras_hospitales_id
 INNER JOIN pacientes AS p
 ON mh.pacientes_id = p.pacientes_id
-LEFT JOIN pacientes AS p1
-ON mh.pacientes_empresa_id = p1.pacientes_id
-WHERE mh.pacientes_id = '$pacientes_id'  AND (p1.expediente LIKE '$dato%' OR p1.nombre LIKE '$dato%' OR CONCAT(p1.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
-";
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id".$where2;
 
 $result = $mysqli->query($query_row);
 
@@ -62,57 +72,58 @@ if($paginaActual <= 1){
 	$limit = $nroLotes*($paginaActual-1);
 }
 
-$query = "SELECT m.fecha AS 'fecha', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente', m.number AS 'mustra', m.sitio_muestra AS 'sitio', m.diagnostico_clinico AS 'diagnostico', m.material_eviando AS 'material', m.datos_clinico AS 'datos', CONCAT(' ') AS 'empresa'
+$query = "SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
 FROM muestras AS m
 INNER JOIN pacientes AS p
 ON m.pacientes_id = p.pacientes_id
-LEFT JOIN muestras_hospitales AS mh
-ON mh.muestras_id = m.muestras_id
-LEFT JOIN pacientes AS p1
-ON mh.pacientes_empresa_id = p1.pacientes_id
-WHERE m.pacientes_id = '$pacientes_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR CONCAT(p.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id
+$where1
 UNION
-SELECT m.fecha AS 'fecha', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente', m.number AS 'mustra', m.sitio_muestra AS 'sitio', m.diagnostico_clinico AS 'diagnostico', m.material_eviando AS 'material', m.datos_clinico AS 'datos', CONCAT(p1.nombre, ' ', p1.apellido) AS 'empresa'
+SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
 FROM muestras AS m
 INNER JOIN muestras_hospitales AS mh
-ON mh.muestras_id = m.muestras_id
+ON m.muestras_id = mh.muestras_hospitales_id
 INNER JOIN pacientes AS p
 ON mh.pacientes_id = p.pacientes_id
-LEFT JOIN pacientes AS p1
-ON mh.pacientes_empresa_id = p1.pacientes_id
-WHERE mh.pacientes_id = '$pacientes_id' AND (p1.expediente LIKE '$dato%' OR p1.nombre LIKE '$dato%' OR CONCAT(p1.apellido,' ',p1.nombre) LIKE '%$dato%' OR m.number LIKE '$dato%')
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id
+$where2
 LIMIT $limit, $nroLotes";
 
 $result = $mysqli->query($query);
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 					<tr>
-					   <th width="1.11%">N°</th>
-					   <th width="11.11%">Fecha</th>
-					   <th width="11.11%">Empresa</th>
-					   <th width="16.11%">Paciente</th>
-					   <th width="16.11%">Muestra</th>
-					   <th width="11.11%">Sitio</th>
-					   <th width="11.11">Diagnostico</th>
-					   <th width="11.11%">Material</th>
-					   <th width="11.11%">Datos</th>
+						<th width="1.3%">No.</th>
+						<th width="10.3%">Fecha</th>
+						<th width="15.3%">Número</th>
+						<th width="24.3%">Paciente</th>
+						<th width="16.3%">Diagnostico Clínico</th>
+						<th width="16.3%">Material Enviado</th>
+						<th width="16.3%">Datos Clínicos</th>
 					</tr>';
 
 $i=1;
 while($registro2 = $result->fetch_assoc()){
+	$empresa = $registro2['empresa']." (<b>Paciente:</b> ".$registro2['paciente'].")";
 
 	$tabla = $tabla.'<tr>
-	   <td>'.$i.'</td>
-	   <td>'.$registro2['fecha'].'
-	   <td>'.$registro2['empresa'].'
-	   <td>'.$registro2['cliente'].'
-	   <td>'.$registro2['mustra'].'</td>
-	   <td>'.$registro2['sitio'].'</td>
-	   <td>'.$registro2['diagnostico'].'</td>
-	   <td>'.$registro2['material'].'</td>
-	   <td>'.$registro2['datos'].'</td>
-	</tr>';
-	$i++;
+			<td>'.$i.'</td>
+			<td>'.$registro2['fecha'].'</td>
+			<td>'.$registro2['numero'].'</td>
+			<td>'.$empresa.'</td>
+			<td>'.$registro2['diagnostico_clinico'].'</td>
+			<td>'.$registro2['material_eviando'].'</td>
+            <td>'.$registro2['datos_clinico'].'</td>
+			</tr>';
+			$i++;
 }
 
 if($nroProductos == 0){

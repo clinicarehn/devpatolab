@@ -188,16 +188,17 @@
       </div>
       <div class="modal-body">
 		<form class="form-inline" id="form_main_historico_muestras">
-			<div class="form-group mr-1">
-				<label for="bs_regis">Buscar: </label>
-				<input type="text" placeholder="Buscar por: Muestra, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Muestra, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="52"/>
-			</div>
+
+      <div class="col-md-12 mb-3">
+          <input type="hidden" readonly id="pacientes_id_muestras" name="pacientes_id_muestras" class="form-control"/>
+          <div class="input-group mb-3">
+            <input type="text" placeholder="Buscar por: Muestra, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Muestra, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="52"/>
+          </div>
+      </div>
 		</form>
-		<hr/>
 
 		<div class="form-group">
 		  <div class="col-sm-12">
-			<input type="hidden" readonly id="pacientes_id_muestras" name="pacientes_id_muestras" class="form-control"/>
 			<div class="registros overflow-auto" id="detalles-historico-muestras"></div>
 		   </div>
 		</div>
@@ -224,14 +225,13 @@
         </div>
         <div class="modal-body">
 			<form class="FormularioAjax" id="formularioCierreCaja" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
+
 				<div class="form-row">
 					<div class="col-md-12 mb-3">
-						<div class="input-group mb-3">
 							<input type="text" required readonly id="pro" name="pro" class="form-control"/>
 							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div><i class="fa fa-plus-square"></i></span>
 							</div>
-						</div>
 					</div>
 				</div>
 				<div class="form-row">

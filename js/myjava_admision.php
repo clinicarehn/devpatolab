@@ -275,17 +275,17 @@ function getFechaActual(){
 	return fecha_actual;
 }
 
-function getTipoPaciente(pacientes_id){
-	var url = '<?php echo SERVERURL; ?>php/admision/getTipoPaciente.php';
+function getPacienteTipo(pacientes_id){
+	var url = '<?php echo SERVERURL; ?>php/admision/getPacienteTipo.php';
 	var tipo_paciente;
 
 	$.ajax({
-	    type:'POST',
+		type:'POST',
 		url:url,
 		data:'pacientes_id='+pacientes_id,
 		async: false,
 		success:function(data){
-          tipo_paciente = data;
+			tipo_paciente = data;
 		}
 	});
 	return tipo_paciente;
@@ -521,7 +521,7 @@ function eliminarRegistroMuestra(muestras_id, pacientes_id){
 					type: "success",
 					timer: 3000, //timeOut for auto-clos
 				});
-				 paginationMuestras(1);
+				paginationMuestras(1);
 			   return false;
 			}else if(registro == 2){
 				swal({
@@ -820,27 +820,36 @@ function modalEditar(pacientes_id){
 
 	$('#formulario_admision #hospital').val(56);
 	$('#formulario_admision #hospital').selectpicker('refresh');
-
-
 }
 
-function showModalhistoriaMuestrasEmpresas(pacientes_id, tipo){
-	$('#modal_historico_muestras #pacientes_id_muestras').val(pacientes_id);
-	$('#modal_historico_muestras').modal({
-		show:true,
-		keyboard: false,
-		backdrop:'static'
-	});
+function showModalhistoriaMuestrasEmpresas(pacientes_id){
+	if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
+	 $('#form_main_historico_muestras #pacientes_id_muestras').val(pacientes_id);
+	 $('#modal_historico_muestras').modal({
+		 show:true,
+		 keyboard: false,
+		 backdrop:'static'
+	 });
 
-	if(tipo == 1){
-		historiaMuestrasPacientes(1);
+	 var tipo = getPacienteTipo(pacientes_id);
+
+	 if(tipo == 1){
+		 historiaMuestrasPacientes(1);
+	 }else{
+		 historiaMuestrasEmpresas(1);
+	 }
 	}else{
-		historiaMuestrasEmpresas(1);
+	 swal({
+		 title: "Acceso Denegado",
+		 text: "No tiene permisos para ejecutar esta acción",
+		 type: "error",
+		 confirmButtonClass: 'btn-danger'
+	 });
 	}
 }
 
 $('#form_main_historico_muestras #bs_regis').on('keyup',function(){
-	if($('#form_main_admision #tipo').val(pacientes_id) == 1){
+	if(getPacienteTipo($('#form_main_historico_muestras #pacientes_id_muestras').val()) == 1){
 		historiaMuestrasPacientes(1);
 	}else{
 		historiaMuestrasEmpresas(1);
@@ -850,7 +859,7 @@ $('#form_main_historico_muestras #bs_regis').on('keyup',function(){
 function historiaMuestrasEmpresas(partida){
 	var url = '<?php echo SERVERURL; ?>php/admision/paginar_historico_muestras_empresas.php';
 	var pacientes_id = $('#modal_historico_muestras #pacientes_id_muestras').val();
-    var dato = $('#form_main_historico_muestras #bs_regis').val();
+  var dato = $('#form_main_historico_muestras #bs_regis').val();
 
 	$.ajax({
 		type:'POST',
@@ -868,8 +877,8 @@ function historiaMuestrasEmpresas(partida){
 
 function historiaMuestrasPacientes(partida){
 	var url = '<?php echo SERVERURL; ?>php/admision/paginar_historico_muestras_pacientes.php';
-	var pacientes_id = $('#modal_historico_muestras #pacientes_id_muestras').val();
-    var dato = $('#form_main_historico_muestras #bs_regis').val();
+	var pacientes_id = $('#form_main_historico_muestras #pacientes_id_muestras').val();
+  var dato = $('#form_main_historico_muestras #bs_regis').val();
 
 	$.ajax({
 		type:'POST',
@@ -1087,6 +1096,20 @@ function getEstadoFactura(muestras_id){
 	return disponible;
 }
 
+function modalCreateBill(muestras_id, producto, nombre_producto, precio_venta, isv){
+		//CONSULTAMOS SI YA SE EMTIO LA FACTURA PARA LA Muestra
+		if(getEstadoFactura(muestras_id) == ""){
+				createBill(muestras_id, producto, nombre_producto, precio_venta, isv);
+		}else{
+			swal({
+				title: "Error",
+				text: "Lo sentimos esta factura ya ha sido emitida, por favor diríjase al módulo de facturación y realice le cobro de esta.",
+				type: "error",
+				confirmButtonClass: 'btn-danger'
+			});
+		}
+}
+
 function createBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 	if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
 			if(getFacturaEmision(muestras_id) == ""){
@@ -1121,7 +1144,7 @@ function createBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 						$('#formulario_facturacion #editar').hide();
 						$('#formulario_facturacion #eliminar').hide();
 
-						if(getTipoPaciente(datos[0]) == 2){
+						if(getPacienteTipo(datos[0]) == 2){
 							$('#formulario_facturacion #grupo_paciente_factura').show();
 						}else{
 							$('#formulario_facturacion #grupo_paciente_factura').hide();

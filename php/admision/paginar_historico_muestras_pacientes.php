@@ -1,7 +1,7 @@
-<?php 
-session_start();   
+<?php
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
@@ -9,26 +9,37 @@ $colaborador_id = $_SESSION['colaborador_id'];
 $paginaActual = $_POST['partida'];
 $pacientes_id = $_POST['pacientes_id'];
 $dato = $_POST['dato'];
-	
+
 if($dato == ""){
-	$where = "WHERE mh.pacientes_id = '$pacientes_id'";
+	$where1 = " WHERE m.pacientes_id = '$pacientes_id'";
+	$where2 = " WHERE mh.pacientes_id = '$pacientes_id'";
 }else{
-	$where = "WHERE mh.pacientes_id = '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+	$where1 = " WHERE m.pacientes_id = '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+	$where2 = " WHERE mh.pacientes_id = '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
 }
 
 $query = "SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
-(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
-	FROM muestras_hospitales AS mh
-	INNER JOIN pacientes AS p
-	ON mh.pacientes_id = p.pacientes_id
-	INNER JOIN muestras AS m
-	ON mh.muestras_id = m.muestras_id
-   	INNER JOIN pacientes AS p1
-    ON m.pacientes_id = p1.pacientes_id
-	INNER JOIN tipo_muestra AS tm
-	ON m.tipo_muestra_id = tm.tipo_muestra_id	
-	".$where."
-	ORDER BY m.fecha DESC";	
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
+FROM muestras AS m
+INNER JOIN pacientes AS p
+ON m.pacientes_id = p.pacientes_id
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id
+$where1
+UNION
+SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
+FROM muestras AS m
+INNER JOIN muestras_hospitales AS mh
+ON m.muestras_id = mh.muestras_hospitales_id
+INNER JOIN pacientes AS p
+ON mh.pacientes_id = p.pacientes_id
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id".$where2;
 
 $result = $mysqli->query($query) or die($mysqli->error);
 
@@ -61,57 +72,67 @@ if($paginaActual <= 1){
 }
 
 $registro = "SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
-(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
-	FROM muestras_hospitales AS mh
-	INNER JOIN pacientes AS p
-	ON mh.pacientes_id = p.pacientes_id
-	INNER JOIN muestras AS m
-	ON mh.muestras_id = m.muestras_id
-   	INNER JOIN pacientes AS p1
-    ON m.pacientes_id = p1.pacientes_id
-	INNER JOIN tipo_muestra AS tm
-	ON m.tipo_muestra_id = tm.tipo_muestra_id		
-	".$where."
-	ORDER BY m.fecha DESC
-	LIMIT $limit, $nroLotes";
-$result = $mysqli->query($registro) or die($mysqli->error);
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
+FROM muestras AS m
+INNER JOIN pacientes AS p
+ON m.pacientes_id = p.pacientes_id
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id
+$where1
+UNION
+SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
+	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
+FROM muestras AS m
+INNER JOIN muestras_hospitales AS mh
+ON m.muestras_id = mh.muestras_hospitales_id
+INNER JOIN pacientes AS p
+ON mh.pacientes_id = p.pacientes_id
+INNER JOIN tipo_muestra AS tm
+ON m.tipo_muestra_id = tm.tipo_muestra_id
+INNER JOIN pacientes AS p1
+ON m.pacientes_id = p1.pacientes_id
+$where2
+LIMIT $limit, $nroLotes";
 
+$result = $mysqli->query($registro) or die($mysqli->error);
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<tr>
-			<th width="1.3%">No.</th>
-			<th width="10.3%">Fecha</th>
-			<th width="15.3%">Número</th>			
-			<th width="24.3%">Paciente</th>
-			<th width="16.3%">Diagnostico Clínico</th>
-			<th width="16.3%">Material Enviado</th>
-			<th width="16.3%">Datos Clínicos</th>
+				<th width="1.3%">No.</th>
+				<th width="10.3%">Fecha</th>
+				<th width="15.3%">Número</th>
+				<th width="24.3%">Paciente</th>
+				<th width="16.3%">Diagnostico Clínico</th>
+				<th width="16.3%">Material Enviado</th>
+				<th width="16.3%">Datos Clínicos</th>
 			</tr>';
-$i = 1;				
-while($registro2 = $result->fetch_assoc()){ 
+$i = 1;
+while($registro2 = $result->fetch_assoc()){
 	$empresa = $registro2['empresa']." (<b>Paciente:</b> ".$registro2['paciente'].")";
-	
+
 	$tabla = $tabla.'<tr>
-			<td>'.$i.'</td> 
-			<td>'.$registro2['fecha'].'</td>	
-			<td>'.$registro2['numero'].'</td>			
-			<td>'.$empresa.'</td>	
+			<td>'.$i.'</td>
+			<td>'.$registro2['fecha'].'</td>
+			<td>'.$registro2['numero'].'</td>
+			<td>'.$empresa.'</td>
 			<td>'.$registro2['diagnostico_clinico'].'</td>
 			<td>'.$registro2['material_eviando'].'</td>
-            <td>'.$registro2['datos_clinico'].'</td>		
-			</tr>';	
-			$i++;				
+            <td>'.$registro2['datos_clinico'].'</td>
+			</tr>';
+			$i++;
 }
 
 if($nroProductos == 0){
 	$tabla = $tabla.'<tr>
 	   <td colspan="12" style="color:#C7030D">No se encontraron resultados</td>
-	</tr>';		
+	</tr>';
 }else{
    $tabla = $tabla.'<tr>
 	  <td colspan="12"><b><p ALIGN="center">Total de Registros Encontrados: '.$nroProductos.'</p></b>
-   </tr>';		
-}        
+   </tr>';
+}
 
 $tabla = $tabla.'</table>';
 
@@ -121,5 +142,5 @@ $array = array(0 => $tabla,
 echo json_encode($array);
 
 $result->free();//LIMPIAR RESULTADO
-$mysqli->close();//CERRAR CONEXIÓN	
+$mysqli->close();//CERRAR CONEXIÓN
 ?>

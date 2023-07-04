@@ -549,6 +549,10 @@ function llenarTabla(dato){
     getCategoriaOperacion();
     getProductos(1);
   }
+
+  if(dato == "AdministradorPrecios"){
+    listar_administrador_precios();
+  }
 }
 
 $(function () {

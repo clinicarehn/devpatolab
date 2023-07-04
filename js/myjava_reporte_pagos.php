@@ -22,7 +22,7 @@ $(document).ready(function() {
 	  pagination(1);
 	});
 
-	$('#form_main #profesional').on('change',function(){
+	$('#form_main #pacientesIDGrupo').on('change',function(){
 	  pagination(1);
 	});
 
@@ -57,35 +57,24 @@ function getColaboradorConsulta(){
 //INICIO PAGINACION DE REGISTROS
 function pagination(partida){
 	var url = '<?php echo SERVERURL; ?>php/reporte_pagos/paginar.php';
-    var fechai = $('#form_main #fecha_b').val();
-	var fechaf = $('#form_main #fecha_f').val();
-	var dato = '';
-	var profesional = '';
-	var estado = '';
 
-    if($('#form_main #profesional').val() == "" || $('#form_main #profesional').val() == null){
-		profesional = '';
-	}else{
-		profesional = $('#form_main #profesional').val();
-	}
+	var fechai = $('#form_main #fecha_b').val();
+  var fechaf = $('#form_main #fecha_f').val();
+  var dato =  $('#form_main #bs_regis').val()
+  var pacientesIDGrupo = $('#form_main #pacientesIDGrupo').val()
+  var estado = '';
 
-    if($('#form_main #estado').val() == "" || $('#form_main #estado').val() == null){
-		estado = 1;
-	}else{
-		estado = $('#form_main #estado').val();
-	}
-
-	if($('#form_main #bs_regis').val() == "" || $('#form_main #bs_regis').val() == null){
-		dato = '';
-	}else{
-		dato = $('#form_main #bs_regis').val();
-	}
+  if($('#form_main #estado').val() == ""){
+    estado = 1;
+  }else{
+    estado = $('#form_main #estado').val();
+  }
 
 	$.ajax({
 		type:'POST',
 		url:url,
 		async: true,
-		data:'partida='+partida+'&fechai='+fechai+'&fechaf='+fechaf+'&dato='+dato+'&profesional='+profesional+'&estado='+estado,
+		data:'partida='+partida+'&fechai='+fechai+'&fechaf='+fechaf+'&dato='+dato+'&pacientesIDGrupo='+pacientesIDGrupo+'&estado='+estado,
 		success:function(data){
 			var array = eval(data);
 			$('#agrega-registros').html(array[0]);

@@ -59,6 +59,7 @@ $query = "SELECT f.facturas_grupal_id AS 'factura_id', f.fecha AS 'fecha', p.ide
 	WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado ".$in."
 	$busqueda_paciente
 	ORDER BY f.number DESC";
+
 $result = $mysqli->query($query) or die($mysqli->error);
 
 $nroLotes = 25;
@@ -178,7 +179,7 @@ while($registro2 = $result->fetch_assoc()){
             <td>'.$registro2['servicio'].'</td>
             <td>'.$registro2['profesional'].'</td>
 			<td>
-			  <a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Crear Factura" href="javascript:mailBillGroup('.$registro2['facturas_id'].');void(0);" class="far fa-paper-plane fa-lg"></a>
+			  <a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Enviar Factura" href="javascript:mailBillGroup('.$registro2['facturas_id'].');void(0);" class="far fa-paper-plane fa-lg"></a>
 			</td>
 			<td>
 			  <a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Crear Factura" href="javascript:printBillGroup('.$registro2['facturas_id'].');void(0);" class="fas fa-print fa-lg"></a>

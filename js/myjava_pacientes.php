@@ -81,15 +81,14 @@ $(document).ready(function(){
 	$('#formulario_agregar_expediente_manual #expediente_usuario_manual').on('keyup',function(){
 		busquedaUsuarioManualExpediente();
     });
+});
 
-	$('#formularioMuestrasPacientes #pacienteMuestraBuscar').on('keyup',function(){
-		  var tipo_paciente_id = $("#form_main #tipo_paciente_id").val();
-		  if(tipo_paciente_id == 1){
-			  paginationMuestrasClientes(1);
-		  }else{
-			  paginationMuestrasEmpreas(1);
-		  }
-	});
+$('#form_main_historico_muestras #bs_regis').on('keyup',function(){
+	if(getPacienteTipo($('#form_main_historico_muestras #pacientes_id_muestras').val()) == 1){
+		historiaMuestrasPacientes(1);
+	}else{
+		historiaMuestrasEmpresas(1);
+	}
 });
 
 /*INICIO DE FUNCIONES PARA ESTABLECER EL FOCUS PARA LAS VENTANAS MODALES*/
@@ -136,8 +135,8 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-    $("#modalPacientesMuestras").on('shown.bs.modal', function(){
-        $(this).find('#formularioMuestrasPacientes #pacienteMuestraBuscar').focus();
+    $("#modal_historico_muestras").on('shown.bs.modal', function(){
+        $(this).find('#form_main_historico_muestras #bs_regis').focus();
     });
 });
 /*FIN DE FUNCIONES PARA ESTABLECER EL FOCUS PARA LAS VENTANAS MODALES*/
@@ -661,6 +660,22 @@ function consultarNombre(pacientes_id){
 	return resp;
 }
 
+function getPacienteTipo(pacientes_id){
+	var url = '<?php echo SERVERURL; ?>php/admision/getPacienteTipo.php';
+	var tipo_paciente;
+
+	$.ajax({
+		type:'POST',
+		url:url,
+		data:'pacientes_id='+pacientes_id,
+		async: false,
+		success:function(data){
+			tipo_paciente = data;
+		}
+	});
+	return tipo_paciente;
+}
+
 function getTipoPaciente(pacientes_id){
     var url = '<?php echo SERVERURL; ?>php/muestras/getTipoPaciente.php';
 	var resp;
@@ -680,23 +695,20 @@ function getTipoPaciente(pacientes_id){
 
 function modal_muestras(pacientes_id){
    if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
+		$('#form_main_historico_muestras #pacientes_id_muestras').val(pacientes_id);
+		$('#modal_historico_muestras').modal({
+			show:true,
+			keyboard: false,
+			backdrop:'static'
+		});
 
-	  $("#formularioMuestrasPacientes #pacienteIDMuestra").val(pacientes_id);
+		var tipo = getPacienteTipo(pacientes_id);
 
-		//DEVOLVEMOS EL TIPO DE PACIENTE
-	  var tipo_paciente_id = getTipoPaciente(pacientes_id);
-		
-	  if(tipo_paciente_id == 1){
-		  paginationMuestrasClientes(1);
-	  }else{
-		  paginationMuestrasEmpreas(1);
-	  }
-
-	  $('#modalPacientesMuestras').modal({
-		  show:true,
-		  keyboard: false,
-		  backdrop:'static'
-	  });
+		if(tipo == 1){
+			historiaMuestrasPacientes(1);
+		}else{
+			historiaMuestrasEmpresas(1);
+		}
    }else{
 		swal({
 			title: "Acceso Denegado",
@@ -857,41 +869,41 @@ function pagination(partida){
 	return false;
 }
 
-function paginationMuestrasClientes(partida){
-	var url = '<?php echo SERVERURL; ?>php/pacientes/paginar_muestras_clientes.php';
-	var estado = "";
-	var pacientes_id = $("#formularioMuestrasPacientes #pacienteIDMuestra").val();
-	var tipo_paciente = "";
-	var dato = $('#formularioMuestrasPacientes #pacienteMuestraBuscar').val();
+function historiaMuestrasPacientes(partida){
+	var url = '<?php echo SERVERURL; ?>php/admision/paginar_historico_muestras_pacientes.php';
+	var url = '<?php echo SERVERURL; ?>php/admision/paginar_historico_muestras_pacientes.php';
+	var pacientes_id = $('#form_main_historico_muestras #pacientes_id_muestras').val();
+	var dato = $('#form_main_historico_muestras #bs_regis').val();
+
 	$.ajax({
 		type:'POST',
 		url:url,
+		async: true,
 		data:'partida='+partida+'&pacientes_id='+pacientes_id+'&dato='+dato,
 		success:function(data){
 			var array = eval(data);
-			$('#agrega_registros_pacientes_muestras').html(array[0]);
-			$('#pagination_pacientes_muestras').html(array[1]);
+			$('#detalles-historico-muestras').html(array[0]);
+			$('#pagination-historico-muestras').html(array[1]);
 		}
 	});
 	return false;
 }
 
 
-function paginationMuestrasEmpreas(partida){
-	var url = '<?php echo SERVERURL; ?>php/pacientes/paginar_muestras_empresas.php';
-	var estado = "";
-	var pacientes_id = $("#formularioMuestrasPacientes #pacienteIDMuestra").val();
-	var tipo_paciente = "";
-	var dato = $('#formularioMuestrasPacientes #pacienteMuestraBuscar').val();
+function historiaMuestrasEmpresas(partida){
+	var url = '<?php echo SERVERURL; ?>php/admision/paginar_historico_muestras_empresas.php';
+	var pacientes_id = $('#modal_historico_muestras #pacientes_id_muestras').val();
+	var dato = $('#form_main_historico_muestras #bs_regis').val();
 
 	$.ajax({
 		type:'POST',
 		url:url,
+		async: true,
 		data:'partida='+partida+'&pacientes_id='+pacientes_id+'&dato='+dato,
 		success:function(data){
 			var array = eval(data);
-			$('#agrega_registros_pacientes_muestras').html(array[0]);
-			$('#pagination_pacientes_muestras').html(array[1]);
+			$('#detalles-historico-muestras').html(array[0]);
+			$('#pagination-historico-muestras').html(array[1]);
 		}
 	});
 	return false;

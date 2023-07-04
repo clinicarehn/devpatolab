@@ -147,10 +147,10 @@ $mysqli->close();//CERRAR CONEXIÓN
             <input type="text" placeholder="Buscar por: Paciente, Identidad o Factura" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Número de Factura" id="bs_regis" autofocus class="form-control" size="35"/>
           </div>
           <div class="form-group mr-1" style="display:none" id="factura_manual">
-            <button class="btn btn-primary ml-1" type="submit" id="nuevo_registro"><div class="sb-nav-link-icon"></div><i class="fas fa-file-invoice fa-lg"></i> Factura</button>
+            <button class="btn btn-primary mt-2 mr-1" type="submit" id="nuevo_registro"><div class="sb-nav-link-icon"></div><i class="fas fa-file-invoice fa-lg"></i> Factura</button>
           </div>
           <div class="form-group mt-2">
-    		     <button class="btn btn-primary mr-1" type="submit" id="cierre" data-toggle="tooltip" data-placement="top" title="Realizar Cierre"><div class="sb-nav-link-icon"></div><i class="fas fa-cash-register fa-lg"></i> Cierre</button>
+    		     <button class="btn btn-primary mt-2" type="submit" id="cierre" data-toggle="tooltip" data-placement="top" title="Realizar Cierre"><div class="sb-nav-link-icon"></div><i class="fas fa-cash-register fa-lg"></i> Cierre</button>
           </div>
         </form>
       </div>
