@@ -104,15 +104,15 @@ $result = $mysqli->query($registro) or die($mysqli->error);
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<tr>
 			<th width="2%">No.</th>
-			<th width="8%">Fecha</th>
+			<th width="7%">Fecha</th>
 			<th width="18%">Paciente</th>
 			<th width="10%">Identidad</th>			
 			<th width="14%">Factura</th>
 			<th width="10%">Pago Recibido</th>
 			<th width="10%">Efectivo</th>
 			<th width="10%">Tarjeta</th>
-			<th width="16%">Tipo Pago</th>
-			<th width="2%">Opciones</th>
+			<th width="10%">Tipo Pago</th>
+			<th width="9%">Editar</th>
 			</tr>';
 $i = 1;	
 $cierre_ = "";			
@@ -147,9 +147,9 @@ while($registro2 = $result->fetch_assoc()){
 			<td>'.number_format($efectivo,2).'</td>	
 			<td>'.number_format($tarjeta,2).'</td>	
 			<td>'.$registro2['tipo_pago'].'</td>
-			<td>		   
-				<a style="text-decoration:none;" title = "Editar Usuario" href="javascript:editarRegistro('.$registro2['pagos_id'].');void(0);" class="fas fa-edit fa-lg"></a>
-			</td>								
+			<td>
+				<a class="btn btn btn-secondary ml-2" href="javascript:editarRegistro('.$registro2['pagos_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-edit fa-lg"></i> Editar</a>
+			</td>											
 			</tr>';	
 			$i++;				
 }

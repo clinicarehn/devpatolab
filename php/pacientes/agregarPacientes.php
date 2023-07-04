@@ -13,21 +13,21 @@ $telefono2 = $_POST['telefono2'];
 $correo = strtolower(cleanString($_POST['correo']));
 $fecha = date("Y-m-d");
 
-if(isset($_POST['departamento'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
-	if($_POST['departamento'] == ""){
+if(isset($_POST['departamento_id'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
+	if($_POST['departamento_id'] == ""){
 		$departamento_id = 0;
 	}else{
-		$departamento_id = $_POST['departamento'];
+		$departamento_id = $_POST['departamento_id'];
 	}
 }else{
 	$departamento_id = 0;
 }
 
-if(isset($_POST['municipio'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
-	if($_POST['municipio'] == ""){
+if(isset($_POST['municipio_id'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
+	if($_POST['municipio_id'] == ""){
 		$municipio_id = 0;
 	}else{
-		$municipio_id = $_POST['municipio'];
+		$municipio_id = $_POST['municipio_id'];
 	}
 }else{
 	$municipio_id = 0;

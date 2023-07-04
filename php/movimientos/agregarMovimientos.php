@@ -56,11 +56,10 @@ if($movimiento_operacion == 1){
 	//INGRESAMOS LOS PRODUCTOS
 	$movimientos_id = correlativo('movimientos_id', 'movimientos');
 	$documento = "Entrada Movimientos ".$movimientos_id;
-	$insert = "INSERT INTO movimientos
-		VALUES('$movimientos_id','$movimiento_producto','$documento','$movimiento_cantidad','$salida','$saldo','$fecha_registro','$comentario')";
+	$insert = "INSERT INTO movimientos VALUES('$movimientos_id','$movimiento_producto','$documento','$movimiento_cantidad','$salida','$saldo','$fecha_registro','$comentario')";
 	$query = $mysqli->query($insert);
 
-    if($query){
+  if($query){
 		$datos = array(
 			0 => "Almacenado",
 			1 => "Registro Almacenado Correctamente",
@@ -123,7 +122,7 @@ if($movimiento_operacion == 1){
 	$movimientos_id   = correlativo('movimientos_id', 'movimientos');
 	$documento = "Salida Movimientos ".$movimientos_id;
 	$insert = "INSERT INTO movimientos
-		VALUES('$movimientos_id','$movimiento_producto','$documento','$entrada','$movimiento_cantidad','$saldo','$fecha_registro')";
+		VALUES('$movimientos_id','$movimiento_producto','$documento','$entrada','$movimiento_cantidad','$saldo','$fecha_registro','$comentario')";
 	$query = $mysqli->query($insert);
 
     if($query){

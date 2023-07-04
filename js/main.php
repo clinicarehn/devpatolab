@@ -2,14 +2,14 @@
 function reportePDF(agenda_id){
 	if (getUsuarioSistema() == 1 || getUsuarioSistema() == 3 || getUsuarioSistema() == 4 || getUsuarioSistema() == 5 || getUsuarioSistema() == 8 || getUsuarioSistema() == 9){
 	    window.open('<?php echo SERVERURL; ?>php/citas/tickets.php?agenda_id='+agenda_id);
-	}else{	
+	}else{
 		swal({
-			title: "Acceso Denegado", 
+			title: "Acceso Denegado",
 			text: "No tiene permisos para ejecutar esta acción",
-			type: "error", 
+			type: "error",
 			confirmButtonClass: 'btn-danger'
-		});			
-        return false;	  
+		});
+        return false;
     }
 }
 
@@ -19,10 +19,10 @@ function sendEmailReprogramación(agenda_id){
 	    type:'POST',
 		url:url,
 		data:'agenda_id='+agenda_id,
-		success: function(valores){	
-           		  		  		  			  
+		success: function(valores){
+
 		}
-	});	
+	});
 }
 
 function getUsuarioSistema(){
@@ -32,8 +32,8 @@ function getUsuarioSistema(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -66,7 +66,7 @@ $('#formulario_facturacion #buscar_servicios').on('click', function(e){
 		show:true,
 		keyboard: false,
 		backdrop:'static'
-	});		 
+	});
 });
 //FIN BUSQUEDA SERVICIOS
 
@@ -76,9 +76,9 @@ $(document).ready(function(){
 		  listar_productos_facturas_buscar();
 		  var row_index = $(this).closest("tr").index();
 		  var col_index = $(this).closest("td").index();
-		  
+
 		  $('#formulario_busqueda_productos_facturas #row').val(row_index);
-		  $('#formulario_busqueda_productos_facturas #col').val(col_index);		  
+		  $('#formulario_busqueda_productos_facturas #col').val(col_index);
 		  $('#modal_busqueda_productos_facturas').modal({
 			show:true,
 			keyboard: false,
@@ -104,14 +104,14 @@ $(document).ready(function(){
 		var porcentaje_isv = 0;
 		var porcentaje_calculo = 0;
 		var isv_neto = 0;
-		
+
 		if(impuesto_venta == 1){
 			porcentaje_isv = parseFloat(getPorcentajeISV() / 100);
 			if(total == "" || total == 0){
-				porcentaje_calculo = (parseFloat(precio) * parseFloat(cantidad) * porcentaje_isv).toFixed(2);			
+				porcentaje_calculo = (parseFloat(precio) * parseFloat(cantidad) * porcentaje_isv).toFixed(2);
 				isv_neto = parseFloat(porcentaje_calculo).toFixed(2);
 				$('#formulario_facturacion #invoiceItem #valor_isv_'+ row_index).val(porcentaje_calculo);
-			}else{	
+			}else{
 				isv_total = parseFloat($('#formulario_facturacion #taxAmount').val());
 				porcentaje_calculo = (parseFloat(precio) * parseFloat(cantidad) * porcentaje_isv).toFixed(2);
 				isv_neto = parseFloat(isv_total) + parseFloat(porcentaje_calculo);
@@ -138,14 +138,14 @@ $(document).ready(function(){
 		var porcentaje_isv = 0;
 		var porcentaje_calculo = 0;
 		var isv_neto = 0;
-		
+
 		if(impuesto_venta == 1){
 			porcentaje_isv = parseFloat(getPorcentajeISV() / 100);
 			if(total == "" || total == 0){
-				porcentaje_calculo = (parseFloat(precio) * parseFloat(cantidad) * porcentaje_isv).toFixed(2);			
+				porcentaje_calculo = (parseFloat(precio) * parseFloat(cantidad) * porcentaje_isv).toFixed(2);
 				isv_neto = parseFloat(porcentaje_calculo).toFixed(2);
 				$('#formulario_facturacion #invoiceItem #valor_isv_'+ row_index).val(porcentaje_calculo);
-			}else{	
+			}else{
 				isv_total = parseFloat($('#formulario_facturacion #taxAmount').val());
 				porcentaje_calculo = (parseFloat(precio) * parseFloat(cantidad) * porcentaje_isv).toFixed(2);
 				isv_neto = parseFloat(isv_total) + parseFloat(porcentaje_calculo);
@@ -160,41 +160,41 @@ $(document).ready(function(){
 
 //INICIO FUNCIONES PARA LLENAR DATOS EN LA TABLA
 var listar_servicios_factura_buscar = function(){
-	var table_servicios_factura_buscar = $("#dataTableServicios").DataTable({		
-		"destroy":true,	
+	var table_servicios_factura_buscar = $("#dataTableServicios").DataTable({
+		"destroy":true,
 		"ajax":{
 			"method":"POST",
 			"url":"<?php echo SERVERURL; ?>php/facturacion/getServiciosTabla.php"
 		},
 		"columns":[
 			{"defaultContent":"<button class='view btn btn-primary'><span class='fas fa-copy'></span></button>"},
-			{"data":"nombre"},		
+			{"data":"nombre"},
 		],
 		"pageLength" : 5,
         "lengthMenu": lengthMenu,
 		"stateSave": true,
 		"bDestroy": true,
-		"language": idioma_español,	
-	});	 
+		"language": idioma_español,
+	});
 	table_servicios_factura_buscar.search('').draw();
 	$('#buscar').focus();
-	
+
 	view_servicios_busqueda_dataTable("#dataTableServicios tbody", table_servicios_factura_buscar);
 }
 
 var view_servicios_busqueda_dataTable = function(tbody, table){
-	$(tbody).off("click", "button.view");		
+	$(tbody).off("click", "button.view");
 	$(tbody).on("click", "button.view", function(e){
 		e.preventDefault();
-		var data = table.row( $(this).parents("tr") ).data();		  
+		var data = table.row( $(this).parents("tr") ).data();
 		$('#formulario_facturacion #servicio_id').val(data.servicio_id);
 		$('#modal_busqueda_servicios').modal('hide');
 	});
 }
 
 var listar_productos_facturas_buscar = function(){
-	var table_productos_buscar = $("#dataTableProductosFacturas").DataTable({		
-		"destroy":true,	
+	var table_productos_buscar = $("#dataTableProductosFacturas").DataTable({
+		"destroy":true,
 		"ajax":{
 			"method":"POST",
 			"url":"<?php echo SERVERURL; ?>php/facturacion/getProductosFacturaTabla.php"
@@ -203,41 +203,41 @@ var listar_productos_facturas_buscar = function(){
 			{"defaultContent":"<button class='editar btn btn-primary'><span class='fas fa-copy'></span></button>"},
 			{"data":"producto"},
 			{"data":"descripcion"},
-			{"data":"concentracion"},	
-			{"data":"medida"},			
+			{"data":"concentracion"},
+			{"data":"medida"},
 			{"data":"cantidad"},
 			{"data":"precio_venta"}	,
 			{"data":"precio_venta2"},
 			{"data":"precio_venta3"},
-			{"data":"precio_venta4"}			
+			{"data":"precio_venta4"}
 		],
 		"pageLength" : 5,
         "lengthMenu": lengthMenu,
 		"stateSave": true,
 		"bDestroy": true,
-		"language": idioma_español,	
-	});	 
+		"language": idioma_español,
+	});
 	table_productos_buscar.search('').draw();
 	$('#buscar').focus();
-	
+
 	editar_productos_busqueda_dataTable("#dataTableProductosFacturas tbody", table_productos_buscar);
 }
 
 var editar_productos_busqueda_dataTable = function(tbody, table){
-	$(tbody).off("click", "button.editar");		
+	$(tbody).off("click", "button.editar");
 	$(tbody).on("click", "button.editar", function(e){
 		e.preventDefault();
-		if($("#formulario_facturacion #cliente_nombre").val() != ""){	
+		if($("#formulario_facturacion #cliente_nombre").val() != ""){
 			var isv = 0;
 			var isv_total = 0;
 			var porcentaje_isv = 0;
 			var porcentaje_calculo = 0;
-			var isv_neto = 0;		
+			var isv_neto = 0;
 			var data = table.row( $(this).parents("tr") ).data();
 			var row = $('#formulario_busqueda_productos_facturas #row').val();
 		    var hospitales_id = getHospitalClinicaConsulta($("#formulario_facturacion #muestras_id").val());
-			var consultaPrecio = getPrecioHospitalConsulta(hospitales_id);			
-			
+			var consultaPrecio = getPrecioHospitalConsulta(hospitales_id);
+
 			if (data.categoria == "Servicio"){
 				$('#formulario_facturacion #invoiceItem #productName_'+ row).val(data.producto);
 			}else{
@@ -245,70 +245,70 @@ var editar_productos_busqueda_dataTable = function(tbody, table){
 			}
 
 			$('#formulario_facturacion #invoiceItem #productoID_'+ row).val(data.productos_id);
-			
+
 			if(consultaPrecio == "Precio1"){
-				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta);	
+				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta);
 			}else if(consultaPrecio == "Precio2"){
-				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta2);					
+				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta2);
 			}else if(consultaPrecio == "Precio3"){
-				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta3);					
+				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta3);
 			}else if(consultaPrecio == "Precio4"){
-				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta4);				
+				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta4);
 			}else{
-				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta);				
+				$('#formulario_facturacion #invoiceItem #price_'+ row).val(data.precio_venta);
 			}
 
 			$('#formulario_facturacion #invoiceItem #isv_'+ row).val(data.impuesto_venta);
 			$('#formulario_facturacion #invoiceItem #discount_'+ row).val(0);
-			$('#formulario_facturacion #invoiceItem #quantity_'+ row).val(1);								
+			$('#formulario_facturacion #invoiceItem #quantity_'+ row).val(1);
 			$('#formulario_facturacion #invoiceItem #quantity_'+ row).focus();
-		
+
 			if(data.impuesto_venta == 1){
 				porcentaje_isv = parseFloat(getPorcentajeISV() / 100);
 				if($('#formulario_facturacion #taxAmount').val() == "" || $('#formulario_facturacion #taxAmount').val() == 0){
-					porcentaje_calculo = (parseFloat(data.precio_venta) * porcentaje_isv).toFixed(2);			
+					porcentaje_calculo = (parseFloat(data.precio_venta) * porcentaje_isv).toFixed(2);
 					isv_neto = porcentaje_calculo;
 					$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);
 					$('#formulario_facturacion #invoiceItem #valor_isv_'+ row).val(porcentaje_calculo);
-				}else{				
+				}else{
 					isv_total = parseFloat($('#formulario_facturacion #taxAmount').val());
 					porcentaje_calculo = (parseFloat(data.precio_venta) * porcentaje_isv).toFixed(2);
 					isv_neto = parseFloat(isv_total) + parseFloat(porcentaje_calculo);
-					$('#formulario_facturacion #taxAmount').val(isv_neto);	
+					$('#formulario_facturacion #taxAmount').val(isv_neto);
 					$('#formulario_facturacion #invoiceItem #valor_isv_'+ row).val(porcentaje_calculo);
 				}
 			}
-			
+
 			calculateTotal();
 			addRow();
 			$('#modal_busqueda_productos_facturas').modal('hide');
 		}else{
 			swal({
-				title: "Error", 
+				title: "Error",
 				text: "Lo sentimos no se puede seleccionar un producto, por favor seleccione un cliente antes de poder continuar",
-				type: "error", 
+				type: "error",
 				confirmButtonClass: "btn-danger"
-			});				
+			});
 		}
 	});
 }
 //FIN FUNCIONES PARA LLENAR DATOS EN LA TABLA
 
 function getServicio(){
-    var url = '<?php echo SERVERURL; ?>php/agenda_pacientes/servicios.php';		
-		
+    var url = '<?php echo SERVERURL; ?>php/agenda_pacientes/servicios.php';
+
 	$.ajax({
         type: "POST",
         url: url,
 	    async: true,
-        success: function(data){	
+        success: function(data){
 		    $('#formulario_facturacion #servicio_id').html("");
 			$('#formulario_facturacion #servicio_id').html(data);
 
 		    $('#formGrupoFacturacion #servicio_idGrupo').html("");
-			$('#formGrupoFacturacion #servicio_idGrupo').html(data);			
-		}			
-     });	
+			$('#formGrupoFacturacion #servicio_idGrupo').html(data);
+		}
+     });
 }
 
 $(document).ready(function(){
@@ -340,101 +340,14 @@ $(document).ready(function(){
 $("#formulario_facturacion #invoiceItem").on('click', '.producto', function() {
 	var row = $(this).closest("tr").index();
 	var col = $(this).closest("td").index();
-	
+
     $('#formulario_facturacion #productName_'+ row).on('keyup', function() {
-	   if($("#formulario_facturacion #cliente_nombre").val() != ""){		
-		   if($('#formulario_facturacion #invoiceItem #productName_'+ row).val() != ""){
-				 var key = $(this).val();		
-				 var dataString = 'key='+key;
-				 var url = '<?php echo SERVERURL; ?>php/productos/autocompletarProductos.php';
-		
-				$.ajax({
-				   type: "POST",
-				   url: url,
-				   data: dataString,
-				   success: function(data) {
-					  //Escribimos las sugerencias que nos manda la consulta
-					  $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeIn(1000).html(data);
-					  //Al hacer click en algua de las sugerencias
-					  $('.suggest-element').on('click', function(){
-							//Obtenemos la id unica de la sugerencia pulsada
-							var producto_id = $(this).attr('id');					
-							
-							//Editamos el valor del input con data de la sugerencia pulsada							
-							$('#formulario_facturacion #invoiceItem #productName_'+ row).val($('#'+producto_id).attr('data'));
-							$('#formulario_facturacion #invoiceItem #quantity_'+ row).val(1);
-							$('#formulario_facturacion #invoiceItem #quantity_'+ row).focus();
-							//Hacemos desaparecer el resto de sugerencias
-							$('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeOut(1000);
-							addRow();	
-
-							//OBTENEMOS DATOS DEL PRODUCTO
-							var url = '<?php echo SERVERURL; ?>php/productos/editarProductos.php';		
-								
-							$.ajax({
-								type: "POST",
-								url: url,
-								data: "productos_id=" + producto_id,
-								async: true,
-								success: function(data){
-									var datos = eval(data);
-									$('#formulario_facturacion #invoiceItem #productoID_'+ row).val(producto_id);
-									$('#formulario_facturacion #invoiceItem #price_'+ row).val(datos[7]);
-									
-									var isv = 0;
-									var isv_total = 0;
-									var porcentaje_isv = 0;
-									var porcentaje_calculo = 0;
-									var isv_neto = 0;
-								
-									if(getISVEstadoProductos(producto_id) == 1){
-										porcentaje_isv = parseFloat(getPorcentajeISV() / 100);
-										
-										if($('#formulario_facturacion #taxAmount').val() == 0){
-											porcentaje_calculo = (parseFloat(datos[7]) * porcentaje_isv).toFixed(2);
-											$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);							
-										}else{				
-											isv_total = parseFloat($('#formulario_facturacion #taxAmount').val());
-											porcentaje_calculo = (parseFloat(datos[7]) * porcentaje_isv).toFixed(2);	
-											isv_neto = parseFloat(isv_total) + parseFloat(porcentaje_calculo);
-											$('#formulario_facturacion #taxAmount').val(isv_neto);					
-										}
-									}	
-									
-									calculateTotal();
-								}			
-							 });	
-													
-							return false;
-					 });
-				  }
-			   });   
-		   }else{
-			   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeIn(1000).html("");
-			   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeOut(1000);
-		   }
-	   }else{
-			swal({
-				title: "Error", 
-				text: "Lo sentimos no se puede efectuar la búsqueda, por favor seleccione un cliente antes de poder continuar",
-				type: "error", 
-				confirmButtonClass: "btn-danger"
-			});		   
-	   }
-	 });		
-
-	//OCULTAR EL SUGGESTION
-    $('#formulario_facturacion #invoiceItem #productName_'+ row).on('blur', function() {
-	   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeOut(1000);
-    });		
-
-    $('#formulario_facturacion #invoiceItem #productName_'+ row).on('click', function() {
 	   if($("#formulario_facturacion #cliente_nombre").val() != ""){
-		   if($('#formulario_facturacion #invoiceItem #productName_1').val() != ""){
-				 var key = $(this).val();		
+		   if($('#formulario_facturacion #invoiceItem #productName_'+ row).val() != ""){
+				 var key = $(this).val();
 				 var dataString = 'key='+key;
 				 var url = '<?php echo SERVERURL; ?>php/productos/autocompletarProductos.php';
-		
+
 				$.ajax({
 				   type: "POST",
 				   url: url,
@@ -446,7 +359,7 @@ $("#formulario_facturacion #invoiceItem").on('click', '.producto', function() {
 					  $('.suggest-element').on('click', function(){
 							//Obtenemos la id unica de la sugerencia pulsada
 							var producto_id = $(this).attr('id');
-							 
+
 							//Editamos el valor del input con data de la sugerencia pulsada
 							$('#formulario_facturacion #invoiceItem #productName_'+ row).val($('#'+producto_id).attr('data'));
 							$('#formulario_facturacion #invoiceItem #quantity_'+ row).val(1);
@@ -456,8 +369,8 @@ $("#formulario_facturacion #invoiceItem").on('click', '.producto', function() {
 							addRow();
 
 							//OBTENEMOS DATOS DEL PRODUCTO
-							var url = '<?php echo SERVERURL; ?>php/productos/editarProductos.php';		
-								
+							var url = '<?php echo SERVERURL; ?>php/productos/editarProductos.php';
+
 							$.ajax({
 								type: "POST",
 								url: url,
@@ -465,50 +378,137 @@ $("#formulario_facturacion #invoiceItem").on('click', '.producto', function() {
 								async: true,
 								success: function(data){
 									var datos = eval(data);
-									$('#formulario_facturacion #invoiceItem #productoID_'+ row).val(producto_id);									
+									$('#formulario_facturacion #invoiceItem #productoID_'+ row).val(producto_id);
 									$('#formulario_facturacion #invoiceItem #price_'+ row).val(datos[7]);
-										
+
 									var isv = 0;
 									var isv_total = 0;
 									var porcentaje_isv = 0;
 									var porcentaje_calculo = 0;
 									var isv_neto = 0;
-								
+
 									if(getISVEstadoProductos(producto_id) == 1){
 										porcentaje_isv = parseFloat(getPorcentajeISV() / 100);
-										
+
 										if($('#formulario_facturacion #taxAmount').val() == 0){
 											porcentaje_calculo = (parseFloat(datos[7]) * porcentaje_isv).toFixed(2);
-											$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);							
-										}else{				
+											$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);
+										}else{
 											isv_total = parseFloat($('#formulario_facturacion #taxAmount').val());
-											porcentaje_calculo = (parseFloat(datos[7]) * porcentaje_isv).toFixed(2);	
+											porcentaje_calculo = (parseFloat(datos[7]) * porcentaje_isv).toFixed(2);
 											isv_neto = parseFloat(isv_total) + parseFloat(porcentaje_calculo);
-											$('#formulario_facturacion #taxAmount').val(isv_neto);					
+											$('#formulario_facturacion #taxAmount').val(isv_neto);
 										}
-									}	
-									
+									}
+
 									calculateTotal();
-								}			
+								}
 							 });
-													
+
 							return false;
 					 });
 				  }
-			   });   
+			   });
 		   }else{
 			   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeIn(1000).html("");
 			   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeOut(1000);
 		   }
 	   }else{
 			swal({
-				title: "Error", 
+				title: "Error",
 				text: "Lo sentimos no se puede efectuar la búsqueda, por favor seleccione un cliente antes de poder continuar",
-				type: "error", 
+				type: "error",
 				confirmButtonClass: "btn-danger"
-			});		   
+			});
 	   }
-	});		
+	 });
+
+	//OCULTAR EL SUGGESTION
+    $('#formulario_facturacion #invoiceItem #productName_'+ row).on('blur', function() {
+	   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeOut(1000);
+    });
+
+    $('#formulario_facturacion #invoiceItem #productName_'+ row).on('click', function() {
+	   if($("#formulario_facturacion #cliente_nombre").val() != ""){
+		   if($('#formulario_facturacion #invoiceItem #productName_1').val() != ""){
+				 var key = $(this).val();
+				 var dataString = 'key='+key;
+				 var url = '<?php echo SERVERURL; ?>php/productos/autocompletarProductos.php';
+
+				$.ajax({
+				   type: "POST",
+				   url: url,
+				   data: dataString,
+				   success: function(data) {
+					  //Escribimos las sugerencias que nos manda la consulta
+					  $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeIn(1000).html(data);
+					  //Al hacer click en algua de las sugerencias
+					  $('.suggest-element').on('click', function(){
+							//Obtenemos la id unica de la sugerencia pulsada
+							var producto_id = $(this).attr('id');
+
+							//Editamos el valor del input con data de la sugerencia pulsada
+							$('#formulario_facturacion #invoiceItem #productName_'+ row).val($('#'+producto_id).attr('data'));
+							$('#formulario_facturacion #invoiceItem #quantity_'+ row).val(1);
+							$('#formulario_facturacion #invoiceItem #quantity_'+ row).focus();
+							//Hacemos desaparecer el resto de sugerencias
+							$('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeOut(1000);
+							addRow();
+
+							//OBTENEMOS DATOS DEL PRODUCTO
+							var url = '<?php echo SERVERURL; ?>php/productos/editarProductos.php';
+
+							$.ajax({
+								type: "POST",
+								url: url,
+								data: "productos_id=" + producto_id,
+								async: true,
+								success: function(data){
+									var datos = eval(data);
+									$('#formulario_facturacion #invoiceItem #productoID_'+ row).val(producto_id);
+									$('#formulario_facturacion #invoiceItem #price_'+ row).val(datos[7]);
+
+									var isv = 0;
+									var isv_total = 0;
+									var porcentaje_isv = 0;
+									var porcentaje_calculo = 0;
+									var isv_neto = 0;
+
+									if(getISVEstadoProductos(producto_id) == 1){
+										porcentaje_isv = parseFloat(getPorcentajeISV() / 100);
+
+										if($('#formulario_facturacion #taxAmount').val() == 0){
+											porcentaje_calculo = (parseFloat(datos[7]) * porcentaje_isv).toFixed(2);
+											$('#formulario_facturacion #taxAmount').val(porcentaje_calculo);
+										}else{
+											isv_total = parseFloat($('#formulario_facturacion #taxAmount').val());
+											porcentaje_calculo = (parseFloat(datos[7]) * porcentaje_isv).toFixed(2);
+											isv_neto = parseFloat(isv_total) + parseFloat(porcentaje_calculo);
+											$('#formulario_facturacion #taxAmount').val(isv_neto);
+										}
+									}
+
+									calculateTotal();
+								}
+							 });
+
+							return false;
+					 });
+				  }
+			   });
+		   }else{
+			   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeIn(1000).html("");
+			   $('#formulario_facturacion #invoiceItem #suggestions_producto_'+ row).fadeOut(1000);
+		   }
+	   }else{
+			swal({
+				title: "Error",
+				text: "Lo sentimos no se puede efectuar la búsqueda, por favor seleccione un cliente antes de poder continuar",
+				type: "error",
+				confirmButtonClass: "btn-danger"
+			});
+	   }
+	});
 });
 /*FIN SUGGESTION PRODUCTO*/
 /*FIN AUTO COMPLETAR*/
@@ -546,12 +546,12 @@ function getPorcentajeISV(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
+		success:function(data){
 		  var datos = eval(data);
-          isv = datos[0];			  		  		  			  
+          isv = datos[0];
 		}
 	});
-	return isv;	
+	return isv;
 }
 
 function getISVEstadoProductos(productos_id){
@@ -562,21 +562,21 @@ function getISVEstadoProductos(productos_id){
 		url:url,
 		data:'productos_id='+productos_id,
 		async: false,
-		success:function(data){	
+		success:function(data){
 		  var datos = eval(data);
-          isv_estado = datos[0];			  		  		  			  
+          isv_estado = datos[0];
 		}
 	});
-	return isv_estado;	
+	return isv_estado;
 }
 
 $('#formulario_facturacion #notes').keyup(function() {
 	    var max_chars = 250;
         var chars = $(this).val().length;
         var diff = max_chars - chars;
-		
-		$('#formulario_facturacion #charNum_notas').html(diff + ' Caracteres'); 
-		
+
+		$('#formulario_facturacion #charNum_notas').html(diff + ' Caracteres');
+
 		if(diff == 0){
 			return false;
 		}
@@ -586,9 +586,9 @@ function caracteresAntecedentes(){
 	var max_chars = 250;
 	var chars = $('#formulario_facturacion #notes').val().length;
 	var diff = max_chars - chars;
-	
-	$('#formulario_facturacion #charNum_notas').html(diff + ' Caracteres'); 
-	
+
+	$('#formulario_facturacion #charNum_notas').html(diff + ' Caracteres');
+
 	if(diff == 0){
 		return false;
 	}
@@ -602,27 +602,27 @@ function getPrecioHospital(hospitales_id){
 		url:url,
 		data:'hospitales_id='+hospitales_id,
 		async: false,
-		success:function(data){	
+		success:function(data){
 		  var datos = eval(data);
-          precio_administrador = datos[0];			  		  		  			  
+          precio_administrador = datos[0];
 		}
 	});
-	return precio_administrador;		
+	return precio_administrador;
 }
 
 function showFactura(muestras_id){
 	var url = '<?php echo SERVERURL; ?>php/muestras/editarFactura.php';
 
-	$('#main_facturacion').hide();	
+	$('#main_facturacion').hide();
 	$('#facturacion').show();
-	
-	$('#formulario_facturacion')[0].reset();	
-	
+
+	$('#formulario_facturacion')[0].reset();
+
 	$.ajax({
 	    type:'POST',
 		url:url,
 		data:'muestras_id='+muestras_id,
-		success:function(data){	
+		success:function(data){
 		    var datos = eval(data);
 	        $('#formulario_facturacion #pro').val("Registro");
 			$('#formulario_facturacion #muestras_id').val(muestras_id);
@@ -631,10 +631,10 @@ function showFactura(muestras_id){
             $('#formulario_facturacion #fecha').val(datos[2]);
             $('#formulario_facturacion #colaborador_id').val(datos[3]);
 			$('#formulario_facturacion #colaborador_nombre').val(datos[4]);
-			$('#formulario_facturacion #servicio_id').val(datos[5]);		
+			$('#formulario_facturacion #servicio_id').val(datos[5]);
 			$('#label_acciones_volver').html("ATA");
 			$('#label_acciones_receta').html("Receta");
-			
+
 			$('#formulario_facturacion #fecha').attr("readonly", true);
 			$('#formulario_facturacion #validar').attr("disabled", false);
 			$('#formulario_facturacion #addRows').attr("disabled", false);
@@ -642,10 +642,10 @@ function showFactura(muestras_id){
 		    $('#formulario_facturacion #validar').show();
 		    $('#formulario_facturacion #editar').hide();
 		    $('#formulario_facturacion #eliminar').hide();
-			limpiarTabla();				
-			
-			$('#formulario_facturacion').attr({ 'data-form': 'save' }); 
-			$('#formulario_facturacion').attr({ 'action': '<?php echo SERVERURL; ?>php/atencion_pacientes/addFactura.php' }); 					
+			limpiarTabla();
+
+			$('#formulario_facturacion').attr({ 'data-form': 'save' });
+			$('#formulario_facturacion').attr({ 'action': '<?php echo SERVERURL; ?>php/atencion_pacientes/addFactura.php' });
 		}
 	});
 }
@@ -658,12 +658,12 @@ function getHospitalClinicaConsulta(muestras_id){
 		url:url,
 		data:'muestras_id='+muestras_id,
 		async: false,
-		success:function(data){	
+		success:function(data){
 			var valores = eval(data);
-			hospitales_id = valores[0];			  		  		  			  
+			hospitales_id = valores[0];
 		}
 	});
-	return hospitales_id;	
+	return hospitales_id;
 }
 
 function getPrecioHospitalConsulta(hospitales_id){
@@ -674,146 +674,155 @@ function getPrecioHospitalConsulta(hospitales_id){
 		url:url,
 		data:'hospitales_id='+hospitales_id,
 		async: false,
-		success:function(data){	
+		success:function(data){
 			var valores = eval(data);
-			precio = valores[0];			  		  		  			  
+			precio = valores[0];
 		}
 	});
-	return precio;		
+	return precio;
 }
 
 //INICIO FORMULARIO PACIENTES
 function cleanPacientes(){
-	$("#formulario_pacientes #correo").css("border-color", "none");	
+	$("#formulario_pacientes #correo").css("border-color", "none");
 }
 
 function getDepartamento(){
-    var url = '<?php echo SERVERURL; ?>php/pacientes/getDepartamento.php';		
-		
-	$.ajax({
-        type: "POST",
-        url: url,
-	    async: true,
-        success: function(data){	
-		    $('#formulario_pacientes #departamento').html("");
-			$('#formulario_pacientes #departamento').html(data);
-		}			
-     });		
+    var url = '<?php echo SERVERURL; ?>php/pacientes/getDepartamento.php';
+
+				$.ajax({
+				type: "POST",
+				url: url,
+				async: true,
+				success: function(data){
+						$('#formulario_pacientes #departamento_id').html("");
+						$('#formulario_pacientes #departamento_id').html(data);
+						$('#formulario_pacientes #departamento_id').selectpicker('refresh');
+				}
+     });
 }
 
 $(document).ready(function() {
-	$('#formulario_pacientes #departamento').on('change', function(){
+	$('#formulario_pacientes #departamento_id').on('change', function(){
       getMunicipio();
-	  return false;			 				
-    });					
+	  return false;
+    });
 });
 
 function getMunicipio(){
 	var url = '<?php echo SERVERURL; ?>php/pacientes/getMunicipio.php';
-		
-	var departamento_id = $('#formulario_pacientes #departamento').val();
-	
+
+	var departamento_id = $('#formulario_pacientes #departamento_id').val();
+
 	$.ajax({
 	   type:'POST',
 	   url:url,
 	   data:'departamento_id='+departamento_id,
 	   success:function(data){
-		  $('#formulario_pacientes #municipio').html("");
-		  $('#formulario_pacientes #municipio').html(data);  
+		  $('#formulario_pacientes #municipio_id').html("");
+		  $('#formulario_pacientes #municipio_id').html(data);
+			$('#formulario_pacientes #municipio_id').selectpicker('refresh');
 	  }
-  });	
+  });
 }
 
 function getMunicipioEditar(departamento_id, municipio_id){
 	var url = '<?php echo SERVERURL; ?>php/pacientes/getMunicipio.php';
-		
+
 	$.ajax({
 	   type:'POST',
 	   url:url,
 	   data:'departamento_id='+departamento_id,
 	   success:function(data){
-	      $('#formulario_pacientes #municipio').html("");
-		  $('#formulario_pacientes #municipio').html(data);
-		  $('#formulario_pacientes #municipio').val(municipio_id);		  
+	      $('#formulario_pacientes #municipio_id').html("");
+		    $('#formulario_pacientes #municipio_id').html(data);
+		    $('#formulario_pacientes #municipio_id').val(municipio_id);
+				alert(municipio_id);
+				$('#formulario_pacientes #municipio_id').selectpicker('refresh');
 	  }
 	});
-	return false;		
+	return false;
 }
 
 function getReligion(){
-    var url = '<?php echo SERVERURL; ?>php/pacientes/getReligion.php';		
-		
-	$.ajax({
-        type: "POST",
-        url: url,
-	    async: true,
-        success: function(data){	
-		    $('#formulario_pacientes #religion').html("");
-			$('#formulario_pacientes #religion').html(data);
-		}			
-     });		
-}
+    var url = '<?php echo SERVERURL; ?>php/pacientes/getReligion.php';
 
-function getProfesion(){
-    var url = '<?php echo SERVERURL; ?>php/pacientes/getProfesion.php';		
-		
-	$.ajax({
-        type: "POST",
-        url: url,
-	    async: true,
-        success: function(data){	
-		    $('#formulario_pacientes #profesion').html("");
-			$('#formulario_pacientes #profesion').html(data);
-		}			
-     });		
-}
-
-function getSexo(){
-    var url = '<?php echo SERVERURL; ?>php/pacientes/getSexo.php';		
-		
-	$.ajax({
-        type: "POST",
-        url: url,
-	    async: true,
-        success: function(data){	
-		    $('#formulario_pacientes #sexo').html("");
-			$('#formulario_pacientes #sexo').html(data);
-
-		    $('#formulario_agregar_expediente_manual #sexo_manual').html("");
-			$('#formulario_agregar_expediente_manual #sexo_manual').html(data);		
-		}			
-     });		
-}
-
-function getTipoPacienteEstado(){
-    var url = '<?php echo SERVERURL; ?>php/pacientes/getTipoPaciente.php';		
-		
 	$.ajax({
         type: "POST",
         url: url,
 	    async: true,
         success: function(data){
-		    $('#formulario_pacientes #paciente_tipo').html("");
-			$('#formulario_pacientes #paciente_tipo').html(data);
-			
-		    $('#form_main #tipo_paciente_id').html("");
-			$('#form_main #tipo_paciente_id').html(data);			
-		}			
-     });		
+		    $('#formulario_pacientes #religion').html("");
+		  	$('#formulario_pacientes #religion').html(data);
+		}
+     });
 }
 
-function getStatus(){
-    var url = '<?php echo SERVERURL; ?>php/pacientes/getStatus.php';		
-		
+function getProfesion(){
+    var url = '<?php echo SERVERURL; ?>php/pacientes/getProfesion.php';
+
 	$.ajax({
         type: "POST",
         url: url,
 	    async: true,
-        success: function(data){	
+        success: function(data){
+		    $('#formulario_pacientes #profesion').html("");
+			$('#formulario_pacientes #profesion').html(data);
+		}
+     });
+}
+
+function getSexo(){
+    var url = '<?php echo SERVERURL; ?>php/pacientes/getSexo.php';
+
+	$.ajax({
+				type: "POST",
+				url: url,
+				async: true,
+				success: function(data){
+						$('#formulario_pacientes #sexo').html("");
+						$('#formulario_pacientes #sexo').html(data);
+						$('#formulario_pacientes #sexo').selectpicker('refresh');
+
+						$('#formulario_agregar_expediente_manual #sexo_manual').html("");
+						$('#formulario_agregar_expediente_manual #sexo_manual').html(data);
+						$('#formulario_agregar_expediente_manual #sexo_manual').selectpicker('refresh');
+				}
+     });
+}
+
+function getTipoPacienteEstado(){
+    var url = '<?php echo SERVERURL; ?>php/pacientes/getTipoPaciente.php';
+
+	$.ajax({
+				type: "POST",
+				url: url,
+				async: true,
+				success: function(data){
+					$('#formulario_pacientes #paciente_tipo').html("");
+					$('#formulario_pacientes #paciente_tipo').html(data);
+					$('#formulario_pacientes #paciente_tipo').selectpicker('refresh');
+
+					$('#form_main #tipo_paciente_id').html("");
+					$('#form_main #tipo_paciente_id').html(data);
+					$('#form_main #tipo_paciente_id').selectpicker('refresh');
+				}
+     });
+}
+
+function getStatus(){
+    var url = '<?php echo SERVERURL; ?>php/pacientes/getStatus.php';
+
+	$.ajax({
+        type: "POST",
+        url: url,
+	    async: true,
+        success: function(data){
 		    $('#form_main #estado').html("");
-			$('#form_main #estado').html(data);
-		}			
-     });		
+			  $('#form_main #estado').html(data);
+				$('#form_main #estado').selectpicker('refresh');
+		}
+     });
 }
 
 $('#formulario_pacientes #buscar_religion_pacientes').on('click', function(e){
@@ -822,7 +831,7 @@ $('#formulario_pacientes #buscar_religion_pacientes').on('click', function(e){
 		show:true,
 		keyboard: false,
 		backdrop:'static'
-	});	 
+	});
 });
 
 $('#formulario_pacientes #buscar_profesion_pacientes').on('click', function(e){
@@ -831,130 +840,130 @@ $('#formulario_pacientes #buscar_profesion_pacientes').on('click', function(e){
 		show:true,
 		keyboard: false,
 		backdrop:'static'
-	});	 
+	});
 });
 
 $('#formulario_pacientes #buscar_departamento_pacientes').on('click', function(e){
-	listar_departamentos_buscar(); 
+	listar_departamentos_buscar();
 	$('#modal_busqueda_departamentos').modal({
 		show:true,
 		keyboard: false,
 		backdrop:'static'
-	});			
+	});
 });
 
 $('#formulario_pacientes #buscar_municipio_pacientes').on('click', function(e){
 	if($('#formulario_pacientes #departamento').val() == "" || $('#formulario_pacientes #departamento').val() == null){
 		swal({
-			title: "Error", 
+			title: "Error",
 			text: "Lo sentimos el departamento no debe estar vacío, antes de seleccionar esta opción por favor seleccione un departamento, por favor corregir",
-			type: "error", 
+			type: "error",
 			confirmButtonClass: 'btn-danger'
-		});			
+		});
 	}else{
 		listar_municipios_buscar();
 		 $('#modal_busqueda_municipios').modal({
 			show:true,
 			keyboard: false,
 			backdrop:'static'
-		});		
-	}	
+		});
+	}
 });
 
 var listar_religion_buscar = function(){
-	var table_religion_buscar = $("#dataTableReligion").DataTable({		
-		"destroy":true,	
+	var table_religion_buscar = $("#dataTableReligion").DataTable({
+		"destroy":true,
 		"ajax":{
 			"method":"POST",
 			"url":"<?php echo SERVERURL; ?>php/pacientes/getReligionTable.php"
 		},
 		"columns":[
 			{"defaultContent":"<button class='view btn btn-primary'><span class='fas fa-copy'></span></button>"},
-			{"data":"nombre"}		
+			{"data":"nombre"}
 		],
 		"pageLength" : 5,
         "lengthMenu": lengthMenu,
 		"stateSave": true,
 		"bDestroy": true,
-		"language": idioma_español,	
-	});	 
+		"language": idioma_español,
+	});
 	table_religion_buscar.search('').draw();
 	$('#buscar').focus();
-	
+
 	view_religion_busqueda_dataTable("#dataTableReligion tbody", table_religion_buscar);
 }
 
 var view_religion_busqueda_dataTable = function(tbody, table){
-	$(tbody).off("click", "button.view");		
+	$(tbody).off("click", "button.view");
 	$(tbody).on("click", "button.view", function(e){
 		e.preventDefault();
-		var data = table.row( $(this).parents("tr") ).data();		  
+		var data = table.row( $(this).parents("tr") ).data();
 		$('#formulario_pacientes #religion').val(data.religion_id);
 		$('#modal_busqueda_religion').modal('hide');
 	});
 }
 
 var listar_profesion_buscar = function(){
-	var table_profeision_buscar = $("#dataTableProfesiones").DataTable({		
-		"destroy":true,	
+	var table_profeision_buscar = $("#dataTableProfesiones").DataTable({
+		"destroy":true,
 		"ajax":{
 			"method":"POST",
 			"url":"<?php echo SERVERURL; ?>php/pacientes/getProfesionTable.php"
 		},
 		"columns":[
 			{"defaultContent":"<button class='view btn btn-primary'><span class='fas fa-copy'></span></button>"},
-			{"data":"nombre"}		
+			{"data":"nombre"}
 		],
 		"pageLength" : 5,
         "lengthMenu": lengthMenu,
 		"stateSave": true,
 		"bDestroy": true,
-		"language": idioma_español,	
-	});	 
+		"language": idioma_español,
+	});
 	table_profeision_buscar.search('').draw();
 	$('#buscar').focus();
-	
+
 	view_profesion_busqueda_dataTable("#dataTableProfesiones tbody", table_profeision_buscar);
 }
 
 var view_profesion_busqueda_dataTable = function(tbody, table){
-	$(tbody).off("click", "button.view");		
+	$(tbody).off("click", "button.view");
 	$(tbody).on("click", "button.view", function(e){
 		e.preventDefault();
-		var data = table.row( $(this).parents("tr") ).data();		  
+		var data = table.row( $(this).parents("tr") ).data();
 		$('#formulario_pacientes #profesion').val(data.profesion_id);
 		$('#modal_busqueda_profesion').modal('hide');
 	});
 }
 
 var listar_departamentos_buscar = function(){
-	var table_departamentos_buscar = $("#dataTableDepartamentos").DataTable({		
-		"destroy":true,	
+	var table_departamentos_buscar = $("#dataTableDepartamentos").DataTable({
+		"destroy":true,
 		"ajax":{
 			"method":"POST",
 			"url":"<?php echo SERVERURL; ?>php/pacientes/getDepartamentosTabla.php"
 		},
 		"columns":[
 			{"defaultContent":"<button class='view btn btn-primary'><span class='fas fa-copy'></span></button>"},
-			{"data":"nombre"}		
+			{"data":"nombre"}
 		],
 		"pageLength" : 5,
         "lengthMenu": lengthMenu,
 		"stateSave": true,
 		"bDestroy": true,
-		"language": idioma_español,	
-	});	 
+		"language": idioma_español,
+	});
 	table_departamentos_buscar.search('').draw();
 	$('#buscar').focus();
-	
+
 	view_departamentos_busqueda_dataTable("#dataTableDepartamentos tbody", table_departamentos_buscar);
 }
 
 var view_departamentos_busqueda_dataTable = function(tbody, table){
-	$(tbody).off("click", "button.view");		
+	$(tbody).off("click", "button.view");
 	$(tbody).on("click", "button.view", function(e){
 		e.preventDefault();
-		var data = table.row( $(this).parents("tr") ).data();		  
+		var data = table.row( $(this).parents("tr") ).data();
 		$('#formulario_pacientes #departamento').val(data.departamento_id);
 		getMunicipio();
 		$('#modal_busqueda_departamentos').modal('hide');
@@ -964,7 +973,7 @@ var view_departamentos_busqueda_dataTable = function(tbody, table){
 var listar_municipios_buscar = function(){
 	var departamento = $('#formulario_pacientes #departamento').val();
 	var table_municipios_buscar = $("#dataTableMunicipios").DataTable({
-		"destroy":true,	
+		"destroy":true,
 		"ajax":{
 			"method":"POST",
 			"url":"<?php echo SERVERURL; ?>php/pacientes/getMunicipiosTabla.php",
@@ -973,25 +982,25 @@ var listar_municipios_buscar = function(){
 		"columns":[
 			{"defaultContent":"<button class='view btn btn-primary'><span class='fas fa-copy'></span></button>"},
 			{"data":"municipio"},
-			{"data":"departamento"}			
+			{"data":"departamento"}
 		],
 		"pageLength" : 5,
         "lengthMenu": lengthMenu,
 		"stateSave": true,
 		"bDestroy": true,
-		"language": idioma_español,	
-	});	 
+		"language": idioma_español,
+	});
 	table_municipios_buscar.search('').draw();
 	$('#buscar').focus();
-	
+
 	view_municipios_busqueda_dataTable("#dataTableMunicipios tbody", table_municipios_buscar);
 }
 
 var view_municipios_busqueda_dataTable = function(tbody, table){
-	$(tbody).off("click", "button.view");		
+	$(tbody).off("click", "button.view");
 	$(tbody).on("click", "button.view", function(e){
 		e.preventDefault();
-		var data = table.row( $(this).parents("tr") ).data();		  
+		var data = table.row( $(this).parents("tr") ).data();
 		$('#formulario_pacientes #municipio').val(data.municipio_id);
 		$('#modal_busqueda_municipios').modal('hide');
 	});
@@ -1007,7 +1016,7 @@ $('#form_main #limpiar').on('click', function(e){
 	getTipoPacienteEstado();
 	getDepartamento();
 	getReligion();
-	getProfesion();	
+	getProfesion();
 	listar_departamentos_buscar();
 	listar_profesion_buscar();
 	listar_religion_buscar();
@@ -1020,53 +1029,58 @@ $(document).ready(function(){
 	getTipoPacienteEstado();
 	getDepartamento();
 	getReligion();
-	getProfesion();		
+	getProfesion();
 });
 //FIN FORMULARIO PACIENTES
 
 //INICIO FORMULARIO COLABORADORES
 function puesto(){
 	var url = '<?php echo SERVERURL; ?>php/selects/puestos.php';
-	
+
 	$.ajax({
 		type:'POST',
-		url:url,			
+		url:url,
 		success: function(data){
-			$('#formulario_colaboradores #puesto').html(data);			
+			$('#formulario_colaboradores #puesto').html("");
+			$('#formulario_colaboradores #puesto').html(data);
+			$('#formulario_colaboradores #puesto').selectpicker('refresh');
 		}
 	});
-	return false;	
+	return false;
 }
 
 function empresa(){
 	var url = '<?php echo SERVERURL; ?>php/selects/empresa.php';
-	
+
 	$.ajax({
 		type:'POST',
-		url:url,		
+		url:url,
 		success: function(data){
 			$('#formulario_colaboradores #empresa').html("");
-			$('#formulario_colaboradores #empresa').html(data);			
+			$('#formulario_colaboradores #empresa').html(data);
+			$('#formulario_colaboradores #empresa').selectpicker('refresh');
 		}
 	});
 	return false;
 }
 
 function getEstatus(){
-    var url = '<?php echo SERVERURL; ?>php/users/getStatus.php';		
-		
+    var url = '<?php echo SERVERURL; ?>php/users/getStatus.php';
+
 	$.ajax({
         type: "POST",
         url: url,
 	    async: true,
-        success: function(data){		
+        success: function(data){
 		    $('#main_form #status').html("");
 			$('#main_form #status').html(data);
+			$('#main_form #status').selectpicker('refresh');
 
 		    $('#formulario_colaboradores #estatus').html("");
-			$('#formulario_colaboradores #estatus').html(data);			
-		}			
-     });		
+			$('#formulario_colaboradores #estatus').html(data);
+			$('#formulario_colaboradores #estatus').selectpicker('refresh');
+		}
+     });
 }
 //FIN FORMULARIO COLABORADORES
 
@@ -1079,7 +1093,7 @@ $(document).ready(function(){
 	getTotalPendienteMuestras();
 	getPendientesFacturas();
 	getTotalProductos();
-	
+
 	setInterval('getClientes()',2000);
 	//setInterval('getEmpresas()',2000);
 	setInterval('getTotalMuestras()',2000);
@@ -1088,9 +1102,9 @@ $(document).ready(function(){
 	setInterval('getTotalPendienteMuestras()',2000);
 	setInterval('getPendientesFacturas()',2000);
 	setInterval('getTotalProductos()',2000);
-	
+
 	listar_secuencia_fiscales_dashboard();
-	
+
 	$(window).scrollTop(0);
 });
 
@@ -1101,9 +1115,9 @@ function getClientes(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_clientes').html(data);  		  		  			  
+           	$('#main_clientes').html(data);
 		}
-	});	
+	});
 }
 
 function getEmpresas(){
@@ -1112,9 +1126,9 @@ function getEmpresas(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_empresas').html(data);  		  		  			  
+           	$('#main_empresas').html(data);
 		}
-	});	
+	});
 }
 
 function getTotalMuestras(){
@@ -1123,9 +1137,9 @@ function getTotalMuestras(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_muestras').html(data);  		  		  			  
+           	$('#main_muestras').html(data);
 		}
-	});	
+	});
 }
 
 function getTotalAtenciones(){
@@ -1134,9 +1148,9 @@ function getTotalAtenciones(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_atenciones').html(data);  		  		  			  
+           	$('#main_atenciones').html(data);
 		}
-	});	
+	});
 }
 
 function getPendientesAtencion(){
@@ -1145,9 +1159,9 @@ function getPendientesAtencion(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_prendiente_atenciones').html(data);  		  		  			  
+           	$('#main_prendiente_atenciones').html(data);
 		}
-	});	
+	});
 }
 
 function getTotalPendienteMuestras(){
@@ -1156,9 +1170,9 @@ function getTotalPendienteMuestras(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_pendiente_muestras').html(data);  		  		  			  
+           	$('#main_pendiente_muestras').html(data);
 		}
-	});	
+	});
 }
 
 function getPendientesFacturas(){
@@ -1167,9 +1181,9 @@ function getPendientesFacturas(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_facturas_pendientes').html(data);  		  		  			  
+           	$('#main_facturas_pendientes').html(data);
 		}
-	});	
+	});
 }
 
 function getTotalProductos(){
@@ -1178,13 +1192,13 @@ function getTotalProductos(){
 	    type:'POST',
 		url:url,
 		success: function(data){
-           	$('#main_productos').html(data);  		  		  			  
+           	$('#main_productos').html(data);
 		}
-	});	
+	});
 }
 
 function pagination(partida){
-	
+
 }
 
 function convertDate(inputFormat) {
@@ -1195,7 +1209,7 @@ function convertDate(inputFormat) {
 
 function today(){
     var hoy = new Date();
-    return convertDate(hoy);	
+    return convertDate(hoy);
 }
 
 function getMonth(){
@@ -1206,7 +1220,7 @@ function getMonth(){
 function convertDateFormat(string) {
   if(string == null || string == ""){
     var hoy = new Date();
-    string = convertDate(hoy);	  
+    string = convertDate(hoy);
   }
 }
 
@@ -1237,7 +1251,7 @@ var listar_secuencia_fiscales_dashboard = function(){
 		  { width: "12.66%", targets: 3 },
 		  { width: "8.66%", targets: 4 },
 		  { width: "12.66%", targets: 5 }
-		],		
+		],
 		"buttons":[
 			{
 				text:      '<i class="fas fa-sync-alt fa-lg"></i> Actualizar',
@@ -1252,26 +1266,26 @@ var listar_secuencia_fiscales_dashboard = function(){
 				text:      '<i class="fas fa-file-excel fa-lg"></i> Excel',
 				titleAttr: 'Excel',
 				orientation: 'landscape',
-				pageSize: 'LETTER',				
+				pageSize: 'LETTER',
 				title: 'Reporte Documentos Fiscales',
 				messageBottom: 'Fecha de Reporte: ' + convertDateFormat(today()),
 				className: 'table_reportes btn btn-success ocultar',
 				exportOptions: {
 						columns: [0,1,2,3,4,5]
-				},				
+				},
 			},
 			{
 				extend:    'pdf',
 				text:      '<i class="fas fa-file-pdf fa-lg"></i> PDF',
 				titleAttr: 'PDF',
 				orientation: 'landscape',
-				pageSize: 'LETTER',				
+				pageSize: 'LETTER',
 				title: 'Reporte Documentos Fiscales',
 				messageBottom: 'Fecha de Reporte: ' + convertDateFormat(today()),
 				className: 'table_reportes btn btn-danger ocultar',
 				exportOptions: {
 						columns: [0,1,2,3,4,5]
-				},				
+				},
 				customize: function ( doc ) {
 					doc.content.splice( 1, 0, {
 						margin: [ 0, 0, 0, 12 ],

@@ -1,6 +1,5 @@
 <?php	  
 echo '
-	<option value="">Seleccione</option>
 	<option value="Precio1">Precio 1</option>
 	<option value="Precio2">Precio 2</option>
 	<option value="Precio3">Precio 3</option>	

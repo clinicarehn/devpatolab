@@ -58,10 +58,11 @@ $result = $mysqli->query($registro);
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<tr>
-			<th width="5%">No.</th>
-			<th width="45%">Categoría</th>
-			<th width="45%">Tiempo de Entrega</th>			
-			<th width="5%">Opciones</th>
+			<th width="2%">No.</th>
+			<th width="39%">Categoría</th>
+			<th width="39%">Tiempo de Entrega</th>			
+			<th width="10%">Editar</th>
+			<th width="10%">Eliminar</th>
 			</tr>';
 $i = 1;				
 while($registro2 = $result->fetch_array()){	  
@@ -75,20 +76,22 @@ while($registro2 = $result->fetch_array()){
 			<td>'.$registro2[1].'</td>
 			<td>'.$registro2[2].' '.$dia.'</td>
 			<td>
-			   <a style="text-decoration:none;" title = "Editar Registros" href="javascript:editarRegistro('.$registro2[0].');" class="fas fa-edit fa-lg"></a>
-			   <a style="text-decoration:none;" href="javascript:modal_eliminar('.$registro2[0].');" class="fas fa-trash fa-lg"></a>				   
-			</td>				
+				<a class="btn btn btn-secondary ml-2" href="javascript:editarRegistro('.$registro2[0].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-edit fa-lg"></i> Editar</a>
+			</td>
+			<td>
+				<a class="btn btn btn-secondary ml-2" href="javascript:modal_eliminar('.$registro2[0].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>
+			</td>			
 			</tr>';	
 			$i++;				
 }
 
 if($nroProductos == 0){
 	$tabla = $tabla.'<tr>
-	   <td colspan="4" style="color:#C7030D">No se encontraron resultados</td>
+	   <td colspan="5" style="color:#C7030D">No se encontraron resultados</td>
 	</tr>';		
 }else{
    $tabla = $tabla.'<tr>
-	  <td colspan="4"><b><p ALIGN="center">Total de Registros Encontrados '.$nroProductos.'</p></b>
+	  <td colspan="5"><b><p ALIGN="center">Total de Registros Encontrados '.$nroProductos.'</p></b>
    </tr>';		
 }        
 

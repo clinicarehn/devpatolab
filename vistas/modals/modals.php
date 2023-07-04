@@ -123,45 +123,32 @@
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-4 mb-3">
-					  <label for="sexo">Sexo <span class="priority">*<span/></label>
-					  <select class="custom-select" id="sexo" name="sexo" required data-toggle="tooltip" data-placement="top" title="Sexo">
-						 <option value="">Seleccione</option>
-					  </select>
-					</div>
-					<div class="col-md-4 mb-3">
-					  <label for="sexo">Departamentos</label>
-					  <div class="input-group mb-3">
-						  <select id="departamento" name="departamento" class="custom-select" data-toggle="tooltip" data-placement="top" title="Religión">
-							<option value="">Seleccione</option>
-						  </select>
-						  <div class="input-group-append" id="buscar_departamento_pacientes">
-							<a data-toggle="modal" href="#" class="btn btn-outline-success" id="servicio_boton"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-						  </div>
-					   </div>
-					</div>
-					<div class="col-md-4 mb-3">
-					  <label for="telefono">Municipios</label>
-					  <div class="input-group mb-3">
-						  <select id="municipio" name="municipio" class="custom-select" data-toggle="tooltip" data-placement="top" title="Religión">
-							<option value="">Seleccione</option>
-						  </select>
-						  <div class="input-group-append" id="buscar_municipio_pacientes">
-							<a data-toggle="modal" href="#" class="btn btn-outline-success" id="servicio_boton"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-						  </div>
-					   </div>
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="col-md-4 mb-3">
-						<label for="sexo">Tipo <span class="priority">*<span/></label>
+					<div class="col-md-3 mb-3">
+					    <label for="sexo">Sexo <span class="priority">*<span/></label>
 						<div class="input-group mb-3">
-							<select id="paciente_tipo" name="paciente_tipo" class="custom-select" data-toggle="tooltip" data-placement="top" title="Tipo Cliente">
-									<option value="">Seleccione</option>
+							<select class="selectpicker" id="sexo" name="sexo" required data-live-search="true" title="Sexo">
 							</select>
-							<div class="input-group-append" id="buscar_profesion_pacientes">
-								<a data-toggle="modal" href="#" class="btn btn-outline-success" id="servicio_boton"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-							</div>
+						</div>
+					</div>
+					<div class="col-md-3 mb-3">
+					    <label for="departamento_id">Departamentos <span class="priority">*<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="departamento_id" name="departamento_id" required data-live-search="true" title="Departamentos">
+							</select>
+						</div>
+					</div>
+					<div class="col-md-3 mb-3">
+					    <label for="municipio_id">Municipios <span class="priority">*<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="municipio_id" name="municipio_id" required data-live-search="true" title="Municipios">
+							</select>
+						</div>
+					</div>
+					<div class="col-md-3 mb-3">
+					    <label for="departamento_id">Tipo Cliente <span class="priority">*<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="paciente_tipo" name="paciente_tipo" required data-live-search="true" title="Tipo Cliente">
+							</select>
 						</div>
 					</div>
 				</div>
@@ -376,7 +363,7 @@
 			<form class="FormularioAjax" id="formularioMovimientos" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
 				<div class="form-row">
 					<div class="col-md-12 mb-3">
-					    <input type="hidden" id="movimientos_id " name="movimientos_id " class="form-control"/>
+					    <input type="hidden" id="movimientos_id" name="movimientos_id" class="form-control"/>
 						<div class="input-group mb-3">
 							<input type="text" required readonly id="pro" name="pro" class="form-control"/>
 							<div class="input-group-append">
@@ -386,32 +373,28 @@
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-6 mb-3">
-					  <label>Categoría <span class="priority">*<span/></label>
-					  <select id="movimiento_categoria" name="movimiento_categoria" class="custom-select" data-toggle="tooltip" data-placement="top" title="Categoría Productos" required>
-							<option value="">Seleccione</option>
-					  </select>
+          <div class="col-md-3 mb-3">
+						<label for="categoria">Categoría<span class="priority"> *<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="movimiento_categoria" name="movimiento_categoria" required data-live-search="true" title="Categoría" data-size="10">
+							</select>
+						</div>
 					</div>
-					<div class="col-md-6 mb-3">
-					  <label>Productos <span class="priority">*<span/></label>
-					  <div class="input-group mb-3">
-						  <select id="movimiento_producto" name="movimiento_producto" class="custom-select" data-toggle="tooltip" data-placement="top" title="Productos" required>
-								<option value="">Seleccione</option>
-						  </select>
-						  <div class="input-group-append" id="buscar_productos">
-							<a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-						  </div>
-					   </div>
+          <div class="col-md-3 mb-3">
+						<label for="categoria">Productos<span class="priority"> *<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="movimiento_producto" name="movimiento_producto" required data-live-search="true" title="Productos" data-size="10">
+							</select>
+						</div>
 					</div>
-				</div>
-				<div class="form-row">
-					<div class="col-md-6 mb-3">
-					  <label>Tipo de Operación <span class="priority">*<span/></label>
-					  <select id="movimiento_operacion" name="movimiento_operacion" class="custom-select" data-toggle="tooltip" data-placement="top" title="Tipo Operación" required>
-						 <option value="">Seleccione</option>
-					  </select>
+          <div class="col-md-3 mb-3">
+						<label for="categoria">Tipo Operación<span class="priority"> *<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="movimiento_operacion" name="movimiento_operacion" required data-live-search="true" title="Tipo Operación" data-size="10">
+							</select>
+						</div>
 					</div>
-					<div class="col-md-6 mb-3">
+          <div class="col-md-3 mb-3">
 					  <label>Cantidad <span class="priority">*<span/></label>
 					  <input type="number" required id="movimiento_cantidad" name="movimiento_cantidad" class="form-control" required>
 					</div>
@@ -475,18 +458,14 @@
 					</div>
 				</div>
 				<div class="form-row" id="grupo_expediente">
-					<div class="col-md-5 mb-3">
-					  <label>Atipo de tención <span class="priority">*<span/></label>
-					  <div class="input-group mb-3">
-						  <select id="plantilla_atencion" name="plantilla_atencion" class="custom-select" data-toggle="tooltip" data-placement="top" title="Tipo de Atención" required>
-								<option value="">Seleccione</option>
-						  </select>
-						  <div class="input-group-append" id="buscar_plantilla_atenciones">
-							<a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-						  </div>
-					   </div>
-					</div>
-					<div class="col-md-7 mb-3">
+          <div class="col-md-3 mb-3">
+              <label for="plantilla_atencion">Tipo de Atención <span class="priority">*<span/></label>
+          	<div class="input-group mb-3">
+          		<select class="selectpicker" id="plantilla_atencion" name="plantilla_atencion" required data-live-search="true" title="Tipo de Atención">
+          		</select>
+          	</div>
+          </div>
+					<div class="col-md-9 mb-3">
 					  <label>Asunto <span class="priority">*<span/></label>
 					  <input type="text" required name="plantilla_asunto" id="plantilla_asunto" maxlength="100" class="form-control" required>
 					</div>
@@ -542,56 +521,53 @@
 							</div>
 							 <h6 class="">Seleccionar Imagen</h6>
 
-						</div>
-					</div>
-					<div class="col-md-5 mb-3">
-					  <label>Colaborador <span class="priority">*<span/></label>
-					  <div class="input-group mb-3">
-						<select id="colaborador" name="colaborador" class="custom-select" data-toggle="tooltip" data-placement="top" title="Consultorio" required></select>
-						<div class="input-group-append" id="buscar_colaboradores">
-						  <a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-					    </div>
-					  </div>
-					</div>
-					<div class="col-md-4 mb-3">
-					  <label>Estado <span class="priority">*<span/></label>
-					  <select id="estatus" name="estatus" class="custom-select" data-toggle="tooltip" data-placement="top" title="Estatus" required>
-						 <option value="">Seleccione</option>
-						 <option value="1">Activo</option>
-						 <option value="2">Inactivo</option>
-					  </select>
-					</div>
+  						</div>
+  					</div>
+            <div class="col-md-3 mb-3">
+              <label for="colaborador">Colaborador <span class="priority">*<span/></label>
+              <div class="input-group mb-3">
+                <select class="selectpicker" id="colaborador" name="colaborador" required data-live-search="true" title="Colaborador">
+                </select>
+              </div>
+  				 </div>
+           <div class="col-md-3 mb-3">
+               <label for="estatus">Estatus <span class="priority">*<span/></label>
+             <div class="input-group mb-3">
+               <select class="selectpicker" id="estatus" name="estatus" required data-live-search="true" title="Estatus">
+               </select>
+             </div>
+          </div>
 				</div>
 				<div class="form-row">
 					<div class="col-md-4 mb-3">
 					  <label>Nickname <span class="priority">*<span/></label>
 					  <input type="text" required name="username" id="username" maxlength="100" class="form-control"/>
 					</div>
-					<div class="col-md-8 mb-3">
-					  <label>Email <span class="priority">*<span/></label>
+          <div class="col-md-8 mb-3">
+					  <label for="email">Email</label>
 					  <div class="input-group mb-3">
-						  <input type="email" required name="email" id="email" maxlength="100" class="form-control" required />
-						  <div class="input-group-append" id="buscar_pacientes_atenciones">
-							<a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-at fa-lg"></i></a>
-						  </div>
+						   <input type="text" name="email" id="email" class="form-control" placeholder="Email" required>
+							<div class="input-group-append">
+								<span class="input-group-text"><div class="sb-nav-link-icon"></div><i class="fas fa-at fa-lg"></i></span>
+							</div>
 					   </div>
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-6 mb-3">
-					  <label>Empresa <span class="priority">*<span/></label>
-					  <div class="input-group mb-3">
-						<select id="empresa" name="empresa" class="custom-select" data-toggle="tooltip" data-placement="top" title="Empresa" required></select>
-						<div class="input-group-append" id="buscar_empresa">
-						  <a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-					    </div>
-					  </div>
-					</div>
-					<div class="col-md-6 mb-3">
-					  <label>Tipo <span class="priority">*<span/></label>
-					  <select class="custom-select" id="tipo" name="tipo" required data-toggle="tooltip" data-placement="top" title="Tipo">
-					  </select>
-					</div>
+          <div class="col-md-6 mb-3">
+              <label for="empresa">Empresa <span class="priority">*<span/></label>
+            <div class="input-group mb-3">
+              <select class="selectpicker" id="empresa" name="empresa" required data-live-search="true" title="Empresa">
+              </select>
+            </div>
+         </div>
+         <div class="col-md-3 mb-3">
+             <label for="tipo">Tipo <span class="priority">*<span/></label>
+           <div class="input-group mb-3">
+             <select class="selectpicker" id="tipo" name="tipo" required data-live-search="true" title="Tipo">
+             </select>
+           </div>
+        </div>
 				</div>
 			</form>
         </div>
@@ -625,43 +601,40 @@
 					</div>
 				</div>
 				<div class="form-row" id="grupo_expediente">
-					<div class="col-md-8 mb-3">
-					  <label>Colaborador</label>
-					  <div class="input-group mb-3">
-						<select id="colaborador1" name="colaborador1" class="custom-select" data-toggle="tooltip" data-placement="top" title="Consultorio"></select>
-						<div class="input-group-append" id="buscar_colaborador_editar">
-						  <a data-toggle="modal" href="#" class="btn btn-outline-success" id="buscar_colaboradores_editar"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-					    </div>
-					  </div>
+          <div class="col-md-3 mb-3">
+					    <label for="colaborador1">Colaborador <span class="priority">*<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="colaborador1" name="colaborador1" required data-live-search="true" title="Colaborador">
+							</select>
+						</div>
 					</div>
-					<div class="col-md-4 mb-3">
-					  <label>Estado <span class="priority">*<span/></label>
-					  <select id="estatus1" name="estatus1" class="custom-select" data-toggle="tooltip" data-placement="top" title="Estatus" required>
-						 <option value="">Seleccione</option>
-						 <option value="1">Activo</option>
-						 <option value="2">Inactivo</option>
-					  </select>
-					</div>
+          <div class="col-md-3 mb-3">
+              <label for="estatus1">Estatus <span class="priority">*<span/></label>
+            <div class="input-group mb-3">
+              <select class="selectpicker" id="estatus1" name="estatus1" required data-live-search="true" title="Estatus">
+              </select>
+            </div>
+         </div>
+         <div class="col-md-6 mb-3">
+           <label>Email <span class="priority">*<span/></label>
+           <input type="email" required name="email1" id="email1" maxlength="100" class="form-control"/>
+         </div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-4 mb-3">
-					  <label>Email <span class="priority">*<span/></label>
-					  <input type="email" required name="email1" id="email1" maxlength="100" class="form-control"/>
-					</div>
-					<div class="col-md-4 mb-3">
-					  <label>Empresa <span class="priority">*<span/></label>
-					  <div class="input-group mb-3">
-						<select id="empresa1" name="empresa1" class="custom-select" data-toggle="tooltip" data-placement="top" title="Empresa" required></select>
-						<div class="input-group-append" id="buscar_empresa_editar">
-						  <a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-					    </div>
-					  </div>
-					</div>
-					<div class="col-md-4 mb-3">
-					  <label>Tipo <span class="priority">*<span/></label>
-					  <select class="custom-select" id="tipo1" name="tipo1" required data-toggle="tooltip" data-placement="top" title="Tipo">
-					  </select>
-					</div>
+          <div class="col-md-6 mb-3">
+              <label for="empresa1">Empresa <span class="priority">*<span/></label>
+              <div class="input-group mb-3">
+                <select class="selectpicker" id="empresa1" name="empresa1" required data-live-search="true" title="Empresa">
+                </select>
+              </div>
+           </div>
+           <div class="col-md-3 mb-3">
+               <label for="tipo1">Tipo <span class="priority">*<span/></label>
+             <div class="input-group mb-3">
+               <select class="selectpicker" id="tipo1" name="tipo1" required data-live-search="true" title="Tipo">
+               </select>
+             </div>
+          </div>
 				</div>
 			</form>
         </div>
@@ -1263,7 +1236,7 @@
 					</div>
 					<div class="col-md-3 mb-3" style="display:none;">
 						<label for="concentracion">Concentración <span class="priority">*<span/></label>
-						<input type="text" required id="concentracion" name="concentracion" step="0.01" placeholder="Concentración" class="form-control"/>
+						<input type="text" id="concentracion" name="concentracion" step="0.01" placeholder="Concentración" class="form-control"/>
 					</div>
 				</div>
 				<div class="form-row">
@@ -1383,11 +1356,13 @@
 					  <label>Almacén <span class="priority">*<span/></label>
 					  <input type="text" required class="form-control" name="almacen" id="almacen" placeholder="Almacén" maxlength="30" oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"/>
 					</div>
-					<div class="col-md-6 mb-3">
-					  <label>Ubicación <span class="priority">*<span/></label>
-					  <select id="ubicacion" name="ubicacion" class="form-control" data-toggle="tooltip" data-placement="top" title="Ubicacion" required>
-					  </select>
-					</div>
+          <div class="col-md-3 mb-3">
+              <label for="ubicacion">Ubicación <span class="priority">*<span/></label>
+            <div class="input-group mb-3">
+              <select class="selectpicker" id="ubicacion" name="ubicacion" required data-live-search="true" title="Ubicación" data-size="3">
+              </select>
+            </div>
+         </div>
 				</div>
 			</form>
         </div>

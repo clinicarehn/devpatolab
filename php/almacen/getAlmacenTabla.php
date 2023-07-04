@@ -16,7 +16,7 @@ $result = $mysqli->query($consulta);
 $arreglo = array();
 
 while($data = $result->fetch_assoc()){				
-	$arreglo["data"][] = $data;		
+	$arreglo["data"][] = $data;
 }
  
 echo json_encode($arreglo);

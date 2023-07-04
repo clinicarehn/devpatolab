@@ -1,7 +1,7 @@
-<?php 
-session_start();   
+<?php
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
@@ -15,9 +15,9 @@ $estado = $_POST['estado'];
 $fecha = date("Y-m-d");
 
 if($fechai == $fecha){
-	$where = "WHERE m.estado = '$estado' AND (p.expediente LIKE '%$dato%' OR CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.identidad LIKE '$dato%' OR p.apellido LIKE '$dato%')";	
+	$where = "WHERE m.estado = '$estado' AND (p.expediente LIKE '%$dato%' OR CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.identidad LIKE '$dato%' OR p.apellido LIKE '$dato%')";
 }else{
-	$where = "WHERE m.fecha BETWEEN '$fechai' AND '$fechaf' AND m.estado = '$estado' AND (p.expediente LIKE '%$dato%' OR CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.identidad LIKE '$dato%' OR p.apellido LIKE '$dato%')";	
+	$where = "WHERE m.fecha BETWEEN '$fechai' AND '$fechaf' AND m.estado = '$estado' AND (p.expediente LIKE '%$dato%' OR CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.identidad LIKE '$dato%' OR p.apellido LIKE '$dato%')";
 }
 
 $query = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) AS 'empresa', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
@@ -30,7 +30,7 @@ $query = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.apell
 	LEFT JOIN pacientes AS p1
 	ON mh.pacientes_id = p1.pacientes_id
 	".$where."
-	ORDER BY CONCAT(p.nombre, ' ', p.apellido) ASC";	
+	ORDER BY CONCAT(p.nombre, ' ', p.apellido) ASC";
 $result = $mysqli->query($query) or die($mysqli->error);
 
 $nroLotes = 25;
@@ -78,50 +78,53 @@ $result = $mysqli->query($registro) or die($mysqli->error);
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<tr>
-			<th width="1.5%">No.</th>
-			<th width="8.5%">Fecha</th>
-			<th width="10.5%">Número</th>			
-			<th width="32.5%">Paciente</th>
-			<th width="17.5%">Diagnostico Clínico</th>
-			<th width="17.5%">Material Enviado</th>
-			<th width="16.5%">Datos Clínicos</th>
-			<th width="4.5%">Opciones</th>
+			<th width="2.11">No.</th>
+			<th width="8.11%">Fecha</th>
+			<th width="11.11%">Número</th>
+			<th width="20.11%">Paciente</th>
+			<th width="14.11%">Diagnostico Clínico</th>
+			<th width="12.11%">Material Enviado</th>
+			<th width="12.11%">Datos Clínicos</th>
+			<th width="10.11%">Atención</th>
+			<th width="10.11%">Ausencia</th>
 			</tr>';
-$i = 1;				
-while($registro2 = $result->fetch_assoc()){ 
+$i = 1;
+while($registro2 = $result->fetch_assoc()){
 	$paciente = $registro2['paciente'];
-	$empresa = "";	
+	$empresa = "";
 	if($paciente != ""){
 		$empresa = $registro2['empresa']." (<b>Paciente</b>: ".$paciente.")";
 	}else{
 		$empresa = $registro2['empresa'];
 	}
-	
+
 	$tabla = $tabla.'<tr>
-			<td>'.$i.'</td> 
-			<td>'.$registro2['fecha'].'</td>	
-			<td>'.$registro2['numero'].'</td>			
-			<td>'.$empresa.'</td>	
+			<td>'.$i.'</td>
+			<td>'.$registro2['fecha'].'</td>
+			<td>'.$registro2['numero'].'</td>
+			<td>'.$empresa.'</td>
 			<td>'.$registro2['diagnostico_clinico'].'</td>
 			<td>'.$registro2['material_eviando'].'</td>
-            <td>'.$registro2['datos_clinico'].'</td>		
+      <td>'.$registro2['datos_clinico'].'</td>
 			<td>
-			  <a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Agregar Atención a Paciente" href="javascript:editarRegistro('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);" class="fas fa-book-medical fa-lg"></a>			  			  
-			  <a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Marcar Ausencia" href="javascript:nosePresentoRegistro('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);" class="fas fa-times-circle fa-lg"></a> 
-			</td>
-			</tr>';	
-			$i++;				
+ 		   <a class="btn btn btn-secondary ml-2" href="javascript:editarRegistro('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-book-medical fa-lg"></i> Atencion</a>
+ 	    </td>
+ 	    <td>
+ 		   <a class="btn btn btn-secondary ml-2" href="javascript:nosePresentoRegistro('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-times-circle fa-lg"></i> Ausencia</a>
+ 	    </td>
+			</tr>';
+			$i++;
 }
 
 if($nroProductos == 0){
 	$tabla = $tabla.'<tr>
 	   <td colspan="12" style="color:#C7030D">No se encontraron resultados</td>
-	</tr>';		
+	</tr>';
 }else{
    $tabla = $tabla.'<tr>
 	  <td colspan="12"><b><p ALIGN="center">Total de Registros Encontrados: '.$nroProductos.'</p></b>
-   </tr>';		
-}        
+   </tr>';
+}
 
 $tabla = $tabla.'</table>';
 
@@ -131,5 +134,5 @@ $array = array(0 => $tabla,
 echo json_encode($array);
 
 $result->free();//LIMPIAR RESULTADO
-$mysqli->close();//CERRAR CONEXIÓN	
+$mysqli->close();//CERRAR CONEXIÓN
 ?>

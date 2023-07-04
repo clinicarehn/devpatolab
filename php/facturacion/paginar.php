@@ -111,20 +111,21 @@ $result = $mysqli->query($registro) or die($mysqli->error);
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 	<thead>
 		<tr>
-			<th width="2.14%"><input id="checkAllFactura" class="formcontrol" type="checkbox"></th>
-			<th width="1.14%">No.</th>
-			<th width="5.14%">Fecha</th>
-			<th width="10.14%">Muestra</th>
-			<th width="9.14%">Factura</th>
-			<th width="12.14%">Empresa</th>
-			<th width="9.14%">Identidad</th>
-			<th width="4.14%">Profesional</th>
-			<th width="8.14%">Importe</th>
-			<th width="4.14%">ISV</th>
-			<th width="7.14%">Descuento</th>
-			<th width="7.14%">Neto</th>
-			<th width="5.14%">Estado</th>
-			<th width="7.14%">Opciones</th>
+			<th width="2.66%"><input id="checkAllFactura" class="formcontrol" type="checkbox"></th>
+			<th width="2.66%">No.</th>
+			<th width="4.66%">Fecha</th>
+			<th width="8.66%">Muestra</th>
+			<th width="8.66%">Factura</th>
+			<th width="8.66%">Empresa</th>
+			<th width="6.66%">Identidad</th>
+			<th width="6.66%">Profesional</th>
+			<th width="6.66%">Importe</th>
+			<th width="6.66%">ISV</th>
+			<th width="6.66%">Descuento</th>
+			<th width="6.66%">Neto</th>
+			<th width="4.66%">Estado</th>
+			<th width="7.66%">Factuar</th>
+			<th width="7.66%">Eliminar</th>
 		</tr>
 	</thead>';
 $i = 1;
@@ -173,19 +174,20 @@ while($registro2 = $result->fetch_assoc()){
 	$pay_credit = "";
 
 	if($estado==1){
-		$eliminar = '<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" href="javascript:deleteBill('.$registro2['facturas_id'].');void(0);" class="fas fa-trash fa-lg" title="Eliminar Factura"></a>';
+		$eliminar = '<a class="btn btn btn-secondary ml-2" href="javascript:deleteBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>';
 	}
 
 	if($estado==2 || $estado==3 || $estado==4){
-		$factura = '<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" href="javascript:printBill('.$registro2['facturas_id'].');void(0);" class="fas fa-print fa-lg" title="Imprimir Factura"></a>';
+		$factura = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';
 	}
 
 	if($estado == 2){
-		$send_mail = '<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" href="javascript:mailBill('.$registro2['facturas_id'].');void(0);" class="far fa-paper-plane fa-lg" title="Enviar Factura"></a>';
+		$send_mail = '<a class="btn btn btn-secondary ml-2" href="javascript:mailBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="far fa-paper-plane fa-lg"></i> Enviar</a>';
 	}
 	
 	if($estado == 4){
-		$pay_credit = '<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" href="javascript:pago('.$registro2['facturas_id'].');void(0);" class="fab fa-amazon-pay fa-lg" title="Pagar Factura"></a>';		
+		$pay_credit = '
+		<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" href="javascript:pago('.$registro2['facturas_id'].');void(0);" class="fab fa-amazon-pay fa-lg" title="Pagar Factura"></a>';		
 	}		
 
 	$estado_ = "";
@@ -200,7 +202,7 @@ while($registro2 = $result->fetch_assoc()){
 	}
 
 	if($estado==1){
-		$pay = '<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Realizar Cobro" href="javascript:pay('.$registro2['facturas_id'].');void(0);" class="fas fa-file-invoice fa-lg"></a>';
+		$pay = '<a class="btn btn btn-secondary ml-2" href="javascript:pay('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-file-invoice fa-lg"></i> Facturar</a>';
 	}
 
 	$paciente = $registro2['paciente'];
@@ -242,23 +244,33 @@ while($registro2 = $result->fetch_assoc()){
 				</td>
 			<td>'.$estado_.'</td>
 			<td>
-			  '.$send_mail.'
-			  '.$pay_credit.'
-			  '.$pay.''.$factura.'
-			  '.$eliminar.'
+			  '.$pay.'
 			</td>
+			<td>
+			  '.$eliminar.'
+			</td>			
+
 			</tr>';
 			$i++;
 			$fila++;
 }
 
+/*
+			<td>
+			  '.$send_mail.'
+			  '.$pay_credit.'
+			  '.$pay.''.$factura.'
+			  '.$eliminar.'
+			</td>
+*/
+
 if($nroProductos == 0){
 	$tabla = $tabla.'<tr>
-	   <td colspan="14" style="color:#C7030D">No se encontraron resultados, seleccione un profesional para verificar si hay registros almacenados</td>
+	   <td colspan="15" style="color:#C7030D">No se encontraron resultados, seleccione un profesional para verificar si hay registros almacenados</td>
 	</tr>';
 }else{
    $tabla = $tabla.'<tr>
-	  <td colspan="14"><b><p ALIGN="center">Total de Registros Encontrados '.$nroProductos.'</p></b>
+	  <td colspan="15"><b><p ALIGN="center">Total de Registros Encontrados '.$nroProductos.'</p></b>
    </tr>';
 }
 $tabla = $tabla.'</table>';

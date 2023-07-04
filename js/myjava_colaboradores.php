@@ -477,14 +477,17 @@ if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2){
 				$('#formulario_colaboradores #id-registro').val(id);
 				$('#formulario_colaboradores #nombre').val(datos[0]);	
 				$('#formulario_colaboradores #apellido').val(datos[1]);
-                $('#formulario_colaboradores #empresa').val(datos[2]);							
+                $('#formulario_colaboradores #empresa').val(datos[2]);
+				$('#formulario_colaboradores #empresa').selectpicker('refresh');				
                 $('#formulario_colaboradores #puesto').val(datos[3]);	
+				$('#formulario_colaboradores #puesto').selectpicker('refresh');
                 $('#formulario_colaboradores #identidad').val(datos[4]);
                 $('#formulario_colaboradores #estatus').val(datos[5]);
+				$('#formulario_colaboradores #estatus').selectpicker('refresh');
 
-				puesto();
+				/*puesto();
 				getJornadaColaborador();
-				servicio();	
+				servicio();	*/
 
 				$('#formulario_colaboradores').attr({ 'data-form': 'update' }); 
 				$('#formulario_colaboradores').attr({ 'action': '<?php echo SERVERURL; ?>php/colaboradores/agregar_edicion.php' });				
@@ -613,7 +616,8 @@ function servicio(){
 		url:url,		
 		success: function(data){
 			$('#formulario_servicios_colaboradores #servicio_colaborador').html("");
-			$('#formulario_servicios_colaboradores #servicio_colaborador').html(data);		
+			$('#formulario_servicios_colaboradores #servicio_colaborador').html(data);
+			$('#formulario_servicios_colaboradores #servicio_colaborador').selectpicker('refresh');		
 		}
 	});
 	return false;
@@ -626,7 +630,8 @@ function puestoServcioColaborador(){
 		url:url,			
 		success: function(data){
 			$('#formulario_servicios_colaboradores #puesto_id').html("");
-			$('#formulario_servicios_colaboradores #puesto_id').html(data);			
+			$('#formulario_servicios_colaboradores #puesto_id').html(data);	
+			$('#formulario_servicios_colaboradores #puesto_id').selectpicker('refresh');			
 		}
 	});
 	return false;	
@@ -639,7 +644,8 @@ function getJornadaColaborador(){
 		url:url,			
 		success: function(data){
 			$('#formulario_servicios_colaboradores #jornada_id').html("");
-			$('#formulario_servicios_colaboradores #jornada_id').html(data);			
+			$('#formulario_servicios_colaboradores #jornada_id').html(data);
+			$('#formulario_servicios_colaboradores #jornada_id').selectpicker('refresh');			
 		}
 	});
 	return false;	
@@ -656,7 +662,8 @@ $(document).ready(function() {
             data:'puesto_id='+puesto_id,
             success: function(data){
 				$('#formulario_servicios_colaboradores #colaborador_id').html("");
-				$('#formulario_servicios_colaboradores #colaborador_id').html(data);			
+				$('#formulario_servicios_colaboradores #colaborador_id').html(data);
+				$('#formulario_servicios_colaboradores #colaborador_id').selectpicker('refresh');				
             }
          });
 		 

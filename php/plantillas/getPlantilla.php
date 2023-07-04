@@ -13,10 +13,11 @@ $query = "SELECT *
 $result = $mysqli->query($query) or die($mysqli->error);			  
 
 if($result->num_rows>0){
-	echo '<option value="">Seleccione</option>';
 	while($consulta2 = $result->fetch_assoc()){
 		echo '<option value="'.$consulta2['plantillas_id'].'">'.$consulta2['asunto'].'</option>';
 	}
+}else{
+	echo '<option value="">no hay datos que mostrar</option>';
 }
 
 $result->free();//LIMPIAR RESULTADO

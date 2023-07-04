@@ -1,31 +1,31 @@
 <?php
-session_start(); 
+session_start();
 include "../php/funtions.php";
 
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
 if( isset($_SESSION['colaborador_id']) == false ){
-   header('Location: login.php'); 
-}    
+   header('Location: login.php');
+}
 
 $_SESSION['menu'] = "Facturación";
 
 if(isset($_SESSION['colaborador_id'])){
- $colaborador_id = $_SESSION['colaborador_id'];  
+ $colaborador_id = $_SESSION['colaborador_id'];
 }else{
    $colaborador_id = "";
 }
 
 $type = $_SESSION['type'];
 
-$nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME	
-$fecha = date("Y-m-d H:i:s"); 
-$comentario = mb_convert_case("Ingreso al Modulo de Facturación", MB_CASE_TITLE, "UTF-8");   
+$nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME
+$fecha = date("Y-m-d H:i:s");
+$comentario = mb_convert_case("Ingreso al Modulo de Facturación", MB_CASE_TITLE, "UTF-8");
 
 if($colaborador_id != "" || $colaborador_id != null){
-   historial_acceso($comentario, $nombre_host, $colaborador_id);  
-}  
+   historial_acceso($comentario, $nombre_host, $colaborador_id);
+}
 
 //OBTENER NOMBRE DE EMPRESA
 $usuario = $_SESSION['colaborador_id'];
@@ -44,7 +44,7 @@ if($result->num_rows>0){
   $empresa = $consulta_registro['nombre'];
 }
 
-$mysqli->close();//CERRAR CONEXIÓN  
+$mysqli->close();//CERRAR CONEXIÓN
  ?>
 
 <!DOCTYPE html>
@@ -57,17 +57,17 @@ $mysqli->close();//CERRAR CONEXIÓN
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Facturación :: <?php echo $empresa; ?></title>
-	<?php include("script_css.php"); ?>		
+	<?php include("script_css.php"); ?>
 </head>
 <body>
    <!--Ventanas Modales-->
-   <!-- Small modal -->  
+   <!-- Small modal -->
 <!--INICIO VENTANA MODALES-->
    <?php include("modals/modals.php");?>
 <!--FIN VENTANA MODALES-->
 
 <?php include("templates/menu.php"); ?>
-<?php include("templates/modals.php"); ?> 
+<?php include("templates/modals.php"); ?>
 
 <br><br><br>
 <div class="container-fluid">
@@ -78,82 +78,119 @@ $mysqli->close();//CERRAR CONEXIÓN
 		</ol>
 	</nav>
 
-	<div class="container-fluid" id="main_facturacion">
-		<form class="form-inline" id="form_main_facturas">
-		  <div class="form-group mr-1">
-			<div class="input-group">				
-				<div class="input-group-append">				
-					<span class="input-group-text"><div class="sb-nav-link-icon"></div>Cliente</span>
-				</div>
-				<select id="tipo_paciente_grupo" name="tipo_paciente_grupo" class="custom-select" style="width:116x;" data-toggle="tooltip" data-placement="top" title="Empresa">   				   		 
-				<option value="">Tipo</option>
-			 </select>	
-			</div>	
-		  </div>
-		  <div class="form-group mr-1">
-			<div class="input-group">
-			  <select id="pacientesIDGrupo" name="pacientesIDGrupo" class="custom-select" style="width:180px;" data-toggle="tooltip" data-placement="top" title="Pacientes" required>
-				<option value="">Cliente</option>
-			  </select>
-			  <div class="input-group-append" id="buscar_cliente_muestras">				
-				<a data-toggle="modal" href="#" class="btn btn-outline-success"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i></a>
-			  </div>
-			</div>	
-		  </div>		  
-		  <div class="form-group mr-1">
-		  	<div class="input-group">				
-				<div class="input-group-append">				
-					<span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
-				</div>
-				<select id="estado" name="estado" class="custom-select" data-toggle="tooltip" data-placement="top" title="Estado">   				   		 
-				  <option value="">Estado</option>
-			    </select>
-			</div>
-		  </div>
-		  <div class="form-group mr-1">
-			<div class="input-group">				
-				<div class="input-group-append">				
-					<span class="input-group-text"><div class="sb-nav-link-icon"></div>Inicio</span>
-				</div>
-				<input type="date" required="required" id="fecha_b" name="fecha_b" style="width:160px;" data-toggle="tooltip" data-placement="top" title="Fecha Inicial" value="<?php echo date ("Y-m-d");?>" class="form-control"/>
-			</div>
-		  </div>
-		  <div class="form-group mr-1">
-			<div class="input-group">				
-				<div class="input-group-append">				
-					<span class="input-group-text"><div class="sb-nav-link-icon"></div>Fin</span>
-				</div>
-				<input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" data-toggle="tooltip" data-placement="top" title="Fecha Final" class="form-control"/>
-			</div>
-		  </div>
-		  <div class="form-group mr-1">
-			 <input type="text" placeholder="Buscar por: Expediente, Nombre o Identidad" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido o Identidad" id="bs_regis" autofocus class="form-control" size="38"/>
-		  </div>	
-		  <div class="form-group" style="display:none" id="factura_manual">
-			<button class="btn btn-primary ml-1" type="submit" id="nuevo_registro"><div class="sb-nav-link-icon"></div><i class="fas fa-file-invoice fa-lg"></i> Factura</button>
-		  </div>
-		  <div class="form-group mr-1">
-		     <button class="btn btn-primary ml-1" type="submit" id="cierre" data-toggle="tooltip" data-placement="top" title="Realizar Cierre"><div class="sb-nav-link-icon"></div><i class="fas fa-cash-register fa-lg"></i> Cierre</button>
-		  </div>	  
-		</form>	
-		  <hr/>   
-		  <div class="form-group">
-		    <div class="col-sm-12">
-			  <div class="registros overflow-auto" id="agrega-registros"></div>
-		    </div>		   
-		  </div>
-		  <nav aria-label="Page navigation example">
-			<ul class="pagination justify-content-center"" id="pagination"></ul>
-		  </nav>		
-    </div>	
+  <div class="" id="main_facturacion">
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-search  mr-1"></i>
+        Búsqueda
+      </div>
+      <div class="card-body">
+        <form id="form_main_facturas" class="form-inline">
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo Cliente</span>
+              </div>
+              <select id="tipo_paciente_grupo" name="tipo_paciente_grupo" class="selectpicker" title="Tipo Cliente" data-live-search="true">
+              </select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Cliente</span>
+              </div>
+              <select id="pacientesIDGrupo" name="pacientesIDGrupo" class="selectpicker" title="Cliente" data-live-search="true">
+              </select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+              </div>
+              <select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
+              </select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Fecha Inicio</span>
+              </div>
+              <input type="date" required="required" id="fecha_b" name="fecha_b" style="width:160px;" data-toggle="tooltip" data-placement="top" title="Fecha Inicial" value="<?php
+                  $fecha = date ("Y-m-d");
+
+                  $año = date("Y", strtotime($fecha));
+                  $mes = date("m", strtotime($fecha));
+                  $dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
+
+                  $dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
+                  $dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
+
+                  $fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
+                  $fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));
+
+                  echo $fecha_inicial;
+                ?>" class="form-control"/>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Fecha Fin</span>
+              </div>
+              <input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" data-toggle="tooltip" data-placement="top" title="Fecha Final" class="form-control"/>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <input type="text" placeholder="Buscar por: Paciente, Identidad o Factura" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Número de Factura" id="bs_regis" autofocus class="form-control" size="35"/>
+          </div>
+          <div class="form-group mr-1" style="display:none" id="factura_manual">
+            <button class="btn btn-primary ml-1" type="submit" id="nuevo_registro"><div class="sb-nav-link-icon"></div><i class="fas fa-file-invoice fa-lg"></i> Factura</button>
+          </div>
+          <div class="form-group mt-2">
+    		     <button class="btn btn-primary mr-1" type="submit" id="cierre" data-toggle="tooltip" data-placement="top" title="Realizar Cierre"><div class="sb-nav-link-icon"></div><i class="fas fa-cash-register fa-lg"></i> Cierre</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer small text-muted">
+
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fab fa-sellsy mr-1"></i>
+        Resultado
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+  		    <div class="col-sm-12">
+  			  <div class="registros overflow-auto" id="agrega-registros"></div>
+  		    </div>
+  		  </div>
+  		  <nav aria-label="Page navigation example">
+  			<ul class="pagination justify-content-center" id="pagination"></ul>
+  		  </nav>
+      </div>
+      <div class="card-footer small text-muted">
+
+      </div>
+    </div>
+  </div>
+
+	<div class="container-fluid" >
+
+    </div>
 
 	<div id="grupo_facturacion" style="display:none;">
-		<form class="FormularioAjax" id="formGrupoFacturacion" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">			
+		<form class="FormularioAjax" id="formGrupoFacturacion" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
 			<div class="form-group row">
 			<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-				<button class="btn btn-primary" type="submit" id="validar" data-toggle="tooltip" data-placement="top" title="Registrar la Factura"><div class="sb-nav-link-icon"></div><i class="far fa-save fa-lg"></i> Registrar</button>					
+				<button class="btn btn-primary" type="submit" id="validar" data-toggle="tooltip" data-placement="top" title="Registrar la Factura"><div class="sb-nav-link-icon"></div><i class="far fa-save fa-lg"></i> Registrar</button>
 			</div>
-			</div>				  
+			</div>
 			<div class="form-group row">
 			<label for="inputCliente" class="col-sm-1 col-form-label-md">Empresa <span class="priority">*<span/></label>
 			<div class="col-sm-5">
@@ -161,15 +198,15 @@ $mysqli->close();//CERRAR CONEXIÓN
 				  <input type="hidden" class="form-control" placeholder="Profesional" id="clienteIDGrupo" name="clienteIDGrupo" readonly required>
 				  <input type="text" class="form-control" placeholder="Paciente" id="clienteNombreGrupo" name="clienteNombreGrupo" readonly required>
 				  <input type="hidden" class="form-control" placeholder="Tamaño" id="tamano" name="tamano" readonly required>
-				  <div class="input-group-append" id="grupo_buscar_colaboradores">				
+				  <div class="input-group-append" id="grupo_buscar_colaboradores">
 					<a data-toggle="modal" href="#" class="btn btn-outline-success" id="buscar_pacienteGrupo"><div class="sb-nav-link-icon"></div><i class="fas fa-search-plus fa-lg"></i></a>
 				  </div>
-				</div>	
+				</div>
 			</div>
 			<label for="inputFecha" class="col-sm-1 col-form-label-md">Fecha <span class="priority">*<span/></label>
 			<div class="col-sm-3">
 			  <input type="date" class="form-control" value="<?php echo date('Y-m-d');?>" id="fechaGrupo" name="fechaGrupo">
-			</div>					
+			</div>
 			</div>
 			<div class="form-group row">
 			<label for="inputCliente" class="col-sm-1 col-form-label-md">Profesional <span class="priority">*<span/></label>
@@ -177,7 +214,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 				<div class="input-group mb-3">
 				  <input type="hidden" class="form-control" placeholder="Profesional" id="colaborador_idGrupo" name="colaborador_idGrupo" readonly required>
 				  <input type="text" class="form-control" placeholder="Profesional" id="colaborador_nombreGrupo" name="colaborador_nombreGrupo" readonly required>
-				  <div class="input-group-append" id="grupo_buscar_colaboradores">				
+				  <div class="input-group-append" id="grupo_buscar_colaboradores">
 					<a data-toggle="modal" href="#" class="btn btn-outline-success" id="buscar_colaboradoresGrupo"><div class="sb-nav-link-icon"></div><i class="fas fa-search-plus fa-lg"></i></a>
 				  </div>
 				</div>
@@ -186,16 +223,16 @@ $mysqli->close();//CERRAR CONEXIÓN
 			<div class="col-sm-3">
 				<div class="input-group mb-3">
 				  <select id="servicio_idGrupo" name="servicio_idGrupo" class="custom-select" data-toggle="tooltip" data-placement="top" title="Servicio" required></select>
-				  <div class="input-group-append">				
+				  <div class="input-group-append">
 					<a data-toggle="modal" href="#" class="btn btn-outline-success" id="buscar_serviciosGrupo"><div class="sb-nav-link-icon"></div><i class="fab fa-servicestack fa-lg"></i></a>
 				  </div>
 				</div>
-			</div>	
+			</div>
 			<label class="switch mb-3" data-toggle="tooltip" data-placement="top" title="Tipo de Factura, Contado o Crédito">
 				<input type="checkbox" id="facturas_grupal_activo" name="facturas_grupal_activo" value="1" checked>
 				<div class="slider round"></div>
 			</label>
-			<span class="question mb-2" id="label_facturas_grupal_activo"></span>			
+			<span class="question mb-2" id="label_facturas_grupal_activo"></span>
 			</div>
 			<div class="form-group row table-responsive-xl tableFixHead table table-hover">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -203,10 +240,10 @@ $mysqli->close();//CERRAR CONEXIÓN
 						<thead align="center" class="table-success">
 							<tr>
 								<th width="30%">Paciente</th>
-								<th width="20%">Saldo</th>	
-								<th width="20%">Descuento</th>										
+								<th width="20%">Saldo</th>
+								<th width="20%">Descuento</th>
 								<th width="20%">Total</th>
-							</tr>	
+							</tr>
 						</thead>
 						<tbody>
 							<tr>
@@ -217,7 +254,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 									<input type="hidden" name="billGrupoMaterial[]" id="billGrupoMaterial_0" class="form-control" placeholder="Material Enviado" readonly autocomplete="off">
 									<input type="hidden" name="billGrupoDescuento[]" id="billGrupoDescuento_0" class="form-control" readonly placeholder="Descuento" readonly autocomplete="off">
 									<input type="hidden" name="billGrupoISV[]" id="billGrupoISV_0" class="form-control" placeholder="ISV" readonly value="0" autocomplete="off">
-									<input type="hidden" name="billGrupoID[]" id="billGrupoID_0" class="form-control" placeholder="Código Factura" readonly autocomplete="off">				
+									<input type="hidden" name="billGrupoID[]" id="billGrupoID_0" class="form-control" placeholder="Código Factura" readonly autocomplete="off">
 									<input type="hidden" name="pacienteIDBillGrupo[]" id="pacienteIDBillGrupo_0" class="form-control" readonly placeholder="Paciente" autocomplete="off">
 									<input type="text" name="pacienteBillGrupo[]" id="pacienteBillGrupo_0" class="form-control" readonly placeholder="Paciente" autocomplete="off">
 								</td>
@@ -233,7 +270,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 							</tr>
 						</tbody>
 					</table>
-				</div>		
+				</div>
 			</div>
 
 			<div class="form-group row">
@@ -246,15 +283,15 @@ $mysqli->close();//CERRAR CONEXIÓN
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4" style="display: none;">
-				  <div class="row">					  
+				  <div class="row">
 					<div class="col-sm-3 form-inline">
 					  <label>Subtotal:</label>
 					</div>
-					<div class="col-sm-9">	
+					<div class="col-sm-9">
 						<div class="input-group">
-							<div class="input-group-append mb-1">				
+							<div class="input-group-append mb-1">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div>L</i></span>
-							</div>												
+							</div>
 							<input value="" type="number" class="form-control" name="subTotalBillGrupo" step="0.01" id="subTotalBillGrupo" readonly placeholder="Subtotal">
 						</div>
 					</div>
@@ -264,9 +301,9 @@ $mysqli->close();//CERRAR CONEXIÓN
 						<label>Porcentaje:</label>
 					</div>
 					<div class="col-sm-9">
-						<div class="input-group mb-1">															
+						<div class="input-group mb-1">
 							<input value="0" type="number" class="form-control" name="taxRateBillGrupo" id="taxRateBillGrupo" step="0.01" readonly placeholder="Tasa de Impuestos">
-							<div class="input-group-append">				
+							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div>%</i></span>
 							</div>
 						</div>
@@ -277,10 +314,10 @@ $mysqli->close();//CERRAR CONEXIÓN
 					  <label>ISV:</label>
 					</div>
 					<div class="col-sm-9">
-						<div class="input-group mb-1">											
-							<div class="input-group-append">				
+						<div class="input-group mb-1">
+							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div>L</i></span>
-							</div>	
+							</div>
 							<input value="" type="number" class="form-control" name="taxAmountBillGrupo" id="taxAmountBillGrupo" step="0.01" readonly value="0.00" placeholder="Monto del Impuesto">
 						</div>
 					</div>
@@ -290,76 +327,76 @@ $mysqli->close();//CERRAR CONEXIÓN
 					  <label>Descuento:</label>
 					</div>
 					<div class="col-sm-9">
-						<div class="input-group mb-1">											
-							<div class="input-group-append">				
+						<div class="input-group mb-1">
+							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div>L</i></span>
-							</div>	
+							</div>
 							<input value="" type="number" class="form-control" name="taxDescuentoBillGrupo" id="taxDescuentoBillGrupo" step="0.01" readonly value="0.00" placeholder="Descuento Otorgado">
 						</div>
 					</div>
-				  </div>						  
+				  </div>
 				  <div class="row">
 					<div class="col-sm-3 form-inline">
 						<label>Total:</label>
 					</div>
 					<div class="col-sm-9">
 						<div class="input-group mb-1">
-							<div class="input-group-append">				
+							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div>L</i></span>
-							</div>	
+							</div>
 							<input value="" type="number" class="form-control" name="totalAftertaxBillGrupo" id="totalAftertaxBillGrupo" step="0.01" value="0.00" readonly placeholder="Total">
 						</div>
 					</div>
-				  </div>	
+				  </div>
 				  <div class="row" style="display: none;">
 					<div class="col-sm-3 form-inline">
 						<label>Cantidad pagada:</label>
 					</div>
 					<div class="col-sm-9">
 						<div class="input-group mb-1">
-							<div class="input-group-append">				
+							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div>L</i></span>
-							</div>	
+							</div>
 							<input value="" type="number" class="form-control" name="amountPaidBillGrupo" id="amountPaidBillGrupo" readonly step="0.01" placeholder="Cantidad pagada">
 						</div>
 					</div>
-				  </div>	
+				  </div>
 				  <div class="row" style="display: none;">
 					<div class="col-sm-3 form-inline">
 						<label>Cantidad debida:</label>
 					</div>
 					<div class="col-sm-9">
 						<div class="input-group mb-1">
-							<div class="input-group-append">				
+							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div>L</i></span>
-							</div>	
+							</div>
 							<input value="" type="number" class="form-control" name="amountDueBillGrupo" id="amountDueBillGrupo" readonly step="0.01" placeholder="Cantidad debida">
 						</div>
 					</div>
-				  </div>								  		
+				  </div>
 				</div>
 			  </div>
 			</div>
-	  
+
 		</form>
 	</div>
 	<?php include("templates/factura.php"); ?>
 
 	<?php include("templates/footer.php"); ?>
 	<?php include("templates/footer_facturas.php"); ?>
-</div>	  
+</div>
 
     <!-- add javascripts -->
-	<?php 
-		include "script.php"; 
-		
-		include "../js/main.php"; 
-		include "../js/invoice.php"; 
-		include "../js/myjava_facturacion.php"; 		
-		include "../js/select.php"; 	
-		include "../js/functions.php"; 
-		include "../js/myjava_cambiar_pass.php"; 		
-	?>	
-	  
+	<?php
+		include "script.php";
+
+		include "../js/main.php";
+		include "../js/invoice.php";
+		include "../js/myjava_facturacion.php";
+		include "../js/select.php";
+		include "../js/functions.php";
+		include "../js/myjava_cambiar_pass.php";
+	?>
+
 </body>
 </html>

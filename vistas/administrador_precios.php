@@ -1,31 +1,31 @@
 <?php
-session_start(); 
+session_start();
 include "../php/funtions.php";
 
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
 if( isset($_SESSION['colaborador_id']) == false ){
-   header('Location: login.php'); 
-}    
+   header('Location: login.php');
+}
 
 $_SESSION['menu'] = "Administrador de Precios";
 
 if(isset($_SESSION['colaborador_id'])){
- $colaborador_id = $_SESSION['colaborador_id'];  
+ $colaborador_id = $_SESSION['colaborador_id'];
 }else{
    $colaborador_id = "";
 }
 
 $type = $_SESSION['type'];
 
-$nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME	
-$fecha = date("Y-m-d H:i:s"); 
-$comentario = mb_convert_case("Ingreso al Modulo de Administrador de Precios", MB_CASE_TITLE, "UTF-8");   
+$nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME
+$fecha = date("Y-m-d H:i:s");
+$comentario = mb_convert_case("Ingreso al Modulo de Administrador de Precios", MB_CASE_TITLE, "UTF-8");
 
 if($colaborador_id != "" || $colaborador_id != null){
-   historial_acceso($comentario, $nombre_host, $colaborador_id);  
-}  
+   historial_acceso($comentario, $nombre_host, $colaborador_id);
+}
 
 //OBTENER NOMBRE DE EMPRESA
 $usuario = $_SESSION['colaborador_id'];
@@ -44,7 +44,7 @@ if($result->num_rows>0){
   $empresa = $consulta_registro['nombre'];
 }
 
-$mysqli->close();//CERRAR CONEXIÓN     
+$mysqli->close();//CERRAR CONEXIÓN
  ?>
 
 <!DOCTYPE html>
@@ -57,12 +57,12 @@ $mysqli->close();//CERRAR CONEXIÓN
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Secuencia de Precios :: <?php echo $empresa; ?></title>
-	<?php include("script_css.php"); ?>   		
+	<?php include("script_css.php"); ?>
 </head>
 <body>
    <!--Ventanas Modales-->
-   <!-- Small modal -->  
-  <?php include("templates/modals.php"); ?>    
+   <!-- Small modal -->
+  <?php include("templates/modals.php"); ?>
 
 <!--INICIO MODAL-->
 <div class="modal fade" id="modalAdministradorPrecios">
@@ -74,97 +74,103 @@ $mysqli->close();//CERRAR CONEXIÓN
 			  <span aria-hidden="true">&times;</span>
 			</button>
         </div>
-        <div class="modal-body">		
-			<form class="FormularioAjax" id="formularioAdministradorPrecios" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">			
+        <div class="modal-body">
+			<form class="FormularioAjax" id="formularioAdministradorPrecios" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
 				<div class="form-row">
 					<div class="col-md-12 mb-3">
 					    <input type="hidden" id="hospitales_id_consulta" name="hospitales_id_consulta" class="form-control">
 					    <input type="hidden" id="administrador_precios_id" name="administrador_precios_id" class="form-control">
 						<div class="input-group mb-3">
 							<input type="text" required readonly id="pro" name="pro" class="form-control"/>
-							<div class="input-group-append">				
+							<div class="input-group-append">
 								<span class="input-group-text"><div class="sb-nav-link-icon"></div><i class="fa fa-plus-square"></i></span>
 							</div>
-						</div>	 
-					</div>							
+						</div>
+					</div>
 				</div>
 				<div class="form-row">
 					<div class="col-md-8 mb-3">
-					  <label>Hospital / Clínica <span class="priority">*<span/></label>
-					  <div class="input-group mb-3">
-                        <select id="hospitales_id" name="hospitales_id" class="form-control" data-toggle="tooltip" data-placement="top" title="Hospital / Clínica" required>   				   
-                        </select>
-						  <div class="input-group-append" id="buscar_empreas">				
-							<a data-toggle="modal" href="#" class="btn btn-outline-success" id="servicio_boton"><div class="sb-nav-link-icon"></div><i class="fas fa-building fa-lg"></i></a>
-						  </div>
-					   </div>
+            <label for="hospitales_id">Hospital / Clínica</label>
+            <div class="input-group mb-3">
+              <input type="text" name="hospitales_id" id="hospitales_id" class="form-control" placeholder="Hospital / Clínica" data-toggle="tooltip" data-placement="top">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div><i class="fas fa-building fa-lg"></i></span>
+              </div>
+             </div>
 					</div>
 					<div class="col-md-4 mb-3">
 					  <label>Precio <span class="priority">*<span/></label>
 					  <div class="input-group mb-3">
-                        <select id="precio" name="precio" class="form-control" data-toggle="tooltip" data-placement="top" title="Precios" required>   				   
-							<option value="">Seleccione<option>
-                        </select>
-						  <div class="input-group-append" id="buscar_tabla_db">				
-							<a data-toggle="modal" href="#" class="btn btn-outline-success" id="servicio_boton"><div class="sb-nav-link-icon"></div><i class="fas fa-coins fa-lg"></i></a>
-						  </div>
+              <select class="selectpicker" id="precio" name="precio" required data-live-search="true" title="Precio" data-size="3">
+							</select>
 					   </div>
-					</div>						
-				</div>			
+					</div>
+				</div>
 			</form>
-        </div>		
+        </div>
 		<div class="modal-footer">
 			<button class="btn btn-primary ml-2" form="formularioAdministradorPrecios" type="submit" id="reg_precios"><div class="sb-nav-link-icon"></div><i class="far fa-save fa-lg"></i> Registrar</button>
 			<button class="btn btn-warning ml-2" form="formularioAdministradorPrecios" type="submit" id="edi_precios"><div class="sb-nav-link-icon"></div><i class="fas fa-edit fa-lg"></i> Modificar</button>
-			<button class="btn btn-danger ml-2" form="formularioAdministradorPrecios" type="submit" id="delete_precios"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</button>			
-		</div>			
+			<button class="btn btn-danger ml-2" form="formularioAdministradorPrecios" type="submit" id="delete_precios"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</button>
+		</div>
       </div>
     </div>
-</div>	
+</div>
    <?php include("modals/modals.php");?>
-<!--FIN MODAL-->  	
+<!--FIN MODAL-->
 
    <!--Fin Ventanas Modales-->
-	<!--MENU-->	  
+	<!--MENU-->
        <?php include("templates/menu.php"); ?>
-    <!--FIN MENU--> 
-	
+    <!--FIN MENU-->
+
 <br><br><br>
 <div class="container-fluid">
 	<ol class="breadcrumb mt-2 mb-4">
 		<li class="breadcrumb-item"><a class="breadcrumb-link" href="inicio.php">Dashboard</a></li>
 		<li class="breadcrumb-item active" id="acciones_factura"><span id="label_acciones_factura"></span>Administrador de Precios</li>
 	</ol>
-	
-	<div class="table-responsive">
-		<form id="formPrincipal">
-			<div class="col-md-12 mb-3">
-				<table id="dataTableAdministadorPrecios" class="table table-striped table-condensed table-hover" style="width:100%">
-					<thead>
-						<tr>
-							<th>Cliente</th>
-							<th>Precio</th>
-							<th>Editar</th>
-							<th>Eliminar</th>						
-						</tr>
-					</thead>
-				</table> 
-			</div>
-		<form>
-	</div>
-    <?php include("templates/footer.php"); ?> 	
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <i class="fab fa-sellsy mr-1"></i>
+      Resultado
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+    		<form id="formPrincipal">
+    			<div class="col-md-12 mb-3">
+    				<table id="dataTableAdministadorPrecios" class="table table-striped table-condensed table-hover" style="width:100%">
+    					<thead>
+    						<tr>
+    							<th>Cliente</th>
+    							<th>Precio</th>
+    							<th>Editar</th>
+    							<th>Eliminar</th>
+    						</tr>
+    					</thead>
+    				</table>
+    			</div>
+    		<form>
+    	</div>
+    </div>
+    <div class="card-footer small text-muted">
+
+    </div>
+  </div>
+    <?php include("templates/footer.php"); ?>
 </div>
 
-    <!-- add javascripts -->	
-	<?php 
-		include "script.php"; 
-		
-		include "../js/main.php"; 
-		include "../js/myjava_administrador_precios.php"; 
-		include "../js/select.php"; 	
-		include "../js/functions.php"; 
-		include "../js/myjava_cambiar_pass.php"; 		
-	?>	
-  
+    <!-- add javascripts -->
+	<?php
+		include "script.php";
+
+		include "../js/main.php";
+		include "../js/myjava_administrador_precios.php";
+		include "../js/select.php";
+		include "../js/functions.php";
+		include "../js/myjava_cambiar_pass.php";
+	?>
+
 </body>
 </html>

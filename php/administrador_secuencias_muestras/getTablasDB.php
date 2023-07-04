@@ -9,10 +9,11 @@ $mysqli = connect_mysqli();
 $result = getTablesDB();
 
 if($result->num_rows>0){
-	echo '<option value="">Seleccione</option>';	
 	while($consulta2 = $result->fetch_row()){
 		echo '<option value="'.$consulta2[0].'">'.$consulta2[0].'</option>';
 	}
+}else{
+	echo '<option value="">No hay datos que mostrar</option>';
 }
 
 $result->free();//LIMPIAR RESULTADO

@@ -17,8 +17,8 @@ $telefono1 = $_POST['telefono1'];
 $telefono2 = $_POST['telefono2'];
 $correo = strtolower(cleanString($_POST['correo']));
 $localidad = cleanStringStrtolower($_POST['direccion']);
-$departamento_id = $_POST['departamento'];
-$municipio_id = $_POST['municipio'];
+$departamento_id = $_POST['departamento_id'];
+$municipio_id = $_POST['municipio_id'];
 $edad = $_POST['edad'];
 $paciente_tipo = $_POST['paciente_tipo'];
 $profesion = 0;
@@ -42,6 +42,7 @@ $update = "UPDATE pacientes
 		edad = '$edad',
 		tipo_paciente_id = '$paciente_tipo'		
 	WHERE pacientes_id = '$pacientes_id'";
+
 $query = $mysqli->query($update);
 
 if($query){

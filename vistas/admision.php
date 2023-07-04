@@ -103,141 +103,180 @@ $mysqli->close();//CERRAR CONEXIÓN
 		<li class="breadcrumb-item active" id="acciones_factura"><span id="label_acciones_factura"></span></li>
 	</ol>
 
-    <div id="main_facturacion">
-		<form class="form-inline" id="form_main_admision">
-			<div class="form-group mx-sm-3 mb-1">
-				<div class="input-group">
-					<div class="input-group-append">
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
-						<select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="form-group mx-sm-3 mb-1">
-				<div class="input-group">
-					<div class="input-group-append">
-						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
-						<select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<input type="text" placeholder="Buscar por: Nombre, Apellido, Identidad o Teléfono Principal" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Teléfono Principal" id="bs_regis" autofocus class="form-control" size="70" autofocus />
-			</div>
-			<div class="form-group mr-1">
-				<div class="form-group">
-					<button class="btn btn-primary ml-2" type="submit" id="registrar_cliente"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Clientes</button>
-				</div>
-				<div class="form-group">
-				   <button class="btn btn-primary ml-2" type="submit" id="registrar_empresa"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Empresa</button>
-				</div>
-				<div class="form-group">
-					<button class="btn btn-primary ml-2" type="submit" id="registrar_productos"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Productos</button>
-				</div>
-				<div class="form-group">
-					<button class="btn btn-primary ml-2" type="submit" id="ver_muestras"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i> Muestras</button>
-				</div>
-			</div>
-
-		</form>
-		<hr/>
-		<div class="form-group">
-		<div class="col-sm-12">
-			<div class="registros overflow-auto" id="agrega-registros"></div>
-		</div>
-		</div>
-		<nav aria-label="Page navigation example">
-			<ul class="pagination justify-content-center" id="pagination"></ul>
-		</nav>
-	</div>
-
-    <div id="main_admision_muestras" style="display:none;">
-		    <form class="form-inline" id="form_main_admision_muestras">
-          <div class="form-group row">
-            <div class="form-group mx-sm-3 mb-1">
-      				<div class="input-group">
-      					<div class="input-group-append">
-      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
-      						<select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
-      						</select>
-      					</div>
-      				</div>
-      			</div>
-      			<div class="form-group mx-sm-3 mb-1">
-      				<div class="input-group">
-      					<div class="input-group-append">
-      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
-      						<select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
-      						</select>
-      					</div>
-      				</div>
-      			</div>
-            <div class="form-group mx-sm-3 mb-1">
-      				<div class="input-group">
-      					<div class="input-group-append">
-      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Cliente</span>
-      						<select id="cliente" name="cliente" class="selectpicker" title="Cliente" data-live-search="true">
-      						</select>
-      					</div>
-      				</div>
-      			</div>
-            <div class="form-group mx-sm-3 mb-1">
-      				<div class="input-group">
-      					<div class="input-group-append">
-      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Muestra</span>
-      						<select id="tipo_muestra" name="tipo_muestra" class="selectpicker" title="Muestra" data-live-search="true">
-      						</select>
-      					</div>
-      				</div>
-      			</div>
-            <div class="form-group mr-1">
-      				<div class="input-group">
-      					<div class="input-group-append">
-      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Inicio</span>
-      					</div>
-      					<input type="date" required="required" id="fecha_i" name="fecha_i" style="width:160px;" value="<?php
-      							$fecha = date ("Y-m-d");
-
-      							$año = date("Y", strtotime($fecha));
-      							$mes = date("m", strtotime($fecha));
-      							$dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
-
-      							$dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
-      							$dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
-
-      							$fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
-      							$fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));
-
-
-      							echo $fecha_inicial;
-      						?>" class="form-control"/>
-      				</div>
-      			</div>
-            <div class="form-group mr-1">
-      				<div class="input-group">
-      					<div class="input-group-append">
-      						<span class="input-group-text"><div class="sb-nav-link-icon"></div>Fin</span>
-      					</div>
-      					<input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" class="form-control"/>
-      				</div>
-      			</div>
-          </div>
-
+  <div id="main_facturacion">
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-search  mr-1"></i>
+        Búsqueda
+      </div>
+      <div class="card-body">
+        <form id="form_main_admision" class="form-inline">
           <div class="form-group mr-1">
-            <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="65"/>
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+              </div>
+              <select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
+  						</select>
+            </div>
           </div>
-		   </form>
-		<hr/>
-		<div class="form-group">
-		<div class="col-sm-12">
-			<div class="registros overflow-auto" id="agrega-registros_muestras"></div>
-		</div>
-		</div>
-		<nav aria-label="Page navigation example">
-			<ul class="pagination justify-content-center" id="pagination_muestras"></ul>
-		</nav>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
+              </div>
+              <select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
+  						</select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <input type="text" placeholder="Buscar por: Nombre, Apellido, Identidad o Teléfono Principal" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Teléfono Principal" id="bs_regis" autofocus class="form-control" size="70" autofocus />
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <button class="btn btn-primary ml-2" type="submit" id="registrar_cliente"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Clientes</button>
+          </div>
+          <div class="form-group">
+              <button class="btn btn-primary ml-2" type="submit" id="registrar_empresa"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Empresa</button>
+          </div>
+          <div class="form-group">
+              <button class="btn btn-primary ml-2" type="submit" id="registrar_productos"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Productos</button>
+          </div>
+          <div class="form-group">
+              <button class="btn btn-primary ml-2" type="submit" id="ver_muestras"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i> Muestras</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer small text-muted">
+
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fab fa-sellsy mr-1"></i>
+        Resultado
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+    		<div class="col-sm-12">
+    			<div class="registros overflow-auto" id="agrega-registros"></div>
+    		</div>
+    		</div>
+    		<nav aria-label="Page navigation example">
+    			<ul class="pagination justify-content-center" id="pagination"></ul>
+    		</nav>
+      </div>
+      <div class="card-footer small text-muted">
+
+      </div>
+    </div>
+</div>
+
+  <div id="main_admision_muestras" style="display:none;">
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-search  mr-1"></i>
+        Búsqueda
+      </div>
+      <div class="card-body">
+        <form id="form_main_admision_muestras" class="form-inline">
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+              </div>
+              <select id="estado" name="estado" class="selectpicker" title="Estado" data-live-search="true">
+              </select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo</span>
+              </div>
+              <select id="tipo" name="tipo" class="selectpicker" title="Tipo" data-live-search="true">
+              </select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+              </div>
+              <select id="cliente" name="cliente" class="selectpicker" title="Cliente" data-live-search="true">
+              </select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+              </div>
+              <select id="tipo_muestra" name="tipo_muestra" class="selectpicker" title="Muestra" data-live-search="true">
+              </select>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Fecha Inicio</span>
+              </div>
+              <input type="date" required="required" id="fecha_i" name="fecha_i" style="width:160px;" data-toggle="tooltip" data-placement="top" title="Fecha Inicial" value="<?php
+                  $fecha = date ("Y-m-d");
+
+                  $año = date("Y", strtotime($fecha));
+                  $mes = date("m", strtotime($fecha));
+                  $dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
+
+                  $dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
+                  $dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
+
+                  $fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
+                  $fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));
+
+                  echo $fecha_inicial;
+                ?>" class="form-control"/>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Fecha Fin</span>
+              </div>
+              <input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" data-toggle="tooltip" data-placement="top" title="Fecha Final" class="form-control"/>
+            </div>
+          </div>
+          <div class="form-group mr-1">
+              <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="65"/>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer small text-muted">
+
+      </div>
+    </div>
+
+   <div class="card mb-4">
+     <div class="card-header">
+       <i class="fab fa-sellsy mr-1"></i>
+       Resultado
+     </div>
+     <div class="card-body">
+       <div class="form-group">
+   		<div class="col-sm-12">
+   			<div class="registros overflow-auto" id="agrega-registros_muestras"></div>
+   		</div>
+   		</div>
+   		<nav aria-label="Page navigation example">
+   			<ul class="pagination justify-content-center" id="pagination_muestras"></ul>
+   		</nav>
+     </div>
+     <div class="card-footer small text-muted">
+
+     </div>
+   </div>
 	</div>
 
 

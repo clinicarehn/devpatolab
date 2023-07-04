@@ -70,16 +70,17 @@ $result = $mysqli->query($registro);
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<tr>
-			<th width="2%">No.</th>
-			<th width="13%">Empresa</th>				
-			<th width="8%">Tipo Muestra</th>
-			<th width="12%">Prefijo</th>
-			<th width="12%">Sufijo</th>
-			<th width="10%">Relleno</th>
-			<th width="10%">Incremento</th>
-			<th width="10%">Siguiente</th>				
-			<th width="10%">Estado</th>
-            <th width="10%">Opciones</th>				
+			<th width="2.09%">No.</th>
+			<th width="16.09%">Empresa</th>				
+			<th width="9.09%">Tipo Muestra</th>
+			<th width="11.09%">Prefijo</th>
+			<th width="15.09%">Sufijo</th>
+			<th width="5.09%">Relleno</th>
+			<th width="9.09%">Incremento</th>
+			<th width="8.09%">Siguiente</th>				
+			<th width="9.09%">Estado</th>
+			<th width="7.09%">Editar</th>
+            <th width="8.09%">Eliminar</th>				
 			</tr>';
 $i = 1;				
 while($registro2 = $result->fetch_assoc()){ 
@@ -99,9 +100,11 @@ while($registro2 = $result->fetch_assoc()){
 			<td>'.$registro2['siguiente'].'</td>
 			<td>'.$registro2['estado'].'</td>			
 			<td>
-              <a style="text-decoration:none;" data-toggle="tooltip" data-placement="top" title="Editar Usuario" href="javascript:editarRegistro('.$registro2['secuencias_id'].');void(0);" class="fas fa-edit fa-lg"></a>	  			  
-			  <a style="text-decoration:none;" data-toggle="tooltip" data-placement="top" title="Eliminar" href="javascript:modal_eliminar('.$registro2['secuencias_id'].');void(0);" class="fas fa-trash fa-lg"></a>
+				<a class="btn btn btn-secondary ml-2" href="javascript:editarRegistro('.$registro2['secuencias_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-edit fa-lg"></i> Editar</a>
 			</td>
+			<td>
+				<a class="btn btn btn-secondary ml-2" href="javascript:modal_eliminar('.$registro2['secuencias_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>
+			</td>			
 			</tr>';	
 			$i++;				
 }

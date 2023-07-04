@@ -63,13 +63,14 @@ $result = $mysqli->query($registro);
 //CREAMOS NUESTRA VISTA Y LA DEVOLVEMOS AL AJAX
   	$tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			  <tr>
-                 <th width="7.5%">Código</th>
-                 <th width="18.5%">Nombre</th>
+                 <th width="2.5%">Código</th>
+                 <th width="17.5%">Nombre</th>
 				 <th width="12.5%">Identidad</th>
-                 <th width="17.5%">Puesto</th>
-                 <th width="20.5%">Empresa</th>
-                 <th width="5.5%">Estatus</th>				 
-             	 <th width="5.5%">Opciones</th>
+                 <th width="16.5%">Puesto</th>
+                 <th width="25.5%">Empresa</th>
+                 <th width="8.5%">Estatus</th>				 
+				 <th width="8.5%">Editar</th>
+             	 <th width="8.5%">Eliminar</th>
 			  </tr>';
 					
 	while($registro2 = $result->fetch_assoc()){
@@ -84,11 +85,13 @@ $result = $mysqli->query($registro);
 				 <td>'.$registro2['identidad'].'</td>
 		         <td>'.$registro2['puesto'].'</td>
 		         <td>'.$registro2['empresa'].'</td>	
-                 <td>'.$estatus.'</td>					 
-			     <td>
-				    <a style="text-decoration:none;" href="javascript:editarRegistro('.$registro2['codigo'].');void(0);" class="fas fa-edit fa-lg"></a> 
-				    <a style="text-decoration:none; "href="javascript:modal_eliminar('.$registro2['codigo'].');void(0);" class="fas fa-trash fa-lg"></a>
-			     </td>   		   		   		   		   		   
+                 <td>'.$estatus.'</td>					
+				<td>
+					<a class="btn btn btn-secondary ml-2" href="javascript:editarRegistro('.$registro2['codigo'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-user-edit fa-lg"></i> Editar</a>
+				</td>
+				<td>
+					<a class="btn btn btn-secondary ml-2" href="javascript:modal_eliminar('.$registro2['codigo'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>
+				</td>
 	  </tr>';  
 	}    
 	
