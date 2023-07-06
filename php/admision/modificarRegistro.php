@@ -86,7 +86,7 @@ if($query){
 		1 => "Registro Almacenado Correctamente",
 		2 => "success",
 		3 => "btn-primary",
-		4 => "formulario_admision",
+		4 => "",
 		5 => "Registro",
 		6 => "formulario_admision_clientes_editar",
 		7 => "modal_admision_clientes_editar",
