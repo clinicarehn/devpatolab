@@ -67,13 +67,13 @@
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-4 mb-3">
-					  <label for="nombre">Nombre <span class="priority">*<span/></label>
-					  <input type="text" required id="name" name="name" placeholder="Nombre" class="form-control"/>
+					<div class="col-md-8 mb-3">
+					  <label for="nombre">Nombre Completo / Empresa <span class="priority">*<span/></label>
+					  <input type="text" required id="name" name="name" placeholder="Nombre Completo / Empresa" class="form-control"/>
 					</div>
-					<div class="col-md-4 mb-3">
+					<div class="col-md-4 mb-3" style="display: none;">
 					  <label for="apellido">Apellido <span class="priority">*<span/></label>
-					  <input type="text" required id="lastname" name="lastname" placeholder="Apellido" class="form-control"/>
+					  <input type="text" id="lastname" name="lastname" placeholder="Apellido" class="form-control"/>
 					</div>
 					<div class="col-md-4 mb-3">
 					  <label for="rtn">Identidad o RTN <span class="priority">*<span/></label>
@@ -2181,13 +2181,13 @@
 								</div>
 							</div>
 
-							<div class="col-md-4 mb-3">
-								<label for="name">Nombres <span class="priority">*<span/></label>
-								<input type="text" required id="name" name="name" placeholder="Nombre" class="form-control"/>
+							<div class="col-md-8 mb-3">
+								<label for="name">Nombre Completo <span class="priority">*<span/></label>
+								<input type="text" required id="name" name="name" placeholder="Nombre Completo" class="form-control"/>
 							</div>
-							<div class="col-md-4 mb-3">
+							<div class="col-md-4 mb-3" style="display: none;">
 								<label for="lastname">Apellidos <span class="priority">*<span/></label>
-								<input type="text" required id="lastname" name="lastname" placeholder="Apellido" class="form-control"/>
+								<input type="text" id="lastname" name="lastname" placeholder="Apellido" class="form-control"/>
 							</div>
 						</div>
 
@@ -2291,7 +2291,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-md-6 mb-3" style=display:none;">
+							<div class="col-md-6 mb-3" style="display:none;">
 								<label for="categoria">Categoría</label>
 								<div class="input-group mb-3">
 									<select class="selectpicker" id="categoria" name="categoria" data-live-search="true" title="Categoría" data-size="10">
@@ -2382,13 +2382,13 @@
 					<div class="card-body">
 						<div class="form-row">
 							<input type="hidden" required id="pacientes_id" name="pacientes_id" class="form-control"/>
-							<div class="col-md-6 mb-3">
-								<label for="name">Nombres <span class="priority">*<span/></label>
-								<input type="text" required id="name" name="name" placeholder="Nombre" class="form-control"/>
+							<div class="col-md-12 mb-3">
+								<label for="name">Nombre Completo <span class="priority">*<span/></label>
+								<input type="text" required id="name" name="name" placeholder="Nombre Completo" class="form-control"/>
 							</div>
-							<div class="col-md-6 mb-3">
+							<div class="col-md-6 mb-3" style="display: none">
 								<label for="lastname">Apellidos <span class="priority">*<span/></label>
-								<input type="text" required id="lastname" name="lastname" placeholder="Apellido" class="form-control"/>
+								<input type="text" id="lastname" name="lastname" placeholder="Apellido" class="form-control"/>
 							</div>
 						</div>
 

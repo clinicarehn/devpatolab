@@ -818,8 +818,25 @@ function modalEditar(pacientes_id){
 	$('#formulario_admision_clientes_editar #paciente_tipo').val(1);
 	$('#formulario_admision_clientes_editar #paciente_tipo').selectpicker('refresh');
 
-	$('#formulario_admision #hospital').val(56);
+  //OBTENER EL CODIGO DE CLINICAS
+	$('#formulario_admision #hospital').val(getHospitalCodigo());
 	$('#formulario_admision #hospital').selectpicker('refresh');
+}
+
+function getHospitalCodigo(){
+  var url = '<?php echo SERVERURL; ?>php/pacientes/getHospitalCodigo.php';
+	var resp;
+
+	$.ajax({
+		type:'POST',
+		url:url,
+		async: false,
+		success:function(data){
+		 	resp = data;
+		}
+	});
+
+	return resp;
 }
 
 function showModalhistoriaMuestrasEmpresas(pacientes_id){
@@ -904,7 +921,7 @@ function modalClientes(){
 	$('#formulario_admision #paciente_tipo').val(1);
 	$('#formulario_admision #paciente_tipo').selectpicker('refresh');
 
-	$('#formulario_admision #hospital').val(56);
+	$('#formulario_admision #hospital').val(getHospitalCodigo());
 	$('#formulario_admision #hospital').selectpicker('refresh');
 
 	//HABILITAR OBJETOS

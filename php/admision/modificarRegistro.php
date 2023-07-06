@@ -1,7 +1,7 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
@@ -17,7 +17,7 @@ if(isset($_POST['cliente_admision'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 
 $pacientes_id = $_POST['pacientes_id'];
 $nombre = cleanString($_POST['name']);
-$apellido = cleanString($_POST['lastname']);
+$apellido = "";
 $identidad = $_POST['rtn'];
 
 //CONSULTAR IDENTIDAD DEL USUARIO
@@ -25,8 +25,8 @@ if($identidad == 0){
 	$flag_identidad = true;
 	while($flag_identidad){
 	   $d=rand(1,99999999);
-	   $query_identidadRand = "SELECT pacientes_id 
-	       FROM pacientes 
+	   $query_identidadRand = "SELECT pacientes_id
+	       FROM pacientes
 		   WHERE identidad = '$d'";
 	   $result_identidad = $mysqli->query($query_identidadRand);
 	   if($result_identidad->num_rows==0){
@@ -34,7 +34,7 @@ if($identidad == 0){
 		  $flag_identidad = false;
 	   }else{
 		  $flag_identidad = true;
-	   }		
+	   }
 	}
 }
 
@@ -55,11 +55,11 @@ $usuario = $_SESSION['colaborador_id'];
 $estado = 1; //1. Activo 2. Inactivo
 $fecha_registro = date("Y-m-d H:i:s");
 
-$update = "UPDATE pacientes 
-	SET 
+$update = "UPDATE pacientes
+	SET
 		 telefono1 = '$telefono1'
 		,edad = '$edad'
-		,email = '$correo' 
+		,email = '$correo'
 		,identidad = '$identidad'
 		,localidad = '$localidad'
 	WHERE pacientes_id = '$pacientes_id'";
@@ -73,14 +73,14 @@ if($query){
 	$estado_historial = "Agregar";
 	$observacion_historial = "Se ha modificado el cliente: $nombre $apellido";
 	$modulo = "Pacientes";
-	$insert = "INSERT INTO historial 
-		VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";	 
+	$insert = "INSERT INTO historial
+		VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
 	$mysqli->query($insert) or die($mysqli->error);
-	/*********************************************************************************************************************************************************************/			
+	/*********************************************************************************************************************************************************************/
 
 	$datos = array(
-		0 => "Almacenado", 
-		1 => "Registro Almacenado Correctamente", 
+		0 => "Almacenado",
+		1 => "Registro Almacenado Correctamente",
 		2 => "success",
 		3 => "btn-primary",
 		4 => "formulario_admision",
@@ -93,12 +93,12 @@ if($query){
 	);
 }else{
 	$datos = array(
-		0 => "Error", 
-		1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir", 
+		0 => "Error",
+		1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir",
 		2 => "error",
 		3 => "btn-danger",
 		4 => "",
-		5 => "",			
+		5 => "",
 	);
 }
 

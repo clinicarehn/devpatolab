@@ -278,8 +278,8 @@ var editar_productos_busqueda_dataTable = function(tbody, table){
 					$('#formulario_facturacion #invoiceItem #valor_isv_'+ row).val(porcentaje_calculo);
 				}
 			}
-			
-			//CONSULTAMOS SI EL USUARIO ES DE LA TERCERA EDAD PENDIENTE			
+
+			//CONSULTAMOS SI EL USUARIO ES DE LA TERCERA EDAD PENDIENTE
 
 			calculateTotal();
 			addRow();
@@ -738,8 +738,9 @@ function getMunicipioEditar(departamento_id, municipio_id){
 	   success:function(data){
 	      $('#formulario_pacientes #municipio_id').html("");
 		    $('#formulario_pacientes #municipio_id').html(data);
+				$('#formulario_pacientes #municipio_id').selectpicker('refresh');
+
 		    $('#formulario_pacientes #municipio_id').val(municipio_id);
-				alert(municipio_id);
 				$('#formulario_pacientes #municipio_id').selectpicker('refresh');
 	  }
 	});

@@ -2,10 +2,12 @@
 $(document).ready(function(){
 	$('#form_main #nuevo-registro').on('click',function(){
 		if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
+			getGenero();
+			getDepartamento();
+			getMunicipio();
 			$('#formulario_pacientes #reg').show();
 			$('#formulario_pacientes #edi').hide();
 			cleanPacientes();
-			getDepartamento();
 			$('#formulario_pacientes #grupo_expediente').hide();
 			$('#formulario_pacientes')[0].reset();
 			$('#formulario_pacientes #pro').val('Registro');
@@ -90,6 +92,21 @@ $('#form_main_historico_muestras #bs_regis').on('keyup',function(){
 		historiaMuestrasEmpresas(1);
 	}
 });
+
+function getGenero(){
+  var url = '<?php echo SERVERURL; ?>php/admision/getSexo.php';
+
+  $.ajax({
+ 	 type:'POST',
+	 url:url,
+		success: function(data){
+			$('#formulario_pacientes #sexo').html("");
+			$('#formulario_pacientes #sexo').html(data);
+			$('#formulario_pacientes #sexo').selectpicker('refresh');
+		}
+   });
+   return false;
+}
 
 /*INICIO DE FUNCIONES PARA ESTABLECER EL FOCUS PARA LAS VENTANAS MODALES*/
 $(document).ready(function(){
@@ -356,8 +373,8 @@ function editarRegistro(pacientes_id){
 					$('#formulario_pacientes #departamento_id').val(datos[8]);
 					$('#formulario_pacientes #departamento_id').selectpicker('refresh');
 					getMunicipioEditar(datos[8], datos[9]);
-					$('#formulario_pacientes #municipio_id').val(datos[9]);
-					$('#formulario_pacientes #municipio_id').selectpicker('refresh');
+					/*$('#formulario_pacientes #municipio_id').val(datos[9]);
+					$('#formulario_pacientes #municipio_id').selectpicker('refresh');*/
 					$('#formulario_pacientes #direccion').val(datos[10]);
 					$('#formulario_pacientes #rtn').val(datos[11]);
 					$('#formulario_pacientes #religion').val(datos[12]);

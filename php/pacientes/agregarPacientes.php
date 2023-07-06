@@ -1,12 +1,12 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
 $nombre = cleanStringStrtolower($_POST['name']);
-$apellido = cleanStringStrtolower($_POST['lastname']);
+$apellido = "";
 $sexo = $_POST['sexo'];
 $telefono1 = $_POST['telefono1'];
 $telefono2 = $_POST['telefono2'];
@@ -49,8 +49,8 @@ if($identidad == 0){
 	$flag_identidad = true;
 	while($flag_identidad){
 	   $d=rand(1,99999999);
-	   $query_identidadRand = "SELECT pacientes_id 
-	       FROM pacientes 
+	   $query_identidadRand = "SELECT pacientes_id
+	       FROM pacientes
 		   WHERE identidad = '$d'";
 	   $result_identidad = $mysqli->query($query_identidadRand);
 	   if($result_identidad->num_rows==0){
@@ -58,7 +58,7 @@ if($identidad == 0){
 		  $flag_identidad = false;
 	   }else{
 		  $flag_identidad = true;
-	   }		
+	   }
 	}
 }
 
@@ -73,11 +73,11 @@ if($result->num_rows==0){
 	$expediente = correlativo('expediente ', 'pacientes');
 	$insert = "INSERT INTO pacientes VALUES ('$pacientes_id','$expediente','$identidad','$nombre','$apellido','$sexo','$telefono1','$telefono2','$fecha_nacimiento','$edad','$correo','$fecha','$departamento_id','$municipio_id','$localidad','$religion_id','$profesion_id','$usuario','$estado','$paciente_tipo','$fecha_registro')";
 	$query = $mysqli->query($insert);
-	
+
 	if($query){
 		$datos = array(
-			0 => "Almacenado", 
-			1 => "Registro Almacenado Correctamente", 
+			0 => "Almacenado",
+			1 => "Registro Almacenado Correctamente",
 			2 => "success",
 			3 => "btn-primary",
 			4 => "formulario_pacientes",
@@ -87,22 +87,22 @@ if($result->num_rows==0){
 		);
 	}else{
 		$datos = array(
-			0 => "Error", 
-			1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir", 
+			0 => "Error",
+			1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir",
 			2 => "error",
 			3 => "btn-danger",
 			4 => "",
-			5 => "",			
+			5 => "",
 		);
 	}
 }else{
 	$datos = array(
-		0 => "Error", 
-		1 => "Lo sentimos este registro ya existe no se puede almacenar", 
+		0 => "Error",
+		1 => "Lo sentimos este registro ya existe no se puede almacenar",
 		2 => "error",
 		3 => "btn-danger",
 		4 => "",
-		5 => "",		
+		5 => "",
 	);
 }
 

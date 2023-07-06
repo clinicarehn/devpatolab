@@ -1,7 +1,7 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
@@ -16,7 +16,7 @@ if(isset($_POST['cliente_admision'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 }
 
 $nombre = cleanString($_POST['name']);
-$apellido = cleanString($_POST['lastname']);
+$apellido = "";
 $identidad = $_POST['rtn'];
 
 //CONSULTAR IDENTIDAD DEL USUARIO
@@ -24,8 +24,8 @@ if($identidad == 0){
 	$flag_identidad = true;
 	while($flag_identidad){
 	   $d=rand(1,99999999);
-	   $query_identidadRand = "SELECT pacientes_id 
-	       FROM pacientes 
+	   $query_identidadRand = "SELECT pacientes_id
+	       FROM pacientes
 		   WHERE identidad = '$d'";
 	   $result_identidad = $mysqli->query($query_identidadRand);
 	   if($result_identidad->num_rows==0){
@@ -33,7 +33,7 @@ if($identidad == 0){
 		  $flag_identidad = false;
 	   }else{
 		  $flag_identidad = true;
-	   }		
+	   }
 	}
 }
 
@@ -71,24 +71,24 @@ if($cliente_admision == 0){//NO SE SELECCIONO NINGUN CLIENTE
 		$consulta2 = $result->fetch_assoc();
 		$cliente_admision_id = $consulta2['pacientes_id'];
 		$pacientes_id = $cliente_admision_id;
-		$update = "UPDATE pacientes 
-						SET 
+		$update = "UPDATE pacientes
+						SET
 							telefono1 = '$telefono1'
 							,edad = '$edad'
-							,email = '$correo' 
+							,email = '$correo'
 						WHERE pacientes_id = '$cliente_admision_id'";
 
 		$query = $mysqli->query($update);
 	}
 }else{
-	$update = "UPDATE pacientes 
-					SET 
+	$update = "UPDATE pacientes
+					SET
 						telefono1 = '$telefono1'
 						,edad = '$edad'
-						,email = '$correo' 
+						,email = '$correo'
 				WHERE pacientes_id = '$cliente_admision'";
 	$pacientes_id = $cliente_admision;
-	$query = $mysqli->query($update);	
+	$query = $mysqli->query($update);
 }
 
 if($query){
@@ -132,7 +132,7 @@ if($query){
 		}
 	}else{
 		$mostrar_datos_clinicos = 2;
-	}		
+	}
 
 	if(isset($_POST['empresa'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 		if($_POST['empresa'] == ""){
@@ -162,7 +162,7 @@ if($query){
 		}
 	}else{
 		$categoria_muestras = 0;
-	}	
+	}
 
 	if(isset($_POST['producto'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 		if($_POST['producto'] == ""){
@@ -172,25 +172,25 @@ if($query){
 		}
 	}else{
 		$producto = 0;
-	}		
-			
+	}
+
 	//CONSULTAMOS LA SECUENCIA PARA LA ENTIDAD
 	$estado_secuencia = 1;
 	$query_secuencia = "SELECT *
 		FROM secuencias_muestas
 		WHERE tipo_muestra_id = '$tipo_muestra_id' AND estado = '$estado_secuencia'";
-	$result_secuencia = $mysqli->query($query_secuencia) or die($mysqli->error);	
+	$result_secuencia = $mysqli->query($query_secuencia) or die($mysqli->error);
 
 	$number = "";
 	$flag = false;
 
-	if($result_secuencia->num_rows>=0){	
+	if($result_secuencia->num_rows>=0){
 		$flag = true;
 		$consulta = $result_secuencia->fetch_assoc();
 		$prefijo = $consulta["prefijo"];
 		$sufijo = $consulta["sufijo"];
 		$relleno = $consulta["relleno"];
-		$incremento = $consulta["incremento"];	
+		$incremento = $consulta["incremento"];
 		$siguiente = $consulta["siguiente"];
 		$secuencias_id = $consulta["secuencias_id"];
 
@@ -199,21 +199,21 @@ if($query){
 		$mes_actual = date("m");
 		$dia_actual = date("d");
 		$dia_semana = date("N");
-			
+
 		$prefijo = str_replace("@año_actual", $año_actual, $prefijo);
 		$prefijo = str_replace("@mes_actual", $mes_actual, $prefijo);
 		$prefijo = str_replace("@dia_actual", $dia_actual, $prefijo);
-		$prefijo = str_replace("@dia_semana", $dia_semana, $prefijo);	
-		
+		$prefijo = str_replace("@dia_semana", $dia_semana, $prefijo);
+
 		$number .= $prefijo.$numero;
-		
+
 		$sufijo = str_replace("@año_actual", $año_actual, $sufijo);
 		$sufijo = str_replace("@mes_actual", $mes_actual, $sufijo);
 		$sufijo = str_replace("@dia_actual", $dia_actual, $sufijo);
-		$sufijo = str_replace("@dia_semana", $dia_semana, $sufijo);	
+		$sufijo = str_replace("@dia_semana", $dia_semana, $sufijo);
 
 		$number .= $sufijo;
-	}	
+	}
 
 	$pacientes_id_muestra = $pacientes_id;
 
@@ -224,13 +224,13 @@ if($query){
 	$muestras_id  = correlativo('muestras_id', 'muestras');
 	$insert = "INSERT INTO muestras			VALUES('$muestras_id','$pacientes_id_muestra','$secuencias_id','$servicio_id','$usuario','$tipo_muestra_id','$number','$referencia','$fecha','$estado_muestra','$sitio_muestra','$diagnostico_clinico','$material_enviado','$datos_clinicos','$mostrar_datos_clinicos','$hospital_clinica','$categoria_muestras','$usuario','$fecha_registro')";
 	$mysqli->query($insert) or die($mysqli->error);
-	
+
 	if($flag){
 		$siguiente += $incremento;
-		
+
 		//ACTUAIZAMOS EL NUMERO SIGUIENTE EN EL ADMINISTRADOR DE SECUENCIAS
 		$update_secuencia = "UPDATE secuencias_muestas
-			SET 
+			SET
 				siguiente = '$siguiente'
 			WHERE secuencias_id = '$secuencias_id'";
 		$mysqli->query($update_secuencia) or die($mysqli->error);
@@ -249,7 +249,7 @@ if($query){
 	if($result_cliente_muestra->num_rows>0){
 		$valores2 = $result_cliente_muestra->fetch_assoc();
 
-		$cliente_muestra = $valores2['cliente'];					
+		$cliente_muestra = $valores2['cliente'];
 	}
 
 	//AGREGAMOS LA PREFACTURA
@@ -264,21 +264,21 @@ if($query){
 
 		if($result_producto->num_rows>0){
 			$valores2 = $result_producto->fetch_assoc();
-	
-			$nombre_producto = $valores2['nombre'];	
-			$precio_venta = $valores2['precio_venta'];				
-			$isv = $valores2['isv'];	
+
+			$nombre_producto = $valores2['nombre'];
+			$precio_venta = $valores2['precio_venta'];
+			$isv = $valores2['isv'];
 		}
 
 	}else{
 		$producto = "";
-	}	
-		
+	}
+
 	//SI EL CLIENTE ES EMPRESA, muestras_hospitales
 	if($empresa !=0 && $pacientes_id != 0){
 		//ALMACENAMOS EL CLIENTE DEL ANALISIS QUE ENVIA LA EMPRESA O LABORATORIO
 		$muestras_hospitales_id = correlativo('muestras_hospitales_id', 'muestras_hospitales');
-		$insert = "INSERT INTO muestras_hospitales 
+		$insert = "INSERT INTO muestras_hospitales
 			VALUES('$muestras_hospitales_id','$empresa','$pacientes_id','$muestras_id','$fecha','$usuario','$fecha_registro')";
 		$query = $mysqli->query($insert) or die($mysqli->error);
 	}
@@ -289,10 +289,10 @@ if($query){
 	$estado_historial = "Agregar";
 	$observacion_historial = "Se ha agregado un nuevo cliente: $nombre $apellido";
 	$modulo = "Pacientes";
-	$insert = "INSERT INTO historial 
-		VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";	 
+	$insert = "INSERT INTO historial
+		VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
 	$mysqli->query($insert) or die($mysqli->error);
-	/*********************************************************************************************************************************************************************/	
+	/*********************************************************************************************************************************************************************/
 
 	/*********************************************************************************************************************************************************************/
 	//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
@@ -300,14 +300,14 @@ if($query){
 	$estado_historial = "Agregar";
 	$observacion_historial = "Se ha agregado un nueva muestra con un diagnostico: $diagnostico_clinico";
 	$modulo = "Muestras";
-	$insert = "INSERT INTO historial 
-		VALUES('$historial_numero','0','0','$modulo','$muestras_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";	 
+	$insert = "INSERT INTO historial
+		VALUES('$historial_numero','0','0','$modulo','$muestras_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
 	$mysqli->query($insert) or die($mysqli->error);
-	/*********************************************************************************************************************************************************************/			
+	/*********************************************************************************************************************************************************************/
 
 	$datos = array(
-		0 => "Almacenado", 
-		1 => "Registro Almacenado Correctamente", 
+		0 => "Almacenado",
+		1 => "Registro Almacenado Correctamente",
 		2 => "success",
 		3 => "btn-primary",
 		4 => "formulario_admision",
@@ -324,12 +324,12 @@ if($query){
 	);
 }else{
 	$datos = array(
-		0 => "Error", 
-		1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir", 
+		0 => "Error",
+		1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir",
 		2 => "error",
 		3 => "btn-danger",
 		4 => "",
-		5 => "",			
+		5 => "",
 	);
 }
 
