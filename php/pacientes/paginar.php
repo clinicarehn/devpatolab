@@ -65,7 +65,7 @@ $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 					<tr>
 					   <th width="2.69%">N°</th>
 					   <th width="6.69%">Identidad</th>
-					   <th width="15.69%">Paciente</th>
+					   <th width="14.69%">Paciente</th>
 					   <th width="2.69%">Genero</th>
 					   <th width="6.69%">Telefono1</th>
 					   <th width="5.69">Telefono2</th>
@@ -75,7 +75,7 @@ $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 					   <th width="7.69%">Ver Muestras</th>
 					   <th width="7.69%">Editar RTN</th>
 					   <th width="7.69%">Editar Cliente</th>
-					   <th width="7.69%">Eliminar</th>
+					   <th width="8.69%">Eliminar</th>
 					</tr>';
 
 $i=1;

@@ -57,11 +57,14 @@ $fecha_registro = date("Y-m-d H:i:s");
 
 $update = "UPDATE pacientes
 	SET
-		 telefono1 = '$telefono1'
-		,edad = '$edad'
-		,email = '$correo'
+	  nombre = '$nombre'
+		,apellido = '$apellido'
 		,identidad = '$identidad'
+		,edad = '$edad'
+		,telefono1 = '$telefono1'
+		,genero = '$genero'
 		,localidad = '$localidad'
+		,email = '$correo'
 	WHERE pacientes_id = '$pacientes_id'";
 $pacientes_id = $cliente_admision;
 $query = $mysqli->query($update);
