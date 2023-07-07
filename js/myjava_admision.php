@@ -975,6 +975,23 @@ function getHospitalCodigo(){
 	return resp;
 }
 
+function getRemitenteCodigo(){
+  var url = '<?php echo SERVERURL; ?>php/pacientes/getRemitenteCodigo.php';
+	var resp;
+
+	$.ajax({
+		type:'POST',
+		url:url,
+		async: false,
+		success:function(data){
+		 	resp = data;
+		}
+	});
+
+	return resp;
+}
+
+
 function showModalhistoriaMuestrasEmpresas(pacientes_id){
 	if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
 	 $('#form_main_historico_muestras #pacientes_id_muestras').val(pacientes_id);
@@ -1059,6 +1076,9 @@ function modalClientes(){
 
 	$('#formulario_admision #hospital').val(getHospitalCodigo());
 	$('#formulario_admision #hospital').selectpicker('refresh');
+	
+	$('#formulario_admision #remitente').val(getRemitenteCodigo());
+	$('#formulario_admision #remitente').selectpicker('refresh');	
 
 	//HABILITAR OBJETOS
 	$('#formulario_admision #name').attr('readonly', false);
