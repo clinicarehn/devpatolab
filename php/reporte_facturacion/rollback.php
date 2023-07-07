@@ -73,12 +73,19 @@ if($query){
 	/*********************************************************************************************************************************************************************/
 
 	/*********************************************************************************************************************************************************************/
+	$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
+		FROM colaboradores
+		WHERE colaborador_id = '$usuario'";
+	$resultColaborador = $mysqli->query($consultar_colaborador);
+	$consultaColaborador = $resultColaborador->fetch_assoc();
+	$NombreColaborador = $consultaColaborador['colaborador'];
+	
 	//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
 	$historial_numero = historial();
 	$estado_historial = "Agregar";
-	$observacion_historial = "el número de factura $numero_factura ha sido anulada correctamente segun comentario: $comentario";
+	$observacion_historial = "El número de factura $numero_factura ha sido anulada correctamente, por el usuario: $NombreColaborador, según comentario: $comentario";
 	$modulo = "Facturas";
-	$insert = "INSERT INTO historial   VALUES('$historial_numero','$pacientes_id','$expediente','$modulo','$facturas_id','$colaborador_id','$servicio_id','$fecha','$estado_historial','$observacion_historial','$estado','$fecha_registro')";
+	$insert = "INSERT INTO historial   VALUES('$historial_numero','$pacientes_id','$expediente','$modulo','$facturas_id','$colaborador_id','$servicio_id','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
 	$mysqli->query($insert) or die($mysqli->error);
 	/********************************************/
 }else{

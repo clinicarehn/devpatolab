@@ -9,6 +9,7 @@ $pacientes_id = $_POST['pacientes_id'];
 $usuario = $_SESSION['colaborador_id'];
 $estado = 1; //1. Activo 2. Inactivo
 $fecha_registro = date("Y-m-d H:i:s");
+$fecha= date("Y-m-d");
 
 $nombre = $_POST['name'];
 $apellido = "";
@@ -46,6 +47,24 @@ $update = "UPDATE pacientes
 $query = $mysqli->query($update);
 
 if($query){
+		/*********************************************************************************************************************************************************************/
+		$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
+			FROM colaboradores
+			WHERE colaborador_id = '$usuario'";
+		$resultColaborador = $mysqli->query($consultar_colaborador);
+		$consultaColaborador = $resultColaborador->fetch_assoc();
+		$NombreColaborador = $consultaColaborador['colaborador'];
+
+		//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
+		$historial_numero = historial();
+		$estado_historial = "Modificar";
+		$observacion_historial = "Se ha agregado un nuevo cliente: $nombre $apellido, por el usuario: $NombreColaborador";
+		$modulo = "Clientes";
+		$insert = "INSERT INTO historial
+			VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
+		$mysqli->query($insert) or die($mysqli->error);
+		/*********************************************************************************************************************************************************************/
+
 		$datos = array(
 			0 => "Editado",
 			1 => "Registro Editado Correctamente",

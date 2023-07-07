@@ -89,21 +89,37 @@ $mysqli->close();//CERRAR CONEXIÓN
 					</div>
 				</div>
 				<div class="form-row">
-          <div class="col-md-8 mb-3">
-					    <label for="empresa">Hospital / Clínica <span class="priority">*<span/></label>
+				  <div class="col-md-8 mb-3">
+						<label for="empresa">Hospital / Clínica <span class="priority">*<span/></label>
 						<div class="input-group mb-3">
-							<select class="selectpicker" id="hospitales_id" name="hospitales_id" required data-live-search="true" title="Hospital / Clínica">
+							<select class="selectpicker" id="hospitales_id" name="hospitales_id" required data-live-search="true" title="Hospital / Clínica" data-size="5">
 							</select>
 						</div>
 					</div>
 					<div class="col-md-4 mb-3">
 					  <label>Precio <span class="priority">*<span/></label>
 					  <div class="input-group mb-3">
-              <select class="selectpicker" id="precio" name="precio" required data-live-search="true" title="Precio" data-size="3">
+							<select class="selectpicker" id="precio" name="precio" required data-live-search="true" title="Categoría" data-size="5">
 							</select>
 					   </div>
 					</div>
 				</div>
+				
+				<div class="form-row">
+					<br/>
+				</div>	
+
+				<div class="form-row">
+					<br/>
+				</div>	
+
+				<div class="form-row">
+					<br/>
+				</div>	
+
+				<div class="form-row">
+					<br/>
+				</div>					
 			</form>
         </div>
 		<div class="modal-footer">

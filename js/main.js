@@ -380,6 +380,7 @@ toDataURL(
 
 //INICIO DATATABLE OPCIONES
 var lengthMenu = [[5, 10, 20, 50, 100, -1], [5, 10, 20, 50, 100, 'Todos']];
+var lengthMenu10 = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Todos']];
 
 var dom = "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
 			"<'row'<'col-sm-12'tr>>" +
@@ -468,6 +469,10 @@ function llenarTabla(dato){
 		listar_productos();
 	}
 
+  if(dato == "Hospitales"){
+		listar_hospitales_consulta();
+	}
+
 	if(dato == "Facturacion"){
 		pagination(1);
 		funciones();
@@ -552,6 +557,8 @@ function llenarTabla(dato){
 
   if(dato == "AdministradorPrecios"){
     listar_administrador_precios();
+    getHospitales();
+    getPrecios();    
   }
 }
 

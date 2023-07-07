@@ -284,11 +284,18 @@ if($query){
 	}
 
 	/*********************************************************************************************************************************************************************/
+	$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
+		FROM colaboradores
+		WHERE colaborador_id = '$usuario'";
+	$resultColaborador = $mysqli->query($consultar_colaborador);
+	$consultaColaborador = $resultColaborador->fetch_assoc();
+	$NombreColaborador = $consultaColaborador['colaborador'];
+
 	//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
 	$historial_numero = historial();
 	$estado_historial = "Agregar";
-	$observacion_historial = "Se ha agregado un nuevo cliente: $nombre $apellido";
-	$modulo = "Pacientes";
+	$observacion_historial = "Se ha agregado un nuevo cliente: $nombre $apellido, por el usuario: $NombreColaborador";
+	$modulo = "Clientes";
 	$insert = "INSERT INTO historial
 		VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
 	$mysqli->query($insert) or die($mysqli->error);
@@ -304,6 +311,48 @@ if($query){
 		VALUES('$historial_numero','0','0','$modulo','$muestras_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
 	$mysqli->query($insert) or die($mysqli->error);
 	/*********************************************************************************************************************************************************************/
+
+	//CONSULTAMOS EL TIPO DE PRECIO QUE DEBE ENTREGARSE
+	$consultaTipoPrecio = "SELECT ap.precio AS 'precio'
+		FROM administrador_precios AS ap
+		WHERE ap.hospitales_id = '$hospital_clinica'";
+	$resultTipoPrecio = $mysqli->query($consultaTipoPrecio) or die($mysqli->error);
+
+	$TipoPrecio = "";
+
+	if($resultTipoPrecio->num_rows>0){
+		$valores2TipoPrecio = $resultTipoPrecio->fetch_assoc();
+		$TipoPrecio = $valores2TipoPrecio['precio'];
+	}
+
+	//CONSULTAMOS LOS PRECIOS DE LOS productos
+	$consultaPrecios = "SELECT precio_venta, precio_venta2, precio_venta3, precio_venta4
+		FROM productos
+		WHERE productos_id = '$producto'";
+	$resulPrecios = $mysqli->query($consultaPrecios) or die($mysqli->error);
+
+	$precio1 = 0;
+	$precio2 = 0;
+	$precio3 = 0;
+	$precio4 = 0;
+
+	if($resulPrecios->num_rows>0){
+		$valores2Precos = $resulPrecios->fetch_assoc();
+		$precio1 = $valores2Precos['precio_venta'];
+		$precio2 = $valores2Precos['precio_venta2'];
+		$precio3 = $valores2Precos['precio_venta3'];
+		$precio4 = $valores2Precos['precio_venta4'];
+	}
+
+	if($TipoPrecio == "Precio1"){
+		$precio_venta = $precio1;
+	}else if($TipoPrecio == "Precio2"){
+		$precio_venta = $precio2;
+	}else if($TipoPrecio == "Precio3"){
+		$precio_venta = $precio3;
+	}if($TipoPrecio == "Precio4"){
+		$precio_venta = $precio4;
+	}
 
 	$datos = array(
 		0 => "Almacenado",

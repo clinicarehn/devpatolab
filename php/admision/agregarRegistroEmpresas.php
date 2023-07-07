@@ -1,7 +1,7 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
@@ -14,8 +14,8 @@ if($identidad == 0){
 	$flag_identidad = true;
 	while($flag_identidad){
 	   $d=rand(1,99999999);
-	   $query_identidadRand = "SELECT pacientes_id 
-	       FROM pacientes 
+	   $query_identidadRand = "SELECT pacientes_id
+	       FROM pacientes
 		   WHERE identidad = '$d'";
 	   $result_identidad = $mysqli->query($query_identidadRand);
 	   if($result_identidad->num_rows==0){
@@ -23,7 +23,7 @@ if($identidad == 0){
 		  $flag_identidad = false;
 	   }else{
 		  $flag_identidad = true;
-	   }		
+	   }
 	}
 }
 
@@ -65,11 +65,28 @@ if($result->num_rows==0){//RREGISTRO NO EXISTE PROCEDEMOS A ALMACENARLO
 	$expediente = correlativo('expediente ', 'pacientes');
 	$insert = "INSERT INTO pacientes VALUES ('$pacientes_id','$expediente','$identidad','$nombre','$apellido','$genero','$telefono1','$telefono2','$fecha_nacimiento','$edad','$correo','$fecha','$departamento_id','$municipio_id','$localidad','$religion_id','$profesion_id','$usuario','$estado','$paciente_tipo','$fecha_registro')";
 	$query = $mysqli->query($insert);
-	
+
 	if($query){
+		/*********************************************************************************************************************************************************************/
+		$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
+			FROM colaboradores
+			WHERE colaborador_id = '$usuario'";
+		$resultColaborador = $mysqli->query($consultar_colaborador);
+		$consultaColaborador = $resultColaborador->fetch_assoc();
+		$NombreColaborador = $consultaColaborador['colaborador'];
+
+		$historial_numero = historial();
+		$estado_historial = "Agregar";
+		$observacion_historial = "Se ha agregado un nuevo cliente: $nombre $apellido, por el usuario: $NombreColaborador";
+		$modulo = "Clientes";
+		$insert = "INSERT INTO historial
+			VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
+		$mysqli->query($insert) or die($mysqli->error);
+		/*********************************************************************************************************************************************************************/
+
 		$datos = array(
-			0 => "Almacenado", 
-			1 => "Registro Almacenado Correctamente", 
+			0 => "Almacenado",
+			1 => "Registro Almacenado Correctamente",
 			2 => "success",
 			3 => "btn-primary",
 			4 => "formulario_admision_empresas",
@@ -81,22 +98,22 @@ if($result->num_rows==0){//RREGISTRO NO EXISTE PROCEDEMOS A ALMACENARLO
 		);
 	}else{
 		$datos = array(
-			0 => "Error", 
-			1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir", 
+			0 => "Error",
+			1 => "No se puedo almacenar este registro, los datos son incorrectos por favor corregir",
 			2 => "error",
 			3 => "btn-danger",
 			4 => "",
-			5 => "",			
+			5 => "",
 		);
 	}
 }else{
 	$datos = array(
-		0 => "Error", 
-		1 => "Lo sentimos este registro ya existe no se puede almacenar", 
+		0 => "Error",
+		1 => "Lo sentimos este registro ya existe no se puede almacenar",
 		2 => "error",
 		3 => "btn-danger",
 		4 => "",
-		5 => "",		
+		5 => "",
 	);
 }
 

@@ -94,7 +94,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 						<label for="fecha">Número <span class="priority">*<span/></label>
 						<input type="text" required id="bioxia_numero" name="bioxia_numero" readonly class="form-control"/>
 					</div>
-          <div class="col-md-2 mb-3">
+          <div class="col-md-4 mb-3">
             <label for="cliente_admision">Clientes</label>
             <div class="input-group mb-3">
               <select class="selectpicker" id="paciente_consulta" name="paciente_consulta" data-live-search="true" title="Clientes" data-size="10">

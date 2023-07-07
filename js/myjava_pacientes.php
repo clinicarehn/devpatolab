@@ -289,53 +289,63 @@ function modal_eliminarProfesional(profesional_id){
 
 function modal_eliminar(pacientes_id){
   if (consultarExpediente(pacientes_id) != 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
-    var nombre_usuario = consultarNombre(pacientes_id);
-    var expediente_usuario = consultarExpediente(pacientes_id);
-    var dato;
+		var nombre_usuario = consultarNombre(pacientes_id);
+		var expediente_usuario = consultarExpediente(pacientes_id);
+		var dato;
 
-    if(expediente_usuario == 0){
-		dato = nombre_usuario;
-	}else{
-		dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
-	}
+		if(expediente_usuario == 0){
+			dato = nombre_usuario;
+		}else{
+			dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
+		}
 
-	swal({
-	  title: "¿Estas seguro?",
-	  text: "¿Desea eliminar este registro: " + dato + "?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonClass: "btn-warning",
-	  confirmButtonText: "¡Sí, eliminar el registro!",
-	  cancelButtonText: "Cancelar",
-	  closeOnConfirm: false
-	},
-	function(){
-		eliminarRegistro(pacientes_id);
-	});
+		swal({
+			title: "¿Estas seguro?",
+			text: "¿Desea eliminar este cliente: " + dato + "?",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Comentario",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "¡Sí, eliminar el cliente!",
+			confirmButtonClass: "btn-warning"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+			swal.showInputError("¡Necesita escribir algo!");
+			return false
+			}
+			eliminarRegistro(pacientes_id, inputValue);
+		});
   }else if (consultarExpediente(pacientes_id) == 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
-    var nombre_usuario = consultarNombre(pacientes_id);
-    var expediente_usuario = consultarExpediente(pacientes_id);
-    var dato;
+		var nombre_usuario = consultarNombre(pacientes_id);
+		var expediente_usuario = consultarExpediente(pacientes_id);
+		var dato;
 
-    if(expediente_usuario == 0){
-		dato = nombre_usuario;
-	}else{
-		dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
-	}
+		if(expediente_usuario == 0){
+			dato = nombre_usuario;
+		}else{
+			dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
+		}
 
-	swal({
-	  title: "¿Estas seguro?",
-	  text: "¿Desea eliminar este registro: " + dato + "?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonClass: "btn-warning",
-	  confirmButtonText: "¡Sí, eliminar el registro!",
-	  cancelButtonText: "Cancelar",
-	  closeOnConfirm: false
-	},
-	function(){
-		eliminarRegistro(pacientes_id);
-	});
+		swal({
+			title: "¿Estas seguro?",
+			text: "¿Desea eliminar este cliente: " + dato + "?",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Comentario",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "¡Sí, eliminar el cliente!",
+			confirmButtonClass: "btn-warning"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+			swal.showInputError("¡Necesita escribir algo!");
+			return false
+			}
+			eliminarRegistro(pacientes_id, inputValue);
+		});
   }else{
 	  swal({
 			title: 'Acceso Denegado',
@@ -458,12 +468,12 @@ function eliminarProfesional(id){
 	return false;
 }
 
-function eliminarRegistro(pacientes_id){
-	var url = '<?php echo SERVERURL; ?>php/pacientes/eliminar.php';
+function eliminarRegistro(pacientes_id, comentario){
+	var url = '<?php echo SERVERURL; ?>php/admision/eliminar.php';
 	$.ajax({
 		type:'POST',
 		url:url,
-		data:'id='+pacientes_id,
+		data:'id='+pacientes_id+'&comentario='+comentario,
 		success: function(registro){
 			if(registro == 1){
 				swal({

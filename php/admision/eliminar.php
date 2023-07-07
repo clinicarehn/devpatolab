@@ -1,18 +1,19 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
 $pacientes_id = $_POST['id'];
+$comentario = $_POST['comentario'];
 $usuario = $_SESSION['colaborador_id'];
 
 //VERIFICAMOS SI EL REGISTRO CUENTA CON INFORMACION ALMACENADA
-$consultar_agenda = "SELECT muestras_id
+$consultar_muestras = "SELECT muestras_id
 		FROM muestras
 		WHERE pacientes_id = '$pacientes_id'";
-$result = $mysqli->query($consultar_agenda);
+$result = $mysqli->query($consultar_muestras);
 
 //VERIFICAMOS SI EXISTE EL REGISTRO EN LA FACTURACION
 $query_factura = "SELECT pacientes_id
@@ -24,12 +25,12 @@ if($result_facturas->num_rows==0){
 	if($result->num_rows==0){
 		//HISTORIAL DE PACIENTES
 		//CONSULTAR EXPEDIENTE
-		$consulta_expediente = "SELECT * 
-			FROM pacientes 
+		$consulta_expediente = "SELECT *
+			FROM pacientes
 			WHERE pacientes_id = '$pacientes_id'";
-		$result = $mysqli->query($consulta_expediente);   
+		$result = $mysqli->query($consulta_expediente);
 		$consulta_expediente1 = $result->fetch_assoc();
-		
+
 		if($result->num_rows>0){
 			$expediente = $consulta_expediente1['expediente'];
 			$nombre = $consulta_expediente1['nombre'];
@@ -49,13 +50,31 @@ if($result_facturas->num_rows==0){
 			$usuario = $_SESSION['colaborador_id'];
 			$estado = 1; //1. Activo 2. Inactivo
 			$fecha_registro = date("Y-m-d H:i:s");
-			$observacion = "Expediente ha sido eliminado correctamente";
+			$observacion = "Usuario $nombre con identidad $identidad, ha sido eliminado correctamente, con el comentario: $comentario";
 
 			$pacientes_id_historial = correlativo('historial_id', 'historial_pacientes');
-			$insert = "INSERT INTO historial_pacientes VALUES ('$pacientes_id_historial','$pacientes_id','$expediente','$identidad','$nombre','$apellido','$sexo','$telefono1','$telefono2','$fecha_nacimiento','$correo','$fecha','$departamento_id','$municipio_id','$localidad','$religion_id','$profesion_id','$usuario','$estado','$observacion','$fecha_registro')";	
-			
+			$insert = "INSERT INTO historial_pacientes VALUES ('$pacientes_id_historial','$pacientes_id','$expediente','$identidad','$nombre','$apellido','$sexo','$telefono1','$telefono2','$fecha_nacimiento','$correo','$fecha','$departamento_id','$municipio_id','$localidad','$religion_id','$profesion_id','$usuario','$estado','$observacion','$fecha_registro')";
+
 			$mysqli->query($insert);
-			//HISTORIAL DE PACIENTES		
+			//HISTORIAL DE PACIENTES
+			/*********************************************************************************************************************************************************************/
+			//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
+			$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
+				FROM colaboradores
+				WHERE colaborador_id = '$usuario'";
+			$resultColaborador = $mysqli->query($consultar_colaborador);
+			$consultaColaborador = $resultColaborador->fetch_assoc();
+			$NombreColaborador = $consultaColaborador['colaborador'];
+
+			$historial_numero = historial();
+			$estado_historial = "Eliminar";
+			$observacion_historial = "Usuario con $nombre e identidad $identidad, ha sido eliminado correctamente, por el usuario: $NombreColaborador, con el comentario: $comentario";
+			$modulo = "Clientes";
+			$servicio_id = 0;
+
+			$insert = "INSERT INTO historial   VALUES('$historial_numero','$pacientes_id','$expediente','$modulo','$pacientes_id','$usuario','$servicio_id','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
+			$mysqli->query($insert) or die($mysqli->error);
+			/********************************************/
 		}
 
 		$delete = "DELETE FROM pacientes WHERE pacientes_id = '$pacientes_id'";
@@ -65,14 +84,14 @@ if($result_facturas->num_rows==0){
 			echo 1;//REGISTRO ELIMINADO CORRECTAMENTE
 		}else{
 			echo 2;//ERROR AL PROCESAR SU SOLICITUD
-		}	
+		}
 	}else{
 		echo 3;//ESTE REGISTRO CUENTA CON INFORMACIÓN, NO SE PUEDE ELIMINAR
 	}
 }else{
 	echo 3;//ESTE REGISTRO CUENTA CON INFORMACIÓN, NO SE PUEDE ELIMINAR
 }
-   
+
 $result->free();//LIMPIAR RESULTADO
-$mysqli->close();//CERRAR CONEXIÓN   
+$mysqli->close();//CERRAR CONEXIÓN
 ?>

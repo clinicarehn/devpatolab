@@ -51,7 +51,7 @@ var listar_hospitales_consulta = function(){
 			{"defaultContent":"<button class='editar btn btn-warning'><span class='fas fa-edit'></span></button>"},
 			{"defaultContent":"<button class='delete btn btn-danger'><span class='fa fa-trash'></span></button>"}
 		],		
-        "lengthMenu": lengthMenu,
+        "lengthMenu": lengthMenu10,
 		"stateSave": true,
 		"bDestroy": true,		
 		"language": idioma_español,//esta se encuenta en el archivo main.js

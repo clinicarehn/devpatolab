@@ -507,12 +507,58 @@ function consultarNombre(pacientes_id){
 	return resp;
 }
 
-function eliminarRegistroMuestra(muestras_id, pacientes_id){
+function anularRegistroMuestra(muestras_id, pacientes_id, comentario){
+	var url = '<?php echo SERVERURL; ?>php/admision/anularMuestras.php';
+	$.ajax({
+		type:'POST',
+		url:url,
+		data:'muestras_id='+muestras_id+'&pacientes_id='+pacientes_id+'&comentario='+comentario,
+		success: function(registro){
+			if(registro == 1){
+				swal({
+					title: "Success",
+					text: "Registro anulado correctamente",
+					type: "success",
+					timer: 3000, //timeOut for auto-clos
+				});
+				paginationMuestras(1);
+			   return false;
+			}else if(registro == 2){
+				swal({
+					title: "Error",
+					text: "No se puede anular este registro",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+	           return false;
+			}else if(registro == 3){
+				swal({
+					title: "Error",
+					text: "Lo sentimos ya existe una factura para esta muestra, por favor anule la factrua antes de proceder.",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+	           return false;
+			}else{
+				swal({
+					title: "Error",
+					text: "Error al completar el registro",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+	           return false;
+			}
+  		}
+	});
+	return false;
+}
+
+function eliminarRegistroMuestra(muestras_id, pacientes_id, comentario){
 	var url = '<?php echo SERVERURL; ?>php/admision/eliminarMuestras.php';
 	$.ajax({
 		type:'POST',
 		url:url,
-		data:'muestras_id='+muestras_id+'&pacientes_id='+pacientes_id,
+		data:'muestras_id='+muestras_id+'&pacientes_id='+pacientes_id+'&comentario='+comentario,
 		success: function(registro){
 			if(registro == 1){
 				swal({
@@ -553,12 +599,12 @@ function eliminarRegistroMuestra(muestras_id, pacientes_id){
 	return false;
 }
 
-function eliminarRegistro(pacientes_id){
-	var url = '<?php echo SERVERURL; ?>php/pacientes/eliminar.php';
+function eliminarRegistro(pacientes_id, comentario){
+	var url = '<?php echo SERVERURL; ?>php/admision/eliminar.php';
 	$.ajax({
 		type:'POST',
 		url:url,
-		data:'id='+pacientes_id,
+		data:'id='+pacientes_id+'&comentario='+comentario,
 		success: function(registro){
 			if(registro == 1){
 				swal({
@@ -601,53 +647,63 @@ function eliminarRegistro(pacientes_id){
 
 function modal_eliminar(pacientes_id){
   if (consultarExpediente(pacientes_id) != 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
-    var nombre_usuario = consultarNombre(pacientes_id);
-    var expediente_usuario = consultarExpediente(pacientes_id);
-    var dato;
+		var nombre_usuario = consultarNombre(pacientes_id);
+		var expediente_usuario = consultarExpediente(pacientes_id);
+		var dato;
 
-    if(expediente_usuario == 0){
-		dato = nombre_usuario;
-	}else{
-		dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
-	}
+		if(expediente_usuario == 0){
+			dato = nombre_usuario;
+		}else{
+			dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
+		}
 
-	swal({
-	  title: "¿Estas seguro?",
-	  text: "¿Desea eliminar este registro: " + dato + "?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonClass: "btn-warning",
-	  confirmButtonText: "¡Sí, eliminar el registro!",
-	  cancelButtonText: "Cancelar",
-	  closeOnConfirm: false
-	},
-	function(){
-		eliminarRegistro(pacientes_id);
-	});
+		swal({
+			title: "¿Estas seguro?",
+		  text: "¿Desea eliminar este cliente: " + dato + "?",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Comentario",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "¡Sí, eliminar el cliente!",
+			confirmButtonClass: "btn-warning"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+			swal.showInputError("¡Necesita escribir algo!");
+			return false
+			}
+			eliminarRegistro(pacientes_id, inputValue);
+		});
   }else if (consultarExpediente(pacientes_id) == 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
-    var nombre_usuario = consultarNombre(pacientes_id);
-    var expediente_usuario = consultarExpediente(pacientes_id);
-    var dato;
+		var nombre_usuario = consultarNombre(pacientes_id);
+		var expediente_usuario = consultarExpediente(pacientes_id);
+		var dato;
 
-    if(expediente_usuario == 0){
-		dato = nombre_usuario;
-	}else{
-		dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
-	}
+		if(expediente_usuario == 0){
+			dato = nombre_usuario;
+		}else{
+			dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
+		}
 
-	swal({
-	  title: "¿Estas seguro?",
-	  text: "¿Desea eliminar este registro: " + dato + "?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonClass: "btn-warning",
-	  confirmButtonText: "¡Sí, eliminar el registro!",
-	  cancelButtonText: "Cancelar",
-	  closeOnConfirm: false
-	},
-	function(){
-		eliminarRegistro(pacientes_id);
-	});
+		swal({
+			title: "¿Estas seguro?",
+			text: "¿Desea eliminar este cliente: " + dato + "?",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Comentario",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "¡Sí, eliminar el cliente!",
+			confirmButtonClass: "btn-warning"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+			swal.showInputError("¡Necesita escribir algo!");
+			return false
+			}
+			eliminarRegistro(pacientes_id, inputValue);
+		});
   }else{
 	  swal({
 			title: 'Acceso Denegado',
@@ -661,53 +717,63 @@ function modal_eliminar(pacientes_id){
 
 function modal_eliminarMuestras(pacientes_id, muestras_id){
   if (consultarExpediente(pacientes_id) != 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
-    var nombre_usuario = consultarNombre(pacientes_id);
-    var numero_muestra = consultarNumeroMuestra(muestras_id);
-    var dato;
+		var nombre_usuario = consultarNombre(pacientes_id);
+		var numero_muestra = consultarNumeroMuestra(muestras_id);
+		var dato;
 
-    if(expediente_usuario == 0){
-		dato = nombre_usuario;
-	}else{
-		dato = nombre_usuario + " (Muestra: " + numero_muestra + ")";
-	}
+		if(expediente_usuario == 0){
+			dato = nombre_usuario;
+		}else{
+			dato = nombre_usuario + " (Muestra: " + numero_muestra + ")";
+		}
 
-	swal({
-	  title: "¿Estas seguro?",
-	  text: "¿Desea eliminar este registro: " + dato + "?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonClass: "btn-warning",
-	  confirmButtonText: "¡Sí, eliminar el registro!",
-	  cancelButtonText: "Cancelar",
-	  closeOnConfirm: false
-	},
-	function(){
-		eliminarRegistroMuestra(muestras_id, pacientes_id);
-	});
+		swal({
+			title: "¿Estas seguro?",
+			text: "¿Desea eliminar esta muestra para el cliente: " + dato + "?",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Comentario",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "¡Sí, anular la muestra!",
+			confirmButtonClass: "btn-warning"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+			swal.showInputError("¡Necesita escribir algo!");
+			return false
+			}
+			eliminarRegistroMuestra(muestras_id, pacientes_id, inputValue);
+		});
   }else if (consultarExpediente(pacientes_id) == 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
-    var nombre_usuario = consultarNombre(pacientes_id);
-    var expediente_usuario = consultarExpediente(pacientes_id);
-    var dato;
+			var nombre_usuario = consultarNombre(pacientes_id);
+			var expediente_usuario = consultarExpediente(pacientes_id);
+			var dato;
 
-    if(expediente_usuario == 0){
-		dato = nombre_usuario;
-	}else{
-		dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
-	}
+			if(expediente_usuario == 0){
+				dato = nombre_usuario;
+			}else{
+				dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
+			}
 
-	swal({
-	  title: "¿Estas seguro?",
-	  text: "¿Desea eliminar este registro: " + dato + "?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonClass: "btn-warning",
-	  confirmButtonText: "¡Sí, eliminar el registro!",
-	  cancelButtonText: "Cancelar",
-	  closeOnConfirm: false
-	},
-	function(){
-		eliminarRegistro(pacientes_id);
-	});
+			swal({
+				title: "¿Estas seguro?",
+				text: "¿Desea eliminar esta muestra para el cliente: " + dato + "?",
+				type: "input",
+				showCancelButton: true,
+				closeOnConfirm: false,
+				inputPlaceholder: "Comentario",
+				cancelButtonText: "Cancelar",
+				confirmButtonText: "¡Sí, anular la muestra!",
+				confirmButtonClass: "btn-warning"
+			}, function (inputValue) {
+				if (inputValue === false) return false;
+				if (inputValue === "") {
+				swal.showInputError("¡Necesita escribir algo!");
+				return false
+				}
+				eliminarRegistroMuestra(muestras_id, pacientes_id, inputValue);
+			});
   }else{
 	  swal({
 			title: 'Acceso Denegado',
@@ -716,6 +782,76 @@ function modal_eliminarMuestras(pacientes_id, muestras_id){
 			confirmButtonClass: 'btn-danger'
 	  });
 	 return false;
+  }
+}
+
+function modalAnularMuestras(pacientes_id, muestras_id){
+  if (consultarExpediente(pacientes_id) != 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
+		var nombre_usuario = consultarNombre(pacientes_id);
+		var numero_muestra = consultarNumeroMuestra(muestras_id);
+		var dato;
+
+		if(expediente_usuario == 0){
+			dato = nombre_usuario;
+		}else{
+			dato = nombre_usuario + " (Muestra: " + numero_muestra + ")";
+		}
+
+		swal({
+			title: "¿Estas seguro?",
+			text: "¿Desea anular esta muestra para el cliente: " + dato + "?",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Comentario",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "¡Sí, anular la muestra!",
+			confirmButtonClass: "btn-warning"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+			swal.showInputError("¡Necesita escribir algo!");
+			return false
+			}
+			anularRegistroMuestra(muestras_id, pacientes_id, inputValue);
+		});
+  }else if (consultarExpediente(pacientes_id) == 0 && (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3)){
+		var nombre_usuario = consultarNombre(pacientes_id);
+		var expediente_usuario = consultarExpediente(pacientes_id);
+		var dato;
+
+		if(expediente_usuario == 0){
+			dato = nombre_usuario;
+		}else{
+			dato = nombre_usuario + " (Expediente: " + expediente_usuario + ")";
+		}
+
+		swal({
+			title: "¿Estas seguro?",
+			text: "¿Desea anular esta muestra para para el cliente: " + dato + "?",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Comentario",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "¡Sí, anular la muestra!",
+			confirmButtonClass: "btn-warning"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+			swal.showInputError("¡Necesita escribir algo!");
+			return false
+			}
+			anularRegistroMuestra(muestras_id, pacientes_id, inputValue);
+		});
+	}else{
+		swal({
+			title: 'Acceso Denegado',
+			text: 'No tiene permisos para ejecutar esta acción',
+			type: 'error',
+			confirmButtonClass: 'btn-danger'
+		});
+		return false;
   }
 }
 
@@ -1133,8 +1269,6 @@ function createBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 				$('#formulario_facturacion')[0].reset();
 				$("#formulario_facturacion #invoiceItem > tbody").empty();//limpia solo los registros del body
 				var url = '<?php echo SERVERURL; ?>php/muestras/editarFacturasMuestras.php';
-
-				var url = '<?php echo SERVERURL; ?>php/muestras/editarFacturasMuestras.php';
 					$.ajax({
 					type:'POST',
 					url:url,
@@ -1180,9 +1314,10 @@ function createBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 						$('#formulario_facturacion #invoiceItem #productoID_0').val(producto);
 						$('#formulario_facturacion #invoiceItem #productName_0').val(nombre_producto);
 						$('#formulario_facturacion #invoiceItem #quantity_0').val(1);
-						$('#formulario_facturacion #invoiceItem #price_0').val(precio_venta);
 						$('#formulario_facturacion #invoiceItem #discount_0').val(0);
+						$('#formulario_facturacion #invoiceItem #price_0').val(precio_venta);
 						$('#formulario_facturacion #invoiceItem #total_0').val(precio_venta);
+
 
 						var porcentaje_isv = 0;
 						var porcentaje_calculo = 0;
