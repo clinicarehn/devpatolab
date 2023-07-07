@@ -11,9 +11,9 @@ $pacientes_id = $_POST['pacientes_id'];
 $dato = $_POST['dato'];
 
 if($dato == ""){
-	$where = "WHERE m.pacientes_id= '$pacientes_id'";
+	$where = "WHERE m.pacientes_id= '$pacientes_id' AND m.estado NOT IN(2)";
 }else{
-	$where = "WHERE m.pacientes_id= '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+	$where = "WHERE m.pacientes_id= '$pacientes_id' AND m.estado NOT IN(2) AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
 }
 
 

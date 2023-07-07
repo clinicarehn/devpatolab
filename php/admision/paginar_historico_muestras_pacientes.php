@@ -11,11 +11,11 @@ $pacientes_id = $_POST['pacientes_id'];
 $dato = $_POST['dato'];
 
 if($dato == ""){
-	$where1 = " WHERE m.pacientes_id = '$pacientes_id'";
-	$where2 = " WHERE mh.pacientes_id = '$pacientes_id'";
+	$where1 = " WHERE m.pacientes_id = '$pacientes_id' AND m.estado NOT IN (2)";
+	$where2 = " WHERE mh.pacientes_id = '$pacientes_id' AND m.estado NOT IN (2)";
 }else{
-	$where1 = " WHERE m.pacientes_id = '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
-	$where2 = " WHERE mh.pacientes_id = '$pacientes_id' AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+	$where1 = " WHERE m.pacientes_id = '$pacientes_id' AND m.estado NOT IN (2) AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
+	$where2 = " WHERE mh.pacientes_id = '$pacientes_id' AND m.estado NOT IN (2) AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
 }
 
 $query = "SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'paciente', m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
