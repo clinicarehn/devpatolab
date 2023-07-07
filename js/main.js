@@ -124,6 +124,8 @@ $('.FormularioAjax').submit(function(e){
 					getServicio();
 					getClientes();
 					pagination(1);
+					$('#formulario_admision #producto').html("");
+					$('#formulario_admision #producto').selectpicker('refresh');
 				}
 
 				if (datos[6] == "AtencionMedica"){
