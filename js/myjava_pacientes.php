@@ -722,8 +722,8 @@ function getTipoPaciente(pacientes_id){
 
 function modal_muestras(pacientes_id){
 	 swal({
-		 title: "Opción en revisión",
-		 text: "Esta opción se encuentra en revisión, por favor si desea consultar las muestras presione el botón de muestras en Admision, esta opción esta en el menú Recepción",
+		 title: "Opcion en revision",
+		 text: "Esta opcion se encuentra en revision, por favor si desea consultar las muestras presione el boton de muestras en Admision, esta opcion esta en el menu Recepcion",
 		 type: "warning",
 		 confirmButtonClass: 'btn-warning'
 	 });

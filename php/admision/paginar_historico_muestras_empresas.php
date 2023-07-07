@@ -16,7 +16,6 @@ if($dato == ""){
 	$where = "WHERE m.pacientes_id= '$pacientes_id' AND m.estado NOT IN(2) AND (m.number LIKE '%$dato%' OR tm.nombre LIKE '%$dato%')";
 }
 
-
 $query = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) AS paciente, m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
 (CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero'
 	FROM muestras AS m

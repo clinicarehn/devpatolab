@@ -25,6 +25,10 @@ $(document).ready(function(){
 	$('#form_main_admision #tipo').on('change',function(){
 		pagination(1);
 	});
+	
+	$('#form_main_admision_muestras #bs_regis').on('keyup',function(){
+		paginationMuestras(1);
+	});
 
 	$('#form_main_admision_muestras #estado').on('change',function(){
 		paginationMuestras(1);
@@ -379,7 +383,7 @@ function paginationMuestras(partida){
 	var tipo_muestra = $('#form_main_admision_muestras #tipo_muestra').val();
 	var fecha_i = $('#form_main_admision_muestras #fecha_i').val();
 	var fecha_f = $('#form_main_admision_muestras #fecha_f').val();
-  var	dato = $('#form_main #bs_regis').val();
+	var	dato = $('#form_main_admision_muestras #bs_regis').val();
 
 	$.ajax({
 		type:'POST',
@@ -994,8 +998,8 @@ function getRemitenteCodigo(){
 
 function showModalhistoriaMuestrasEmpresas(pacientes_id){
 	 swal({
-		 title: "Opción en revisión",
-		 text: "Esta opción se encuentra en revisión, por favor si desea consultar las muestras presione el botón de muestras en Admision, esta opción esta en el menú Recepción",
+		 title: "Opcion en revision",
+		 text: "Esta opcion se encuentra en revision, por favor si desea consultar las muestras presione el boton de muestras en Admision, esta opcion esta en el menu Recepcion",
 		 type: "warning",
 		 confirmButtonClass: 'btn-warning'
 	 });

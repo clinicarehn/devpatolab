@@ -16,6 +16,7 @@ $dato = $_POST['dato'];
 
 $consulta_cliente = '';
 $consulta_tipo_muestra = '';
+$consulta_datos = "";
 
 if($cliente != ''){
 	$consulta_cliente = "AND m.pacientes_id = '$cliente'";
@@ -23,6 +24,10 @@ if($cliente != ''){
 
 if($tipo_muestra != ''){
 	$consulta_tipo_muestra = "AND m.tipo_muestra_id = '$tipo_muestra'";
+}
+
+if($dato == !""){
+	$consulta_datos = "AND (p.expediente LIKE '%$dato%' OR CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.identidad LIKE '$dato%' OR p.apellido LIKE '$dato%' OR m.number LIKE '$dato%')";
 }
 
 $query = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) AS paciente, m.fecha AS 'fecha', m.diagnostico_clinico AS 'diagnostico_clinico', m.material_eviando As 'material_eviando', m.datos_clinico As 'datos_clinico',
@@ -33,7 +38,9 @@ $query = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.apell
 	WHERE m.estado = $estado AND m.fecha BETWEEN '$fechai' AND '$fechaf'
 	$consulta_cliente
 	$consulta_tipo_muestra
+	$consulta_datos
 	ORDER BY m.fecha DESC";
+
 $result = $mysqli->query($query) or die($mysqli->error);
 
 $nroLotes = 200;
@@ -72,6 +79,7 @@ $registro = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.ap
 	WHERE m.estado = $estado AND m.fecha BETWEEN '$fechai' AND '$fechaf'
 	$consulta_cliente
 	$consulta_tipo_muestra
+	$consulta_datos
 	ORDER BY m.fecha DESC
 	LIMIT $limit, $nroLotes";
 $result = $mysqli->query($registro) or die($mysqli->error);
