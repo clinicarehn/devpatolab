@@ -203,7 +203,7 @@ $mysqli->close();//CERRAR CONEXIÓN
           <div class="form-group mr-1">
             <div class="input-group">
               <div class="input-group-append">
-              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Cliente</span>
               </div>
               <select id="cliente" name="cliente" class="selectpicker" title="Cliente" data-live-search="true">
               </select>
@@ -212,7 +212,7 @@ $mysqli->close();//CERRAR CONEXIÓN
           <div class="form-group mr-1">
             <div class="input-group">
               <div class="input-group-append">
-              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
+              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Muestra</span>
               </div>
               <select id="tipo_muestra" name="tipo_muestra" class="selectpicker" title="Muestra" data-live-search="true">
               </select>

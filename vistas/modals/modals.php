@@ -228,14 +228,6 @@
 
 				<div class="form-row">
 					<div class="col-md-12 mb-3">
-							<input type="text" required readonly id="pro" name="pro" class="form-control"/>
-							<div class="input-group-append">
-								<span class="input-group-text"><div class="sb-nav-link-icon"></div><i class="fa fa-plus-square"></i></span>
-							</div>
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="col-md-12 mb-3">
 					  <label>Fecha <span class="priority">*<span/></label>
 					  <input type="date" required id="fechaCierreCaja" name="fechaCierreCaja" value="<?php echo date ("Y-m-d");?>" class="form-control" />
 					</div>
