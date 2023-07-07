@@ -26,27 +26,8 @@ $(document).ready(function(){
 		pagination(1);
 	});
 	
-	$('#form_main_admision_muestras #bs_regis').on('keyup',function(){
-		paginationMuestras(1);
-	});
-
-	$('#form_main_admision_muestras #estado').on('change',function(){
-		paginationMuestras(1);
-	});
-
-	$('#form_main_admision_muestras #cliente').on('change',function(){
-		paginationMuestras(1);
-	});
-
-	$('#form_main_admision_muestras #tipo_muestra').on('change',function(){
-		paginationMuestras(1);
-	});
-
-	$('#form_main_admision_muestras #fecha_i').on('change',function(){
-		paginationMuestras(1);
-	});
-
-	$('#form_main_admision_muestras #fecha_f').on('change',function(){
+	$('#form_main_admision_muestras #buscar_registro').on('click',function(e){
+		e.preventDefault();
 		paginationMuestras(1);
 	});
 

@@ -251,6 +251,9 @@ $mysqli->close();//CERRAR CONEXIÓN
           <div class="form-group mt-2 mr-1">
               <input type="text" placeholder="Buscar por: Nombre, Identidad, Tipo de Muestra" data-toggle="tooltip" data-placement="top" title="Buscar por: Nombre, Identidad, Tipo de Muestra" id="bs_regis" autofocus class="form-control" size="65"/>
           </div>
+		<div class="form-group mt-2">
+			<button class="btn btn-primary" type="submit" id="buscar_registro" data-toggle="tooltip" data-placement="top" title="Presione aqui para Buscar"><div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i> Buscar</button>
+		</div>		  
         </form>
       </div>
       <div class="card-footer small text-muted">
