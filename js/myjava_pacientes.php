@@ -721,7 +721,14 @@ function getTipoPaciente(pacientes_id){
 }
 
 function modal_muestras(pacientes_id){
-   if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
+	 swal({
+		 title: "Opción en revisión",
+		 text: "Esta opción se encuentra en revisión, por favor si desea consultar las muestras presione el botón de muestras en Admision, esta opción esta en el menú Recepción",
+		 type: "warning",
+		 confirmButtonClass: 'btn-warning'
+	 });
+	 
+   /*if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
 		$('#form_main_historico_muestras #pacientes_id_muestras').val(pacientes_id);
 		$('#modal_historico_muestras').modal({
 			show:true,
@@ -743,7 +750,7 @@ function modal_muestras(pacientes_id){
 			type: "error",
 			confirmButtonClass: 'btn-danger'
 		});
-	}
+	}*/
 }
 
 function modal_agregar_expediente_manual(id, expediente){
