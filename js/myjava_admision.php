@@ -25,7 +25,19 @@ $(document).ready(function(){
 	$('#form_main_admision #tipo').on('change',function(){
 		pagination(1);
 	});
-	
+
+	$('#form_main_admision_muestras #estado').on('change',function(){
+		paginationMuestras(1);
+	});
+
+	$('#form_main_admision_muestras #cliente').on('change',function(){
+		paginationMuestras(1);
+	});
+
+	$('#form_main_admision_muestras #tipo_muestra').on('change',function(){
+		paginationMuestras(1);
+	});
+
 	$('#form_main_admision_muestras #buscar_registro').on('click',function(e){
 		e.preventDefault();
 		paginationMuestras(1);
@@ -332,7 +344,14 @@ $('#formulario_admision #tipo_muestra').on('change', function(){
 
 function pagination(partida){
 	var url = '<?php echo SERVERURL; ?>php/admision/paginar.php';
-    var tipo = $('#form_main_admision #tipo').val();
+    var tipo = "";
+
+	if($('#form_main_admision #tipo').val() == ""){
+		tipo = 1;
+	}else{
+		tipo = $('#form_main_admision #tipo').val();
+	}
+
 	var dato = $('#form_main_admision #bs_regis').val();
 	var estado = $('#form_main_admision #estado').val();
 
@@ -978,14 +997,7 @@ function getRemitenteCodigo(){
 
 
 function showModalhistoriaMuestrasEmpresas(pacientes_id){
-	 swal({
-		 title: "Opcion en revision",
-		 text: "Esta opcion se encuentra en revision, por favor si desea consultar las muestras presione el boton de muestras en Admision, esta opcion esta en el menu Recepcion",
-		 type: "warning",
-		 confirmButtonClass: 'btn-warning'
-	 });
-	 
-	/*if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
+	if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 3){
 	 $('#form_main_historico_muestras #pacientes_id_muestras').val(pacientes_id);
 	 $('#modal_historico_muestras').modal({
 		 show:true,
@@ -1007,7 +1019,7 @@ function showModalhistoriaMuestrasEmpresas(pacientes_id){
 		 type: "error",
 		 confirmButtonClass: 'btn-danger'
 	 });
-	}*/
+	}
 }
 
 $('#form_main_historico_muestras #bs_regis').on('keyup',function(){
@@ -1068,9 +1080,9 @@ function modalClientes(){
 
 	$('#formulario_admision #hospital').val(getHospitalCodigo());
 	$('#formulario_admision #hospital').selectpicker('refresh');
-	
+
 	$('#formulario_admision #remitente').val(getRemitenteCodigo());
-	$('#formulario_admision #remitente').selectpicker('refresh');	
+	$('#formulario_admision #remitente').selectpicker('refresh');
 
 	//HABILITAR OBJETOS
 	$('#formulario_admision #name').attr('readonly', false);
@@ -1263,12 +1275,32 @@ function getEstadoFactura(muestras_id){
 
 function modalCreateBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 		//CONSULTAMOS SI YA SE EMTIO LA FACTURA PARA LA Muestra
-		if(getEstadoFactura(muestras_id) == ""){
-			createBill(muestras_id, producto, nombre_producto, precio_venta, isv);
+		if($('#form_main_admision_muestras #estado').val() == 0){
+			if(getEstadoFactura(muestras_id) == ""){
+				createBill(muestras_id, producto, nombre_producto, precio_venta, isv);
+			}else{
+				swal({
+					title: "Error",
+					text: "Lo sentimos esta factura ya ha sido emitida, por favor diríjase al módulo de facturación y realice le cobro de esta.",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+			}
+		}else if($('#form_main_admision_muestras #estado').val() == 1){
+			if(getEstadoFactura(muestras_id) == ""){
+				createBill(muestras_id, producto, nombre_producto, precio_venta, isv);
+			}else{
+				swal({
+					title: "Error",
+					text: "Lo sentimos esta factura ya ha sido emitida, por favor diríjase al reporte de facturación para buscarla, puede usar el numero de muestra como referencia.",
+					type: "error",
+					confirmButtonClass: 'btn-danger'
+				});
+			}
 		}else{
 			swal({
 				title: "Error",
-				text: "Lo sentimos esta factura ya ha sido emitida, por favor diríjase al módulo de facturación y realice le cobro de esta.",
+				text: "Lo sentimos no puede generar factura a una muestra anulada.",
 				type: "error",
 				confirmButtonClass: 'btn-danger'
 			});

@@ -41,9 +41,14 @@ if($estado == 1){
 }*/
 
 $busqueda_paciente = "";
+$consulta_datos = "";
 
 if($pacientesIDGrupo != ""){
 	$busqueda_paciente = "AND f.pacientes_id = '$pacientesIDGrupo'";
+}
+
+if($dato == !""){
+	$consulta_datos = "AND (CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.apellido LIKE '$dato%' OR p.identidad LIKE '$dato%' OR f.number LIKE '$dato%')";
 }
 
 $query = "SELECT f.facturas_grupal_id AS 'factura_id', f.fecha AS 'fecha', p.identidad AS 'identidad', CONCAT(p.nombre,' ',p.apellido) AS 'paciente', sc.prefijo AS 'prefijo', f.number AS 'numero', s.nombre AS 'servicio', CONCAT(c.nombre,'',c.apellido) AS 'profesional', sc.relleno AS 'relleno', DATE_FORMAT(f.fecha, '%d/%m/%Y') AS 'fecha1', f.pacientes_id AS 'pacientes_id', f.cierre AS 'cierre'
@@ -58,6 +63,7 @@ $query = "SELECT f.facturas_grupal_id AS 'factura_id', f.fecha AS 'fecha', p.ide
 	ON f.colaborador_id = c.colaborador_id
 	WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado ".$in."
 	$busqueda_paciente
+  $consulta_datos
 	ORDER BY f.number DESC";
 
 $result = $mysqli->query($query) or die($mysqli->error);
@@ -102,6 +108,7 @@ $registro = "SELECT f.facturas_grupal_id AS 'facturas_id', f.fecha AS 'fecha', p
 	ON f.colaborador_id = c.colaborador_id
 	WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado ".$in."
 	$busqueda_paciente
+  $consulta_datos
 	ORDER BY f.number DESC
 	LIMIT $limit, $nroLotes";
 $result = $mysqli->query($registro) or die($mysqli->error);

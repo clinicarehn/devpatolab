@@ -188,7 +188,21 @@ $mysqli->close();//CERRAR CONEXIÓN
     				<div class="input-group-append">
     					<span class="input-group-text"><div class="sb-nav-link-icon"></div>Inicio</span>
     				</div>
-    				<input type="date" required="required" id="fecha_b" name="fecha_b" style="width:160px;" data-toggle="tooltip" data-placement="top" title="Fecha Inicial" value="<?php echo date ("Y-m-d");?>" class="form-control"/>
+					<input type="date" required="required" id="fecha_b" name="fecha_b" style="width:160px;" data-toggle="tooltip" data-placement="top" title="Fecha Inicial" value="<?php
+						$fecha = date ("Y-m-d");
+
+						$año = date("Y", strtotime($fecha));
+						$mes = date("m", strtotime($fecha));
+						$dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
+
+						$dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
+						$dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
+
+						$fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
+						$fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));
+
+						echo $fecha_inicial;
+					  ?>" class="form-control"/>
     			</div>
         </div>
         <div class="form-group mr-1">

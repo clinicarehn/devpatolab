@@ -33,9 +33,14 @@ $usuario = $_SESSION['colaborador_id'];
 	}
 }*/
 $busqueda_paciente = "";
+$consulta_datos = "";
 
 if($pacientesIDGrupo != ""){
 	$busqueda_paciente = "AND f.pacientes_id = '$pacientesIDGrupo'";
+}
+
+if($dato == !""){
+	$consulta_datos = "AND (CONCAT(pac.nombre,' ',pac.apellido) LIKE '%$dato%' OR pac.apellido LIKE '$dato%' OR pac.identidad LIKE '$dato%' OR f.number LIKE '$dato%')";
 }
 
 $query = "SELECT p.facturas_id AS 'facturas_id', p.pagos_id AS 'pagos_id', p.fecha AS 'fecha_pago', p.importe AS 'importe', sc.prefijo AS 'prefijo', f.number AS 'numero', CONCAT(pac.nombre,' ',pac.apellido) AS 'paciente', pac.identidad AS 'identidad', sc.relleno AS 'relleno', tp.nombre AS 'tipo_pago', p.efectivo AS 'efectivo', p.tarjeta AS 'tarjeta', tp.tipo_pago_id AS 'tipo_pago_id'
@@ -51,6 +56,7 @@ $query = "SELECT p.facturas_id AS 'facturas_id', p.pagos_id AS 'pagos_id', p.fec
 	INNER JOIN tipo_pago AS tp
 	ON pd.tipo_pago_id = tp.tipo_pago_id
 	$busqueda_paciente
+	$consulta_datos
 	ORDER BY p.fecha DESC";
 
 $result = $mysqli->query($query) or die($mysqli->error);
@@ -96,6 +102,7 @@ $registro = "SELECT p.facturas_id AS 'facturas_id', p.pagos_id AS 'pagos_id', p.
 	INNER JOIN tipo_pago AS tp
 	ON pd.tipo_pago_id = tp.tipo_pago_id
 	$busqueda_paciente
+	$consulta_datos
 	LIMIT $limit, $nroLotes";
 $result = $mysqli->query($registro) or die($mysqli->error);
 

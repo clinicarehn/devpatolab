@@ -33,7 +33,7 @@ SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'p
 	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
 FROM muestras AS m
 INNER JOIN muestras_hospitales AS mh
-ON m.muestras_id = mh.muestras_hospitales_id
+ON m.muestras_id = mh.muestras_id
 INNER JOIN pacientes AS p
 ON mh.pacientes_id = p.pacientes_id
 INNER JOIN tipo_muestra AS tm
@@ -86,7 +86,7 @@ SELECT p.pacientes_id As 'pacientes_id', CONCAT(p.nombre, ' ', p.apellido) As 'p
 	(CASE WHEN m.estado = '1' THEN 'Atendido' ELSE 'Pendiente' END) AS 'estatus', m.muestras_id  As 'muestras_id', m.mostrar_datos_clinicos As 'mostrar_datos_clinicos', m.number AS 'numero', CONCAT(p1.nombre, ' ', p1.apellido) As 'empresa'
 FROM muestras AS m
 INNER JOIN muestras_hospitales AS mh
-ON m.muestras_id = mh.muestras_hospitales_id
+ON m.muestras_id = mh.muestras_id
 INNER JOIN pacientes AS p
 ON mh.pacientes_id = p.pacientes_id
 INNER JOIN tipo_muestra AS tm
