@@ -36,7 +36,7 @@
 					<p><b>Fecha de Activación:</b> <?php echo $consulta_registro['fecha_activacion']; ?></p>
 					<p><b>Fecha Limite de Emisión:</b> <?php echo $consulta_registro['fecha_limite']; ?></p>
 					<p><b>Factura:</b> <?php echo $consulta_registro['tipo_documento']; ?></p>
-					<?php 
+					<?php
 						if($consulta_registro['referencia'] != "" || $consulta_registro['referencia'] != null){
 							echo "<p><b>N° Muestra:</b> ".$consulta_registro['referencia']."</p>";
 						}
@@ -72,7 +72,7 @@
 						</tr>
 						<tr>
 							<td colspan="2"><label>Nombre:</label><p><?php echo $consulta_registro['paciente']; ?></p></td>
-							<td><label>Profesional:</label> <p><?php echo $consulta_registro['profesional']; ?></p></td>
+							<!--<td><label>Usuario:</label> <p><?php echo $consulta_registro['profesional']; ?></p></td>-->
 						</tr>
 					</table>
 				</div>
@@ -105,7 +105,7 @@
 					$importe_excento = 0;
 					$subtotal = 0;
 					$i = 1;
-					
+
 					while($registro_detalles = $result_factura_detalle->fetch_assoc()){
 						$total_ = 0;
 						$importe = 0;
@@ -122,13 +122,13 @@
 						}else{
 							$producto = $registro_detalles["paciente"]."-".$registro_detalles["producto"];
 						}
-						
+
 						if($registro_detalles["isv_valor"] > 0){
 							$importe_gravado += ($registro_detalles["precio"] * $registro_detalles["cantidad"]) -$registro_detalles["descuento"];
 						}else{
 							$importe_excento += ($registro_detalles["precio"] * $registro_detalles["cantidad"]) - $registro_detalles["descuento"];
-						}	
-						
+						}
+
 						echo '
 						  <tr>
 							<td>'.$i.'</td>
@@ -139,7 +139,7 @@
 							<td class="textright">L. '.number_format($total_,2).'</td>
 						  </tr>
 						';
-						
+
 						$i++;
 					}
 					$total_despues_isv = ($total + $isv_neto) - $descuentos;
@@ -153,7 +153,7 @@
 				<tr>
 					<td colspan="5" class="textright"><span>Importe</span></td>
 					<td class="textright"><span>L. <?php echo number_format($total,2);?></span></td>
-				</tr>				
+				</tr>
 				<tr>
 					<td colspan="5" class="textright"><span><?php
 						if ($consulta_registro['edad'] >= 60)
@@ -163,7 +163,7 @@
 					?>
 					</span></td>
 					<td class="textright"><span>L. <?php echo number_format($descuentos,2); ?></span></td>
-				</tr>				
+				</tr>
 				<tr>
 					<td colspan="5" class="textright"><span>Sub-Total</span></td>
 					<td class="textright"><span>L. <?php echo number_format($subtotal,2);?></span></td>

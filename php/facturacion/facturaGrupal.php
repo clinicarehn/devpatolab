@@ -53,7 +53,7 @@
 						</tr>
 						<tr>
 							<td colspan="2"><label>Nombre:</label><p><?php echo $consulta_registro['paciente']; ?></p></td>
-							<!--<td><label>Profesional:</label> <p><?php echo $consulta_registro['profesional']; ?></p></td>-->
+							<!--<td><label>Usuario:</label> <p><?php echo $consulta_registro['profesional']; ?></p></td>-->
 						</tr>
 					</table>
 				</div>
@@ -83,7 +83,7 @@
 					$isv_neto = 0;
 					$cantidad = 0;
 					$importe_gravado = 0;
-					$importe_excento = 0;					
+					$importe_excento = 0;
 					$i = 1;
 					$referencia = "";
 
@@ -102,8 +102,8 @@
 							$importe_gravado += ($registro_detalles["importe"] * $registro_detalles["cantidad"]);
 						}else{
 							$importe_excento += ($registro_detalles["importe"] * $registro_detalles["cantidad"]);
-						}	
-						
+						}
+
 						echo '
 						  <tr>
 							<td>'.$i.'</td>
@@ -114,7 +114,7 @@
 							<td class="textright">L. '.number_format($total_,2).'</td>
 						  </tr>
 						';
-						
+
 						$i++;
 					}
 					$total_despues_isv = ($total + $isv_neto) - $descuentos;
@@ -186,7 +186,7 @@
 		<p class="nota"><center><img src="<?php echo SERVERURL; ?>img/sello_pagado.png" width="235px" height="90px"></p>
 		<?php
 			}
-		?>		
+		?>
 		<p class="nota"><center><b>Original:</b> Cliente</center></p>
 		<p class="nota"><center><b>Copia:</b> Emisor</center></p>
 		<h4 class="label_gracias"><?php  echo $consulta_registro["eslogan"]?></h4>

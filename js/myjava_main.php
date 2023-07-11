@@ -8,8 +8,8 @@ function getTemporales(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -23,8 +23,8 @@ function getActivos(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -38,8 +38,8 @@ function getPasivos(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -53,8 +53,8 @@ function getFallecidos(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -69,8 +69,8 @@ function getPreclinicaCE(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -84,8 +84,8 @@ function getPreclinicaUNA(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -99,8 +99,8 @@ function getPendientesCE(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -114,8 +114,8 @@ function getPendientesUNA(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -129,8 +129,8 @@ function getPendientesClinica(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -144,8 +144,8 @@ function getInasistenciasCE(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -159,8 +159,8 @@ function getInasistenciasUNA(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -174,8 +174,8 @@ function getInasistenciasClinica(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -189,8 +189,8 @@ function getInasistenciasTerapia(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -204,8 +204,8 @@ function getExtemporaneosCE(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = "";			  		  		  			  
+		success:function(data){
+          usuario = "";
 		}
 	});
 	return usuario;
@@ -219,8 +219,8 @@ function getExtemporaneosUNA(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = "";			  		  		  			  
+		success:function(data){
+          usuario = "";
 		}
 	});
 	return usuario;
@@ -234,8 +234,8 @@ function getExtemporaneoCrisis(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = "";			  		  		  			  
+		success:function(data){
+          usuario = "";
 		}
 	});
 	return usuario;
@@ -251,13 +251,13 @@ function main(){
 	var pasivo = getPasivos();
 	var fallecido = getFallecidos();
 	/***********************************************/
-	
+
 	var preclinica_ce = getPreclinicaCE();
-	var preclinica_una = getPreclinicaUNA();	
-	/***********************************************/	
+	var preclinica_una = getPreclinicaUNA();
+	/***********************************************/
 	var pendientes_ce = getPendientesCE();
 	var pendientes_una = getPendientesUNA();
-    var pendientes_clinica = getPendientesClinica();	
+    var pendientes_clinica = getPendientesClinica();
 	/***********************************************/
 	var inasistencias_ce = getInasistenciasCE();
 	var inasistencias_una = getInasistenciasUNA();
@@ -265,16 +265,16 @@ function main(){
 	var inasistencias_terapia = getInasistenciasTerapia();
 	/***********************************************/
 	var extemporaneos_ce = getExtemporaneosCE();
-	var extemporaneos_una = getExtemporaneosUNA();	
+	var extemporaneos_una = getExtemporaneosUNA();
 	var extemporaneos_crisis = getExtemporaneoCrisis();
 	/***********************************************/
 	var maida = getPendientesMAIDA();
     var s_h = getPendientesSH();
 	/***********************************************/
-	
-	
-	
-    //Usuarios	
+
+
+
+    //Usuarios
 	$('#temporal').html("Total de Usuarios Temporales: " + temporal);
 	$('#activos').html("Total de Usuarios Activos: " + activo);
 	$('#pasivos').html("Total de Usuarios Pasivos: " + pasivo);
@@ -286,11 +286,11 @@ function main(){
      	+ pendientes_clinica + "<br/>MAIDA: ");
 	$('#inasistencias').html("Consulta Externa: " + inasistencias_ce + "<br/>UNA: " + inasistencias_una + "<br/>Clínica de Deposito: " + inasistencias_clinica + "<br/>Terapia Ocupacional: " + inasistencias_terapia);
 	$('#extemporaneos').html("Consulta Externa: " + extemporaneos_ce + "<br/>UNA: " + extemporaneos_una + "<br/>Usuario en Crisis: " + extemporaneos_crisis);
-    
+
 	datos++;
     // lógica para obtener y mostrar los datos
     if (datos === 5)
-       clearInterval(relojito);	
+       clearInterval(relojito);
 }
 
 clearInterval(relojito);
@@ -313,8 +313,8 @@ function getPendientesMAIDA(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;
@@ -327,8 +327,8 @@ function getPendientesSH(){
 	    type:'POST',
 		url:url,
 		async: false,
-		success:function(data){	
-          usuario = data;			  		  		  			  
+		success:function(data){
+          usuario = data;
 		}
 	});
 	return usuario;

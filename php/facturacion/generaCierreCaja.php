@@ -1,5 +1,5 @@
 <?php
-session_start();   
+session_start();
 include "../funtions.php";
 
 header("Content-Type: text/html;charset=utf-8");
@@ -8,7 +8,7 @@ include_once "../../dompdf/autoload.inc.php";
 require_once '../../pdf/vendor/autoload.php';
 
 use Dompdf\Dompdf;
-	 	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
@@ -26,8 +26,8 @@ $query = "SELECT e.nombre AS 'empresa', CONCAT(c.nombre, ' ', c.apellido) AS 'us
     INNER JOIN pagos AS p
     ON f.facturas_id = p.facturas_id
 	INNER JOIN colaboradores AS c
-	ON p.usuario = c.colaborador_id  
-	GROUP BY e.empresa_id";	
+	ON p.usuario = c.colaborador_id
+	GROUP BY e.empresa_id";
 $result = $mysqli->query($query) or die($mysqli->error);
 
 //OBTENER DETALLE DE FACTURA
@@ -54,17 +54,17 @@ $incremento = "";
 $no_factura = "";
 
 if($result->num_rows>0){
-	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];	
+	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];
 	$prefijo = $consulta2['prefijo'];
 	$numero = $consulta2['numero'];
 	$relleno = $consulta2['relleno'];
 	$rango_final = $consulta2['rango_final'];
-	$fecha_limite = $consulta2['fecha_limite'];	
+	$fecha_limite = $consulta2['fecha_limite'];
 	$incremento = $consulta2['incremento'];
-}								
+}
 
 if($result->num_rows>0){
-	$consulta_registro = $result->fetch_assoc();	
+	$consulta_registro = $result->fetch_assoc();
 
 	ob_start();
 	include(dirname('__FILE__').'/cierreCaja.php');
@@ -72,7 +72,7 @@ if($result->num_rows>0){
 
 	// instantiate and use the dompdf class
 	$dompdf = new Dompdf();
-	
+
 	$dompdf->set_option('isRemoteEnabled', true);
 
 	$dompdf->loadHtml(utf8_decode(utf8_encode($html)));
@@ -80,10 +80,10 @@ if($result->num_rows>0){
 	$dompdf->setPaper('B7', 'portrait');
 	// Render the HTML as PDF
 	$dompdf->render();
-	
+
 	// Output the generated PDF to Browser
 	$dompdf->stream('Reporte Cierre de Caja.pdf',array('Attachment'=>0));
-	
-	exit;	
+
+	exit;
 }
 ?>

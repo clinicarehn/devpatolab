@@ -219,9 +219,9 @@ if($colaborador_id != "" || $colaborador_id != null){
     				<input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" data-toggle="tooltip" data-placement="top" title="Fecha Final" class="form-control"/>
     			</div>
         </div>
-        <div class="form-group mr-1">
+        <div class="form-group mt-2 mr-1">
           <div class="input-group">
-		          <input type="text" placeholder="Buscar por: Expediente, Paciente, Identidad o Número de Factura" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Número de Factura" id="bs_regis" autofocus class="form-control" size="45"/>
+		          <input type="text" placeholder="Buscar por: Expediente, Paciente, Identidad o Número de Factura" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Número de Factura" id="bs_regis" autofocus class="form-control" size="65"/>
     			</div>
         </div>
         <div class="form-group">

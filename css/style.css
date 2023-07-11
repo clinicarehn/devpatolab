@@ -144,7 +144,7 @@ input:checked + .slider:before {
     margin-left: 0;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px; 
+    right: 0px;
 }
 
 .customButtom {
@@ -153,16 +153,16 @@ input:checked + .slider:before {
 /*FIN BOTON ON/OFF SWITCH*/
 
 /*INICIO FORM PAGOS*/
-table  { 
-	border-collapse: collapse; 
-	width: 100%;	
+table  {
+	border-collapse: collapse;
+	width: 100%;
 }
 
-th, td { 
-	padding: 8px 16px; 
+th, td {
+	padding: 8px 16px;
 }
 
-th{ 
+th{
 	background:#17a2b8;
 	color: white;
 	text-align: center;
@@ -172,60 +172,60 @@ th{
 	height: 60px;
 	display:flex;
 	justify-content: center;
-	align-items: center; 
+	align-items: center;
 	text-align: center;
 	font-size: 20px;
   }
-  
-  .inputfield-details {	
+
+  .inputfield-details {
 	display:flex;
 	justify-content: center;
-	align-items: center; 
+	align-items: center;
 	text-align: center;
 	color: black;
 	border: none;
 	background: #fff;
-	background-color: #fff;  
+	background-color: #fff;
   }
-  
+
   .inputfield-details1 {
 	background: #fff;
 	background-color: #fff;
 	border: none;
   }
-  
+
   .labels-totals {
 	display:flex;
 	justify-content: center;
-	align-items: center; 
+	align-items: center;
 	text-align: center;
 	font-size: 15px;
   }
-  
+
   hr.line_table{
 	  height: 5px;
 	  border: 0;
 	  box-shadow: 0 10px 10px -10px #8c8b8b inset;
   }
-  
+
   .icon-color{
 	  color: #6c757d;
 	  z-index:-1;
   }
-  
-  
+
+
   #bg-div {
 	  margin: 0;
 	  margin-top: 100px;
 	  margin-bottom: 100px
   }
-  
+
   #border-btm {
 	  padding-bottom: 20px;
 	  margin-bottom: 0px;
 	  box-shadow: 0px 35px 2px -35px lightgray
   }
-  
+
   #test {
 	  margin-top: 0px;
 	  margin-bottom: 40px;
@@ -235,28 +235,28 @@ th{
 	  height: 30px;
 	  background-color: white
   }
-  
+
   .active1 {
 	  color: #17a2b8 !important;
 	  font-weight: bold
   }
-  
+
   .bar4 {
 	  width: 35px;
 	  height: 5px;
 	  background-color: #ffffff;
 	  margin: 6px 0
-  } 
-  
+  }
+
   .list-group .tabs {
 	color: #000000
   }
-  
+
   #menu-toggle1 {
 	  height: 50px;
 	  cursor: pointer
   }
-  
+
   #menu-toggle2 {
 	  height: 50px;
 	  cursor: pointer
@@ -270,8 +270,8 @@ th{
 #menu-toggleGrupal2 {
 	height: 50px;
 	cursor: pointer
-}  
-  
+}
+
   #new-label {
 	  padding: 2px;
 	  font-size: 10px;
@@ -281,7 +281,7 @@ th{
 	  border-radius: 5px;
 	  margin-left: 5px
   }
-  
+
   #sidebar-wrapper {
 	  min-height: 100vh;
 	  margin-left: -15rem;
@@ -290,60 +290,60 @@ th{
 	  -o-transition: margin .25s ease-out;
 	  transition: margin .25s ease-out
   }
-  
+
   #sidebar-wrapper .sidebar-heading {
 	  padding: 0.875rem 1.25rem;
 	  font-size: 1.2rem
   }
-  
+
   #sidebar-wrapper .list-group {
 	  width: 15rem
   }
-  
+
   #page-content-wrapper {
 	  min-width: 100vw;
 	  padding-left: 20px;
 	  padding-right: 20px
   }
-  
+
   #wrapper.toggled #sidebar-wrapper {
 	  margin-left: 0
   }
-  
+
   .list-group-item.active {
 	  z-index: 2;
 	  color: #fff;
 	  background-color: #fff !important;
 	  border-color: #fff !important
   }
-  
+
   @media (min-width: 768px) {
 	  #sidebar-wrapper {
 		  margin-left: 0
 	  }
-  
+
 	  #page-content-wrapper {
 		  min-width: 0;
 		  width: 100%
 	  }
-  
+
 	  #wrapper.toggled #sidebar-wrapper {
 		  margin-left: -15rem;
 		  display: none
 	  }
   }
-  
+
   .card0 {
 	  margin-top: 10px;
 	  margin-bottom: 10px
   }
-  
+
   .top-highlight {
 	  color: #00C853;
 	  font-weight: bold;
 	  font-size: 20px
   }
-  
+
   .form-card input,
   .form-card textarea {
 	  padding: 10px 15px 5px 15px;
@@ -359,7 +359,7 @@ th{
 	  font-size: 14px;
 	  letter-spacing: 1px
   }
-  
+
   .form-card input:focus,
   .form-card textarea:focus {
 	  -moz-box-shadow: 0px 0px 0px 1.5px skyblue !important;
@@ -369,7 +369,7 @@ th{
 	  border: 1px solid skyblue;
 	  outline-width: 0
   }
-  
+
   input.btn-info {
 	  height: 50px;
 	  color: #ffffff;
@@ -377,21 +377,21 @@ th{
 	  font-weight: bold;
 	  font-size:20px;
   }
-  
+
   #below-btn a {
 	  font-weight: bold;
 	  color: #000000
   }
-  
+
   input:focus+label {
 	  color: #1E88E5
   }
-  
+
   #qr {
 	  margin-bottom: 150px;
 	  margin-top: 50px
   }
-  
+
   .color-gray-div{
 	  background-color:#e9ecef;
   }
@@ -427,24 +427,24 @@ Se debe agregar unos codigos que estan en myjava_facturacion.php inician con Men
 	padding-top:6px;
 }
 
-.tableFixHead { 
-	overflow: auto; 
+.tableFixHead {
+	overflow: auto;
 	width: 100%;
 	height:340px;/*TAMAÑO DE LA TABLA EN EL DE DETALLE DE PRODUCTOS*/
 }
 
-.tableFixHead thead th { 
-	position: sticky; 
-	top: 0; 
-	z-index: 1; 
+.tableFixHead thead th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
 }
 
-.tableFixHead tr { 
+.tableFixHead tr {
 	background: #fff;
 }
 
 .table-responsive{
-	position: relative; 
+	position: relative;
 	z-index: 0
 }
 
@@ -471,4 +471,16 @@ Se debe agregar unos codigos que estan en myjava_facturacion.php inician con Men
 
 .my-float-ws{
 	margin-top:16px;
+}
+
+.prueba-sistema{
+	position: absolute;
+	text-align: center;
+	/*left: 25%;
+	top: 70%;*/
+	/*transform: translateX(-70%) translateY(-40%);*/
+	font-size: 50px;
+	z-index: 1;
+	/*transform: rotate(-45deg);*/
+  color: #ecb4b4
 }

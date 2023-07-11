@@ -148,9 +148,9 @@ $mysqli->close();//CERRAR CONEXIÓN
 					<div class="col-md-3 mb-3">
 					    <label for="departamento_id">Sexo <span class="priority">*<span/></label>
 						<div class="input-group mb-3">
-							<select class="selectpicker" id="sexo_manual" name="sexo_manual" required data-live-search="true" title="Sexo">			  
+							<select class="selectpicker" id="sexo_manual" name="sexo_manual" required data-live-search="true" title="Sexo">
 							</select>
-						</div>					  
+						</div>
 					</div>
 				</div>
 				 <div class="form-check-inline" style="display:none;">

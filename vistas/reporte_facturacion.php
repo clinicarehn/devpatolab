@@ -217,7 +217,7 @@ $mysqli->close();//CERRAR CONEXIÓN
           <input type="text" placeholder="Buscar por: Paciente, Identidad o Factura" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Número de Factura" id="bs_regis" autofocus class="form-control" size="45"/>
         </div>
         <div class="form-group mt-2 mr-1">
-          <button class="btn btn-primary" type="submit" id="factura" data-toggle="tooltip" data-placement="top" title="Generar Cargo de Facturació"><div class="sb-nav-link-icon"></div><i class="fas fa-calculator fa-lg"></i> Cierre</button>
+          <button class="btn btn-primary" type="submit" id="factura" data-toggle="tooltip" data-placement="top" title="Generar Cargo de Facturación"><div class="sb-nav-link-icon"></div><i class="fas fa-calculator fa-lg"></i> Cierre</button>
         </div>
         <div class="form-group mt-2">
             <button class="btn btn-success" type="submit" id="reporte" data-toggle="tooltip" data-placement="top" title="Exportar"><div class="sb-nav-link-icon"></div><i class="fas fa-download fa-lg"></i> Exportar</button>
