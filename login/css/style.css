@@ -80,7 +80,7 @@
         width:300px;
 		margin:1vh auto;
     }
-    
+
     #logreg-forms  .social-login{
         width:200px;
         margin:0 auto;
@@ -92,7 +92,7 @@
         color:white;
         width:200px;
         height: 56px;
-        
+
     }
     #logreg-forms .social-btn:nth-child(1){
         margin-bottom: 5px;
@@ -103,11 +103,11 @@
     #logreg-forms  .facebook-btn:after{
         content:'Facebook';
     }
-  
+
     #logreg-forms  .google-btn:after{
         content:'Google+';
     }
-    
+
 }
 
 .bien{
@@ -116,7 +116,7 @@
 	font-size:14px;
 	color:#FFF;
 	padding:5px;
-    border-radius: 6px;	
+    border-radius: 6px;
 	border:0;
     outline:0;
 }
@@ -127,7 +127,7 @@
 	font-size:14px;
 	color:#FFF;
 	padding:5px;
-    border-radius: 6px;	
+    border-radius: 6px;
 	border:0;
     outline:0;
 }
@@ -155,4 +155,16 @@
 
 .my-float-ws{
 	margin-top:16px;
+}
+
+.prueba-sistema{
+	position: absolute;
+	text-align: center;
+	/*left: 25%;
+	top: 70%;*/
+	/*transform: translateX(-70%) translateY(-40%);*/
+	font-size: 50px;
+	z-index: 1;
+	/*transform: rotate(-45deg);*/
+  color: #ecb4b4
 }
