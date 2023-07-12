@@ -299,7 +299,7 @@ if($tipo_paciente_muestra == 2 && $paciente_muestras == 0){
 				//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
 				$historial_numero = historial();
 				$estado_historial = "Agregar";
-				$observacion_historial = "Se ha agregado un nueva muestra con un diagnostico: $diagonostico_muestra";
+				$observacion_historial = "Se ha agregado un nueva muestra con un diagnostico: $diagonostico_muestra, con el numero de muestra $number";
 				$modulo = "Muestras";
 				$insert = "INSERT INTO historial 
 				   VALUES('$historial_numero','0','0','$modulo','$muestras_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";	 
