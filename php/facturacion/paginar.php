@@ -101,12 +101,33 @@ $registro = "SELECT f.facturas_id AS facturas_id, DATE_FORMAT(f.fecha, '%d/%m/%Y
 	LEFT JOIN pacientes As p1
 	ON mh.pacientes_id = p1.pacientes_id
 	INNER JOIN muestras AS m
-    ON f.muestras_id = m.muestras_id	
+    ON f.muestras_id = m.muestras_id
 	".$where."
 	GROUP BY m.muestras_id
 	ORDER BY f.pacientes_id ASC
 	LIMIT $limit, $nroLotes";
 $result = $mysqli->query($registro) or die($mysqli->error);
+
+$estado_ = "";
+$texto1 = "";
+$texto2 = "";
+
+if($estado == 1){
+	$estado_ = "Borrador";
+	$texto1 = "Facturar";
+	$texto2 = "Eliminar";
+}else if($estado == 2){
+	$estado_ = "Pagada";
+	$texto1 = "Enviar";
+	$texto2 = "Imprimir";
+}else if($estado == 4){
+	$estado_ = "Crédito";
+	$texto1 = "Cobrar";
+	$texto2 = "Imprimr";
+}else{
+	$estado_ = "Cancelada";
+	$texto1 = "Imprimir";
+}
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 	<thead>
@@ -114,7 +135,7 @@ $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<th width="2.66%"><input id="checkAllFactura" class="formcontrol" type="checkbox"></th>
 			<th width="2.66%">No.</th>
 			<th width="4.66%">Fecha</th>
-			<th width="8.66%">Muestra</th>
+			<th width="7.66%">Muestra</th>
 			<th width="8.66%">Factura</th>
 			<th width="8.66%">Empresa</th>
 			<th width="6.66%">Identidad</th>
@@ -123,9 +144,9 @@ $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<th width="6.66%">ISV</th>
 			<th width="6.66%">Descuento</th>
 			<th width="6.66%">Neto</th>
-			<th width="4.66%">Estado</th>
-			<th width="7.66%">Factuar</th>
-			<th width="7.66%">Eliminar</th>
+			<th width="3.66%">Estado</th>
+			<th width="8.66%">'.$texto1.'</th>
+			<th width="8.66%">'.$texto2.'</th>
 		</tr>
 	</thead>';
 $i = 1;
@@ -161,13 +182,14 @@ while($registro2 = $result->fetch_assoc()){
 	$total = ($neto_antes_isv + $isv_neto) - $descuento;
 
 	if($registro2['numero'] == 0){
-		$numero = "Aún no se ha generado";		
+		$numero = "Aún no se ha generado";
 	}else{
 		$numero = $registro2['prefijo'].''.rellenarDigitos($registro2['numero'], $registro2['relleno']);
 	}
 
 	$estado = $registro2['estado'];
 	$factura = "";
+	$factura1 = "";
 	$eliminar = "";
 	$pay = "";
 	$send_mail = "";
@@ -177,28 +199,20 @@ while($registro2 = $result->fetch_assoc()){
 		$eliminar = '<a class="btn btn btn-secondary ml-2" href="javascript:deleteBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>';
 	}
 
-	if($estado==2 || $estado==3 || $estado==4){
+	if($estado==3){
 		$factura = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';
 	}
 
-	if($estado == 2){
-		$send_mail = '<a class="btn btn btn-secondary ml-2" href="javascript:mailBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="far fa-paper-plane fa-lg"></i> Enviar</a>';
+	if($estado==4 || $estado == 2){
+		$factura1 = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';
 	}
-	
-	if($estado == 4){
-		$pay_credit = '
-		<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" href="javascript:pago('.$registro2['facturas_id'].');void(0);" class="fab fa-amazon-pay fa-lg" title="Pagar Factura"></a>';		
-	}		
 
-	$estado_ = "";
-	if($estado == 1){
-		$estado_ = "Borrador";
-	}else if($estado == 2){
-		$estado_ = "Pagada";
-	}else if($estado == 4){
-		$estado_ = "Crédito";
-	}else{
-		$estado_ = "Cancelada";
+	if($estado == 2){
+		$send_mail = '<a class="btn btn btn-secondary ml-2" href="javascript:mailBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="far fa-paper-plane fa-lg" title="Enviar Factura por Correo"></i> Enviar</a>';
+	}
+
+	if($estado == 4 ){
+		$pay_credit = '<a class="btn btn btn-secondary ml-2" href="javascript:pago('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fab fa-amazon-pay fa-lg" title="Pagar Factura"></i> Cobrar</a>';
 	}
 
 	if($estado==1){
@@ -245,10 +259,14 @@ while($registro2 = $result->fetch_assoc()){
 			<td>'.$estado_.'</td>
 			<td>
 			  '.$pay.'
+				'.$pay_credit.'
+				'.$send_mail.'
+				'.$factura.'
 			</td>
 			<td>
 			  '.$eliminar.'
-			</td>			
+				'.$factura1.'
+			</td>
 
 			</tr>';
 			$i++;
