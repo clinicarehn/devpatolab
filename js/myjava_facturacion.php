@@ -372,35 +372,18 @@ function funciones(){
 //INICIO PAGINACION DE REGISTROS
 function pagination(partida){
 	var url = '<?php echo SERVERURL; ?>php/facturacion/paginar.php';
-    var fechai = $('#form_main_facturas #fecha_b').val();
+
+	var fechai = $('#form_main_facturas #fecha_b').val();
 	var fechaf = $('#form_main_facturas #fecha_f').val();
-	var dato = '';
-	var tipo_paciente_grupo = '';
-	var pacientesIDGrupo = '';
+	var dato = $('#form_main_facturas #bs_regis').val();
+	var tipo_paciente_grupo = $('#form_main_facturas #tipo_paciente_grupo').val();
+	var pacientesIDGrupo = $('#form_main_facturas #pacientesIDGrupo').val();
 	var estado = '';
 
-    if($('#form_main_facturas #tipo_paciente_grupo').val() == "" || $('#form_main_facturas #tipo_paciente_grupo').val() == null){
-		tipo_paciente_grupo = '';
-	}else{
-		tipo_paciente_grupo = $('#form_main_facturas #tipo_paciente_grupo').val();
-	}
-
-    if($('#form_main_facturas #pacientesIDGrupo').val() == "" || $('#form_main_facturas #pacientesIDGrupo').val() == null){
-		pacientesIDGrupo = '';
-	}else{
-		pacientesIDGrupo = $('#form_main_facturas #pacientesIDGrupo').val();
-	}
-
-    if($('#form_main_facturas #estado').val() == "" || $('#form_main_facturas #estado').val() == null){
+  if($('#form_main_facturas #estado').val() == "" || $('#form_main_facturas #estado').val() == null){
 		estado = 1;
 	}else{
 		estado = $('#form_main_facturas #estado').val();
-	}
-
-	if($('#form_main_facturas #bs_regis').val() == "" || $('#form_main_facturas #bs_regis').val() == null){
-		dato = '';
-	}else{
-		dato = $('#form_main_facturas #bs_regis').val();
 	}
 
 	$.ajax({

@@ -15,9 +15,25 @@ $pacientesIDGrupo = $_POST['pacientesIDGrupo'];
 $estado = $_POST['estado'];
 $usuario = $_SESSION['colaborador_id'];
 
+$busqueda_tipo_paciente_grupo = "";
+$busqueda_pacientesIDGrupo = "";
+$consulta_datos = "";
+
+if($dato != ""){
+	$consulta_datos = "AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
+}
+
+if($tipo_paciente_grupo != ""){
+	$busqueda_tipo_paciente_grupo = "AND p.tipo_paciente_id = '$tipo_paciente_grupo'";
+}
+
+if($pacientesIDGrupo != ""){
+	$busqueda_pacientesIDGrupo = "AND p.pacientes_id = '$pacientesIDGrupo'";
+}
+
 if($estado == 2 || $estado == 4){
 	if($tipo_paciente_grupo == "" && $pacientesIDGrupo == ""){
-		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado = '$estado' AND f.usuario = '$colaborador_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
+		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado = '$estado' AND f.usuario = '$colaborador_id' ";
 	}else if($tipo_paciente_grupo != "" && $pacientesIDGrupo == ""){
 		$where = "WHERE p.tipo_paciente_id = '$tipo_paciente_grupo' AND f.estado = '$estado' AND f.usuario = '$colaborador_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}else if($tipo_paciente_grupo != "" && $pacientesIDGrupo != ""){
@@ -52,8 +68,11 @@ $query = "SELECT f.facturas_id AS facturas_id, DATE_FORMAT(f.fecha, '%d/%m/%Y') 
 	LEFT JOIN pacientes As p1
 	ON mh.pacientes_id = p1.pacientes_id
 	INNER JOIN muestras AS m
-    ON f.muestras_id = m.muestras_id
-	".$where."
+  ON f.muestras_id = m.muestras_id
+	WHERE f.estado = '$estado'
+	$busqueda_tipo_paciente_grupo
+	$busqueda_pacientesIDGrupo
+	$consulta_datos
 	GROUP BY m.muestras_id
 	ORDER BY f.pacientes_id ASC";
 $result = $mysqli->query($query) or die($mysqli->error);
@@ -101,8 +120,11 @@ $registro = "SELECT f.facturas_id AS facturas_id, DATE_FORMAT(f.fecha, '%d/%m/%Y
 	LEFT JOIN pacientes As p1
 	ON mh.pacientes_id = p1.pacientes_id
 	INNER JOIN muestras AS m
-    ON f.muestras_id = m.muestras_id
-	".$where."
+  ON f.muestras_id = m.muestras_id
+	WHERE f.estado = '$estado'
+	$busqueda_tipo_paciente_grupo
+	$busqueda_pacientesIDGrupo
+	$consulta_datos	
 	GROUP BY m.muestras_id
 	ORDER BY f.pacientes_id ASC
 	LIMIT $limit, $nroLotes";

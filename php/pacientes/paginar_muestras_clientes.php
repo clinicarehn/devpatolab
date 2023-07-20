@@ -121,7 +121,7 @@ while($registro2 = $result->fetch_assoc()){
 			<td>'.$empresa.'</td>
 			<td>'.$registro2['diagnostico_clinico'].'</td>
 			<td>'.$registro2['material_eviando'].'</td>
-            <td>'.$registro2['datos_clinico'].'</td>
+      <td>'.$registro2['datos_clinico'].'</td>
 			</tr>';
 			$i++;
 }

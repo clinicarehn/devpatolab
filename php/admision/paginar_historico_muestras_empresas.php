@@ -1,7 +1,7 @@
-<?php 
-session_start();   
+<?php
+session_start();
 include "../funtions.php";
-	
+
 //CONEXION A DB
 $mysqli = connect_mysqli();
 
@@ -24,7 +24,7 @@ $query = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.apell
 	INNER JOIN tipo_muestra AS tm
 	ON m.tipo_muestra_id = tm.tipo_muestra_id
 	".$where."
-	ORDER BY m.fecha DESC";	
+	ORDER BY m.fecha DESC";
 $result = $mysqli->query($query) or die($mysqli->error);
 
 $nroLotes = 5;
@@ -61,7 +61,7 @@ $registro = "SELECT p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre, ' ', p.ap
 	INNER JOIN pacientes AS p
 	ON m.pacientes_id = p.pacientes_id
 	INNER JOIN tipo_muestra AS tm
-	ON m.tipo_muestra_id = tm.tipo_muestra_id	
+	ON m.tipo_muestra_id = tm.tipo_muestra_id
 	".$where."
 	ORDER BY m.fecha DESC
 	LIMIT $limit, $nroLotes";
@@ -72,14 +72,14 @@ $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<tr>
 			<th width="1.3%">No.</th>
 			<th width="10.3%">Fecha</th>
-			<th width="15.3%">Número</th>			
+			<th width="15.3%">Número</th>
 			<th width="24.3%">Paciente</th>
 			<th width="16.3%">Diagnostico Clínico</th>
 			<th width="16.3%">Material Enviado</th>
 			<th width="16.3%">Datos Clínicos</th>
 			</tr>';
-$i = 1;				
-while($registro2 = $result->fetch_assoc()){ 
+$i = 1;
+while($registro2 = $result->fetch_assoc()){
 	$muestras_id = $registro2['muestras_id'];
 	//CONSULTAR EL PACIENTE SI ES ENVIADO POR UNA EMPRESA O CLINICA
 	$query_paciente = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) As 'paciente'
@@ -92,14 +92,14 @@ while($registro2 = $result->fetch_assoc()){
 	$pacientes_id_cliente_codigo = "";
 	$pacientes_id_cliente = "";
 
-	if($result_paciente->num_rows>0){	
+	if($result_paciente->num_rows>0){
 		$valores_paciente = $result_paciente->fetch_assoc();
 		$pacientes_id_cliente_codigo = $valores_paciente['pacientes_id'];
-		$pacientes_id_cliente = $valores_paciente['paciente'];	
+		$pacientes_id_cliente = $valores_paciente['paciente'];
 	}
-	
+
 	$empresa = "";
-	
+
 	if($pacientes_id_cliente == ""){
 		$empresa = $registro2['paciente'];
 	}else{
@@ -118,29 +118,29 @@ while($registro2 = $result->fetch_assoc()){
 	if($result_muestra_fact->num_rows>0){
 		$factura_muestra = "Generada";
 		$title_factura = "Esta factura ya ha sido generada, verifique en el módulo de facturación para emitir el pago";
-	}	
-	
+	}
+
 	$tabla = $tabla.'<tr>
-			<td>'.$i.'</td> 
-			<td>'.$registro2['fecha'].'</td>	
-			<td>'.$registro2['numero'].'</td>			
-			<td>'.$empresa.'</td>	
+			<td>'.$i.'</td>
+			<td>'.$registro2['fecha'].'</td>
+			<td>'.$registro2['numero'].'</td>
+			<td>'.$empresa.'</td>
 			<td>'.$registro2['diagnostico_clinico'].'</td>
 			<td>'.$registro2['material_eviando'].'</td>
-            <td>'.$registro2['datos_clinico'].'</td>		
-			</tr>';	
-			$i++;				
+            <td>'.$registro2['datos_clinico'].'</td>
+			</tr>';
+			$i++;
 }
 
 if($nroProductos == 0){
 	$tabla = $tabla.'<tr>
 	   <td colspan="12" style="color:#C7030D">No se encontraron resultados</td>
-	</tr>';		
+	</tr>';
 }else{
    $tabla = $tabla.'<tr>
 	  <td colspan="12"><b><p ALIGN="center">Total de Registros Encontrados: '.$nroProductos.'</p></b>
-   </tr>';		
-}        
+   </tr>';
+}
 
 $tabla = $tabla.'</table>';
 
@@ -150,5 +150,5 @@ $array = array(0 => $tabla,
 echo json_encode($array);
 
 $result->free();//LIMPIAR RESULTADO
-$mysqli->close();//CERRAR CONEXIÓN	
+$mysqli->close();//CERRAR CONEXIÓN
 ?>

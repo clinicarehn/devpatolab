@@ -221,156 +221,197 @@ if($query){
 		$pacientes_id_muestra = $empresa;
 	}
 
-	$muestras_id  = correlativo('muestras_id', 'muestras');
-	$insert = "INSERT INTO muestras			VALUES('$muestras_id','$pacientes_id_muestra','$secuencias_id','$servicio_id','$usuario','$tipo_muestra_id','$number','$referencia','$fecha','$estado_muestra','$sitio_muestra','$diagnostico_clinico','$material_enviado','$datos_clinicos','$mostrar_datos_clinicos','$hospital_clinica','$categoria_muestras','$usuario','$fecha_registro')";
-	$mysqli->query($insert) or die($mysqli->error);
+	$existe = 0;
+	$tipoPacienteConsulta = "";
 
-	if($flag){
-		$siguiente += $incremento;
+	//VERIFICAMOS SI EL CLIENTE ES UNA Empresa
+	if($empresa == ""){
+		//VERIFICAMOS QUE NO EXISTA LA MUESTRA DE ESTE Paciente
+		$queryMuestraCliente = "SELECT muestras_id
+					FROM muestras
+					WHERE pacientes_id = '$cliente_admision' AND estado = 0 AND tipo_muestra_id = '$tipo_muestra_id'";
+		$resultMuestrasCliente = $mysqli->query($queryMuestraCliente) or die($mysqli->error);
 
-		//ACTUAIZAMOS EL NUMERO SIGUIENTE EN EL ADMINISTRADOR DE SECUENCIAS
-		$update_secuencia = "UPDATE secuencias_muestas
-			SET
-				siguiente = '$siguiente'
-			WHERE secuencias_id = '$secuencias_id'";
-		$mysqli->query($update_secuencia) or die($mysqli->error);
+		if($resultMuestrasCliente->num_rows>0){
+			$existe = 1;
+			$tipoPacienteConsulta = "el Cliente";
+		}
+	}else{
+		//CONSULTAMOS SI EXISTE EL REGISTRO EN muestras_hospitales
+		$queryMuestraEmpresa = "SELECT mh.muestras_hospitales_id
+					FROM muestras_hospitales AS mh
+					INNER JOIN muestras As m
+					ON mh.muestras_id = m.muestras_id
+					WHERE m.pacientes_id = '$empresa' AND mh.pacientes_id = '$cliente_admision' AND m.estado = 0 AND m.tipo_muestra_id = '$tipo_muestra_id'";
+		$resultMuestrasEmpresa = $mysqli->query($queryMuestraEmpresa) or die($mysqli->error);
+
+		if($resultMuestrasEmpresa->num_rows>0){
+			$existe = 1;
+			$tipoPacienteConsulta = "La empresa";
+		}
 	}
 
-	//OBTENER NOMBRE DEL CLIENTE EN EL REGISTRO DE LA MUESTRA
-	$query_cliente_muestra = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS 'cliente'
-		FROM muestras AS m
-		INNER JOIN pacientes AS p
-		ON m.pacientes_id = p.pacientes_id
-		WHERE m.muestras_id = 1";
-	$result_cliente_muestra = $mysqli->query($query_cliente_muestra) or die($mysqli->error);
+	if($existe == 0){
+		$muestras_id  = correlativo('muestras_id', 'muestras');
+		$insert = "INSERT INTO muestras			VALUES('$muestras_id','$pacientes_id_muestra','$secuencias_id','$servicio_id','$usuario','$tipo_muestra_id','$number','$referencia','$fecha','$estado_muestra','$sitio_muestra','$diagnostico_clinico','$material_enviado','$datos_clinicos','$mostrar_datos_clinicos','$hospital_clinica','$categoria_muestras','$usuario','$fecha_registro')";
+		$mysqli->query($insert) or die($mysqli->error);
 
-	$cliente_muestra = "";
+		if($flag){
+			$siguiente += $incremento;
 
-	if($result_cliente_muestra->num_rows>0){
-		$valores2 = $result_cliente_muestra->fetch_assoc();
-
-		$cliente_muestra = $valores2['cliente'];
-	}
-
-	//AGREGAMOS LA PREFACTURA
-	$nombre_producto = "";
-	$precio_venta = 0;
-	$isv = 0;
-
-	if($producto != 0){
-		//OBTENER EL NOMBRE DEL PRODUCTO
-		$query_producto = "SELECT nombre, precio_venta, isv FROM productos WHERE productos_id = '$producto'";
-		$result_producto = $mysqli->query($query_producto) or die($mysqli->error);
-
-		if($result_producto->num_rows>0){
-			$valores2 = $result_producto->fetch_assoc();
-
-			$nombre_producto = $valores2['nombre'];
-			$precio_venta = $valores2['precio_venta'];
-			$isv = $valores2['isv'];
+			//ACTUAIZAMOS EL NUMERO SIGUIENTE EN EL ADMINISTRADOR DE SECUENCIAS
+			$update_secuencia = "UPDATE secuencias_muestas
+				SET
+					siguiente = '$siguiente'
+				WHERE secuencias_id = '$secuencias_id'";
+			$mysqli->query($update_secuencia) or die($mysqli->error);
 		}
 
+		//OBTENER NOMBRE DEL CLIENTE EN EL REGISTRO DE LA MUESTRA
+		$query_cliente_muestra = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS 'cliente'
+			FROM muestras AS m
+			INNER JOIN pacientes AS p
+			ON m.pacientes_id = p.pacientes_id
+			WHERE m.muestras_id = 1";
+		$result_cliente_muestra = $mysqli->query($query_cliente_muestra) or die($mysqli->error);
+
+		$cliente_muestra = "";
+
+		if($result_cliente_muestra->num_rows>0){
+			$valores2 = $result_cliente_muestra->fetch_assoc();
+
+			$cliente_muestra = $valores2['cliente'];
+		}
+
+		//AGREGAMOS LA PREFACTURA
+		$nombre_producto = "";
+		$precio_venta = 0;
+		$isv = 0;
+
+		if($producto != 0){
+			//OBTENER EL NOMBRE DEL PRODUCTO
+			$query_producto = "SELECT nombre, precio_venta, isv FROM productos WHERE productos_id = '$producto'";
+			$result_producto = $mysqli->query($query_producto) or die($mysqli->error);
+
+			if($result_producto->num_rows>0){
+				$valores2 = $result_producto->fetch_assoc();
+
+				$nombre_producto = $valores2['nombre'];
+				$precio_venta = $valores2['precio_venta'];
+				$isv = $valores2['isv'];
+			}
+
+		}else{
+			$producto = "";
+		}
+
+		//SI EL CLIENTE ES EMPRESA, muestras_hospitales
+		if($empresa !=0 && $pacientes_id != 0){
+			//ALMACENAMOS EL CLIENTE DEL ANALISIS QUE ENVIA LA EMPRESA O LABORATORIO
+			$muestras_hospitales_id = correlativo('muestras_hospitales_id', 'muestras_hospitales');
+			$insert = "INSERT INTO muestras_hospitales
+				VALUES('$muestras_hospitales_id','$empresa','$pacientes_id','$muestras_id','$fecha','$usuario','$fecha_registro')";
+			$query = $mysqli->query($insert) or die($mysqli->error);
+		}
+
+		/*********************************************************************************************************************************************************************/
+		$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
+			FROM colaboradores
+			WHERE colaborador_id = '$usuario'";
+		$resultColaborador = $mysqli->query($consultar_colaborador);
+		$consultaColaborador = $resultColaborador->fetch_assoc();
+		$NombreColaborador = $consultaColaborador['colaborador'];
+
+		//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
+		$historial_numero = historial();
+		$estado_historial = "Agregar";
+		$observacion_historial = "Se ha agregado un nuevo cliente: $nombre $apellido, por el usuario: $NombreColaborador";
+		$modulo = "Clientes";
+		$insert = "INSERT INTO historial
+			VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
+		$mysqli->query($insert) or die($mysqli->error);
+		/*********************************************************************************************************************************************************************/
+
+		/*********************************************************************************************************************************************************************/
+		//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
+		$historial_numero = historial();
+		$estado_historial = "Agregar";
+		$observacion_historial = "Se ha agregado un nueva muestra con un diagnostico: $diagnostico_clinico";
+		$modulo = "Muestras";
+		$insert = "INSERT INTO historial
+			VALUES('$historial_numero','0','0','$modulo','$muestras_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
+		$mysqli->query($insert) or die($mysqli->error);
+		/*********************************************************************************************************************************************************************/
+
+		//CONSULTAMOS EL TIPO DE PRECIO QUE DEBE ENTREGARSE
+		$consultaTipoPrecio = "SELECT ap.precio AS 'precio'
+			FROM administrador_precios AS ap
+			WHERE ap.hospitales_id = '$hospital_clinica'";
+		$resultTipoPrecio = $mysqli->query($consultaTipoPrecio) or die($mysqli->error);
+
+		$TipoPrecio = "";
+
+		if($resultTipoPrecio->num_rows>0){
+			$valores2TipoPrecio = $resultTipoPrecio->fetch_assoc();
+			$TipoPrecio = $valores2TipoPrecio['precio'];
+		}
+
+		//CONSULTAMOS LOS PRECIOS DE LOS productos
+		$consultaPrecios = "SELECT precio_venta, precio_venta2, precio_venta3, precio_venta4
+			FROM productos
+			WHERE productos_id = '$producto'";
+		$resulPrecios = $mysqli->query($consultaPrecios) or die($mysqli->error);
+
+		$precio1 = 0;
+		$precio2 = 0;
+		$precio3 = 0;
+		$precio4 = 0;
+
+		if($resulPrecios->num_rows>0){
+			$valores2Precos = $resulPrecios->fetch_assoc();
+			$precio1 = $valores2Precos['precio_venta'];
+			$precio2 = $valores2Precos['precio_venta2'];
+			$precio3 = $valores2Precos['precio_venta3'];
+			$precio4 = $valores2Precos['precio_venta4'];
+		}
+
+		if($TipoPrecio == "Precio1"){
+			$precio_venta = $precio1;
+		}else if($TipoPrecio == "Precio2"){
+			$precio_venta = $precio2;
+		}else if($TipoPrecio == "Precio3"){
+			$precio_venta = $precio3;
+		}if($TipoPrecio == "Precio4"){
+			$precio_venta = $precio4;
+		}
+
+		$datos = array(
+			0 => "Almacenado",
+			1 => "Registro Almacenado Correctamente",
+			2 => "success",
+			3 => "btn-primary",
+			4 => "formulario_admision",
+			5 => "Registro",
+			6 => "formPacientesAdmision",
+			7 => "modal_admision_clientes",
+			8 => "",
+			9 => "Guardar",
+			10 => $muestras_id,
+			11 => $producto,
+			12 => $nombre_producto,
+			13 => $precio_venta,
+			14 => $isv
+		);
 	}else{
-		$producto = "";
+		$datos = array(
+			0 => "Error",
+			1 => "Lo sentimos $tipoPacienteConsulta, cuenta con este tipo de muestra, por favor debe procesar por completo la factura antes de agregar otra muestra de este tipo.",
+			2 => "error",
+			3 => "btn-danger",
+			4 => "",
+			5 => "",
+		);
 	}
-
-	//SI EL CLIENTE ES EMPRESA, muestras_hospitales
-	if($empresa !=0 && $pacientes_id != 0){
-		//ALMACENAMOS EL CLIENTE DEL ANALISIS QUE ENVIA LA EMPRESA O LABORATORIO
-		$muestras_hospitales_id = correlativo('muestras_hospitales_id', 'muestras_hospitales');
-		$insert = "INSERT INTO muestras_hospitales
-			VALUES('$muestras_hospitales_id','$empresa','$pacientes_id','$muestras_id','$fecha','$usuario','$fecha_registro')";
-		$query = $mysqli->query($insert) or die($mysqli->error);
-	}
-
-	/*********************************************************************************************************************************************************************/
-	$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
-		FROM colaboradores
-		WHERE colaborador_id = '$usuario'";
-	$resultColaborador = $mysqli->query($consultar_colaborador);
-	$consultaColaborador = $resultColaborador->fetch_assoc();
-	$NombreColaborador = $consultaColaborador['colaborador'];
-
-	//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
-	$historial_numero = historial();
-	$estado_historial = "Agregar";
-	$observacion_historial = "Se ha agregado un nuevo cliente: $nombre $apellido, por el usuario: $NombreColaborador";
-	$modulo = "Clientes";
-	$insert = "INSERT INTO historial
-		VALUES('$historial_numero','0','0','$modulo','$pacientes_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
-	$mysqli->query($insert) or die($mysqli->error);
-	/*********************************************************************************************************************************************************************/
-
-	/*********************************************************************************************************************************************************************/
-	//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
-	$historial_numero = historial();
-	$estado_historial = "Agregar";
-	$observacion_historial = "Se ha agregado un nueva muestra con un diagnostico: $diagnostico_clinico";
-	$modulo = "Muestras";
-	$insert = "INSERT INTO historial
-		VALUES('$historial_numero','0','0','$modulo','$muestras_id','$usuario','0','$fecha','$estado_historial','$observacion_historial','$usuario','$fecha_registro')";
-	$mysqli->query($insert) or die($mysqli->error);
-	/*********************************************************************************************************************************************************************/
-
-	//CONSULTAMOS EL TIPO DE PRECIO QUE DEBE ENTREGARSE
-	$consultaTipoPrecio = "SELECT ap.precio AS 'precio'
-		FROM administrador_precios AS ap
-		WHERE ap.hospitales_id = '$hospital_clinica'";
-	$resultTipoPrecio = $mysqli->query($consultaTipoPrecio) or die($mysqli->error);
-
-	$TipoPrecio = "";
-
-	if($resultTipoPrecio->num_rows>0){
-		$valores2TipoPrecio = $resultTipoPrecio->fetch_assoc();
-		$TipoPrecio = $valores2TipoPrecio['precio'];
-	}
-
-	//CONSULTAMOS LOS PRECIOS DE LOS productos
-	$consultaPrecios = "SELECT precio_venta, precio_venta2, precio_venta3, precio_venta4
-		FROM productos
-		WHERE productos_id = '$producto'";
-	$resulPrecios = $mysqli->query($consultaPrecios) or die($mysqli->error);
-
-	$precio1 = 0;
-	$precio2 = 0;
-	$precio3 = 0;
-	$precio4 = 0;
-
-	if($resulPrecios->num_rows>0){
-		$valores2Precos = $resulPrecios->fetch_assoc();
-		$precio1 = $valores2Precos['precio_venta'];
-		$precio2 = $valores2Precos['precio_venta2'];
-		$precio3 = $valores2Precos['precio_venta3'];
-		$precio4 = $valores2Precos['precio_venta4'];
-	}
-
-	if($TipoPrecio == "Precio1"){
-		$precio_venta = $precio1;
-	}else if($TipoPrecio == "Precio2"){
-		$precio_venta = $precio2;
-	}else if($TipoPrecio == "Precio3"){
-		$precio_venta = $precio3;
-	}if($TipoPrecio == "Precio4"){
-		$precio_venta = $precio4;
-	}
-
-	$datos = array(
-		0 => "Almacenado",
-		1 => "Registro Almacenado Correctamente",
-		2 => "success",
-		3 => "btn-primary",
-		4 => "formulario_admision",
-		5 => "Registro",
-		6 => "formPacientesAdmision",
-		7 => "modal_admision_clientes",
-		8 => "",
-		9 => "Guardar",
-		10 => $muestras_id,
-		11 => $producto,
-		12 => $nombre_producto,
-		13 => $precio_venta,
-		14 => $isv
-	);
 }else{
 	$datos = array(
 		0 => "Error",

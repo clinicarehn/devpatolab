@@ -99,11 +99,7 @@ $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 $i = 1;
 while($registro2 = $result->fetch_assoc()){
 	$muestras_id = $registro2['muestras_id'];
-	//CONSULTAR EL PACIENTE SI ES ENVIADO POR UNA EMPRESA O CLINICA
-
-	/*
-				<th width="7%">Editar</th>
-	*/
+	//CONSULTAR EL PACIENTE SI ES ENVIADO POR UNA EMPRESA O CLINIC
 	$query_paciente = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) As 'paciente'
 		FROM muestras_hospitales AS mh
 		INNER JOIN pacientes AS p
@@ -128,23 +124,6 @@ while($registro2 = $result->fetch_assoc()){
 		$empresa = '<a style="text-decoration:none;" href="javascript:showModalhistoriaMuestrasEmpresas('.$registro2['pacientes_id'].');void(0);">'.$registro2['paciente'].'</a><b> Paciente: </b><a style="text-decoration:none;" href="javascript:showModalhistoriaMuestrasEmpresas('.$pacientes_id_cliente_codigo.');void(0);">('.$pacientes_id_cliente.')</a>';
 	}
 
-	//CONSULTAMOS SI LA MUESTRA ESTA EN LA Factura
-	/*$consulta_muestra_fact = "SELECT muestras_id
-		FROM facturas
-		WHERE muestras_id = '$muestras_id' AND estado NOT IN(2,3)";
-	$result_muestra_fact = $mysqli->query($consulta_muestra_fact) or die($mysqli->error);
-
-	$factura_muestra = "";
-	$title_factura = "";
-
-	$factura = '<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Crear Factura" href="javascript:createBill('.$registro2['muestras_id'].');void(0);" class="fas fa-file-invoice fa-lg"></a>';
-
-	if($result_muestra_fact->num_rows>0){
-		$factura_muestra = "Generada";
-		$title_factura = "Esta factura ya ha sido generada, verifique en el módulo de facturación para emitir el pago";
-		$factura = "";
-	}*/
-
 	$tabla = $tabla.'<tr>
 				<td>'.$i.'</td>
 				<td>'.$registro2['fecha'].'</td>
@@ -161,18 +140,6 @@ while($registro2 = $result->fetch_assoc()){
 				</td>
 			</tr>';
 			$i++;
-
-			/*
-			<td>
-					<a class="btn btn btn-secondary ml-2" href="javascript:editarRegistro('.$registro2['pacientes_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-edit fa-lg"></i> Editar</a>
-			</td>
-			<td title="'.$title_factura.'">'.$factura_muestra.'</td>
-			<td>
-				'.$factura.'
-				<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Editar Muestra" href="javascript:editarRegistro('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);" class="fas fa-edit fa-lg"></a>
-				<a style="text-decoration:none;" data-toggle="tooltip" data-placement="right" title = "Eliminar Muestra" href="javascript:eliminarRegistro('.$registro2['pacientes_id'].','.$registro2['muestras_id'].');void(0);" class="fas fa-trash fa-lg"></a>
-			</td>
-			*/
 }
 
 if($nroProductos == 0){
