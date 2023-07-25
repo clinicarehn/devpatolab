@@ -24,7 +24,7 @@ $referencia_pago2 = "";
 $referencia_pago3 = "";
 $activo = 1;//SECUENCIA DE FACTURACION
 $efectivo = 0;
-$tarjeta = 0;
+$tarjeta = $importe;
 
 //CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION
 $query_secuencia = "SELECT secuencia_facturacion_id, prefijo, siguiente AS 'numero', rango_final, fecha_limite, incremento, relleno

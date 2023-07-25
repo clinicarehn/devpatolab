@@ -276,10 +276,10 @@ $objPHPExcel->getActiveSheet()->getStyle("A$fila:I$fila")->getFont()->setBold(tr
 //rellenar con contenido
 $valor = 1;
 $total_neto = 0;
-
+$total_efectivo = 0;
+$total_tarjeta = 0;
 if($result->num_rows>0){
 	while($registro2 = $result->fetch_assoc()){
-
     $tipo_pago = "";
     $efectivo = 0;
     $tarjeta = 0;
@@ -317,7 +317,8 @@ if($result->num_rows>0){
 		$objPHPExcel->getActiveSheet()->SetCellValue("I$fila", $registro2['tipo_pago']);
 
 		$total_neto += $registro2['importe'];
-
+    $total_efectivo += $efectivo;
+    $total_tarjeta += $tarjeta;
 		//Establecer estilo
 		$objPHPExcel->getActiveSheet()->setSharedStyle($bordes, "A$fila:I$fila");	
 		$valor++;
@@ -327,6 +328,8 @@ if($result->num_rows>0){
 $fila+=1;
 $objPHPExcel->getActiveSheet()->SetCellValue("A$fila", "TOTAL");
 $objPHPExcel->getActiveSheet()->SetCellValue("F$fila", $total_neto);
+$objPHPExcel->getActiveSheet()->SetCellValue("G$fila", $total_efectivo);
+$objPHPExcel->getActiveSheet()->SetCellValue("H$fila", $total_tarjeta);
 $objPHPExcel->getActiveSheet()->mergeCells("A$fila:E$fila"); //unir celdas 
 $objPHPExcel->getActiveSheet()->setSharedStyle($totales, "A$fila:I$fila");
 

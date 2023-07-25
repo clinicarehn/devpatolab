@@ -224,30 +224,43 @@ if($query){
 	$existe = 0;
 	$tipoPacienteConsulta = "";
 
-	//VERIFICAMOS SI EL CLIENTE ES UNA Empresa
-	if($empresa == ""){
-		//VERIFICAMOS QUE NO EXISTA LA MUESTRA DE ESTE Paciente
-		$queryMuestraCliente = "SELECT muestras_id
-					FROM muestras
-					WHERE pacientes_id = '$cliente_admision' AND estado = 0 AND tipo_muestra_id = '$tipo_muestra_id'";
-		$resultMuestrasCliente = $mysqli->query($queryMuestraCliente) or die($mysqli->error);
+	//CONSULTAMOS EL LIMITE DE LAS MUESTAS POR CLIENTE
+	$queryLimiteMuestras = "SELECT limite
+		FROM limite_muetras";
+	$resultLimiteMuestras = $mysqli->query($queryLimiteMuestras) or die($mysqli->error);
 
-		if($resultMuestrasCliente->num_rows>0){
-			$existe = 1;
-			$tipoPacienteConsulta = "el Cliente";
-		}
+	if($resultLimiteMuestras->num_rows==0){
+		$existe = 0;
+		$tipoPacienteConsulta = "el Cliente";
 	}else{
-		//CONSULTAMOS SI EXISTE EL REGISTRO EN muestras_hospitales
-		$queryMuestraEmpresa = "SELECT mh.muestras_hospitales_id
-					FROM muestras_hospitales AS mh
-					INNER JOIN muestras As m
-					ON mh.muestras_id = m.muestras_id
-					WHERE m.pacientes_id = '$empresa' AND mh.pacientes_id = '$cliente_admision' AND m.estado = 0 AND m.tipo_muestra_id = '$tipo_muestra_id'";
-		$resultMuestrasEmpresa = $mysqli->query($queryMuestraEmpresa) or die($mysqli->error);
+		$valoresLimite = $resultLimiteMuestras->fetch_assoc();
+		$limiteMuestras = $valoresLimite['limite'];
 
-		if($resultMuestrasEmpresa->num_rows>0){
-			$existe = 1;
-			$tipoPacienteConsulta = "La empresa";
+		//VERIFICAMOS SI EL CLIENTE ES UNA Empresa
+		if($empresa == ""){
+			//VERIFICAMOS QUE NO EXISTA LA MUESTRA DE ESTE Paciente
+			$queryMuestraCliente = "SELECT muestras_id
+						FROM muestras
+						WHERE pacientes_id = '$cliente_admision' AND estado = 0 AND tipo_muestra_id = '$tipo_muestra_id'";
+			$resultMuestrasCliente = $mysqli->query($queryMuestraCliente) or die($mysqli->error);
+
+			if($resultMuestrasCliente->num_rows>=$limiteMuestras){
+				$existe = 1;
+				$tipoPacienteConsulta = "el Cliente";
+			}
+		}else{
+			//CONSULTAMOS SI EXISTE EL REGISTRO EN muestras_hospitales
+			$queryMuestraEmpresa = "SELECT mh.muestras_hospitales_id
+						FROM muestras_hospitales AS mh
+						INNER JOIN muestras As m
+						ON mh.muestras_id = m.muestras_id
+						WHERE m.pacientes_id = '$empresa' AND mh.pacientes_id = '$cliente_admision' AND m.estado = 0 AND m.tipo_muestra_id = '$tipo_muestra_id'";
+			$resultMuestrasEmpresa = $mysqli->query($queryMuestraEmpresa) or die($mysqli->error);
+
+			if($resultMuestrasEmpresa->num_rows>=$limiteMuestras){
+				$existe = 1;
+				$tipoPacienteConsulta = "La empresa";
+			}
 		}
 	}
 

@@ -21,7 +21,7 @@ $type = $_SESSION['type'];
 
 $nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME
 $fecha = date("Y-m-d H:i:s");
-$comentario = mb_convert_case("Ingreso al Modulo de Categoria de Muestras", MB_CASE_TITLE, "UTF-8");
+$comentario = mb_convert_case("Ingreso al Modulo de Limite de Muesras", MB_CASE_TITLE, "UTF-8");
 
 if($colaborador_id != "" || $colaborador_id != null){
    historial_acceso($comentario, $nombre_host, $colaborador_id);
@@ -64,20 +64,19 @@ $mysqli->close();//CERRAR CONEXIÓN
    <!-- Small modal -->
   <?php include("templates/modals.php"); ?>
 
-<div class="modal fade" id="modalCategoriaMuestras">
+<div class="modal fade" id="modalLimiteMuestras">
 	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Categoría Muestras</h4>
+          <h4 class="modal-title">Limite Muestras</h4>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span>
 			</button>
         </div>
         <div class="modal-body">
-			<form class="FormularioAjax" id="formularioCategoriaMuestras" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
+			<form class="FormularioAjax" id="formularioLimiteMuestras" data-async data-target="#rating-modal" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
 				<div class="form-row">
 					<div class="col-md-12 mb-3">
-					    <input type="hidden" id="categoria_id" name="categoria_id" class="form-control"/>
 						<div class="input-group mb-3">
 							<input type="text" required readonly id="pro" name="pro" class="form-control"/>
 							<div class="input-group-append">
@@ -87,20 +86,15 @@ $mysqli->close();//CERRAR CONEXIÓN
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-6 mb-3">
-					  <label for="categoria_muestra">Categoría</label>
-					  <input type="text" required name="categoria_muestra" id="categoria_muestra" maxlength="100" class="form-control"/>
-					</div>
-					<div class="col-md-6 mb-3">
-					  <label for="tiempo_categoria">Tiempo de Entrega</label>
-					  <input type="number" required name="tiempo_categoria" id="tiempo_categoria" maxlength="100" class="form-control"/>
+					<div class="col-md-12 mb-3">
+					  <label for="limite">Limite de Muestras por Cliente</label>
+					  <input type="number" required name="limite" id="limite" maxlength="100" class="form-control"/>
 					</div>
 				</div>
 			</form>
         </div>
 		<div class="modal-footer">
-			<button class="btn btn-primary ml-2" form="formularioCategoriaMuestras" type="submit" id="regCategoria"><div class="sb-nav-link-icon"></div><i class="far fa-save fa-lg"></i> Registrar</button>
-			<button class="btn btn-primary ml-2" form="formularioCategoriaMuestras" type="submit" id="ediCategoria"><div class="sb-nav-link-icon"></div><i class="far fa-save fa-lg"></i> Registrar</button>
+			<button class="btn btn-primary ml-2" form="formularioLimiteMuestras" type="submit" id="ediLimite"><div class="sb-nav-link-icon"></div><i class="far fa-save fa-lg"></i> Registrar</button>
 		</div>
       </div>
     </div>
@@ -114,55 +108,39 @@ $mysqli->close();//CERRAR CONEXIÓN
        <?php include("templates/menu.php"); ?>
     <!--FIN MENU-->
 
-<br><br><br>
+    <br><br><br>
 <div class="container-fluid">
 	<ol class="breadcrumb mt-2 mb-4">
 		<li class="breadcrumb-item"><a class="breadcrumb-link" href="inicio.php">Dashboard</a></li>
-		<li class="breadcrumb-item active" id="acciones_factura"><span id="label_acciones_factura"></span>Categoría Muestras</li>
+		<li class="breadcrumb-item active" id="acciones_factura"><span id="label_acciones_factura"></span>Limite Muestras</li>
 	</ol>
 
-    <div class="card mb-4">
-      <div class="card-header">
-        <i class="fas fa-search  mr-1"></i>
-        Búsqueda
-      </div>
-      <div class="card-body">
-        <form id="for_main" class="form-inline">
-          <div class="form-group mr-1">
-            <div class="input-group">
-              <input type="text" placeholder="Buscar por: Categoría" id="bs_regis" size="50" autofocus class="form-control"/>
-            </div>
-          </div>
-          <div class="form-group mr-1">
-            <button class="btn btn-primary ml-2" type="submit" id="nuevo_registro"><div class="sb-nav-link-icon"></div><i class="fas fa-plus-circle fa-lg"></i> Crear</button>
-          </div>
-        </form>
-      </div>
-      <div class="card-footer small text-muted">
-
-      </div>
+  <div class="card mb-4">
+    <div class="card-header">
+      <i class="fab fa-sellsy mr-1"></i>
+      Resultado
     </div>
-
-    <div class="card mb-4">
-      <div class="card-header">
-        <i class="fab fa-sellsy mr-1"></i>
-        Resultado
-      </div>
-      <div class="card-body">
-        <div class="form-group">
-          <div class="col-sm-12">
-            <div class="registros overflow-auto" id="agrega-registros"></div>
-          </div>
-        </div>
-        <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center" id="pagination"></ul>
-        </nav>
-      </div>
-      <div class="card-footer small text-muted">
-
-      </div>
+    <div class="card-body">
+      <div class="table-responsive">
+    		<form id="formPrincipalLimiteMuestras">
+    			<div class="col-md-12 mb-3">
+    				<table id="dataTableLimiteMuestras" class="table table-striped table-condensed table-hover" style="width:100%">
+    					<thead>
+    						<tr>
+    							<th>Limite</th>
+    							<th>Editar</th>
+    						</tr>
+    					</thead>
+    				</table>
+    			</div>
+    		<form>
+    	</div>
     </div>
-	<?php include("templates/footer.php"); ?>
+    <div class="card-footer small text-muted">
+
+    </div>
+  </div>
+    <?php include("templates/footer.php"); ?>
 </div>
 
     <!-- add javascripts -->
@@ -170,7 +148,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 		include "script.php";
 
 		include "../js/main.php";
-		include "../js/myjava_categoria_muestras.php";
+		include "../js/myjava_limite_muestras.php";
 		include "../js/select.php";
 		include "../js/functions.php";
 		include "../js/myjava_cambiar_pass.php";

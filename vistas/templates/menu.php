@@ -149,6 +149,7 @@
 			  <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/administrador_precios.php">Administrador de Precios</a>
 			  <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/empresas.php">Empresa</a>
         <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/categoria_muestras.php">Categoria Muestras</a>
+        <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/limite_muestras.php">Limite Muestras</a>
 			</div>
 		  </li>
 		  <?php

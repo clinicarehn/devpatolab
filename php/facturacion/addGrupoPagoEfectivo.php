@@ -23,7 +23,7 @@ $referencia_pago1 = "";
 $referencia_pago2 = "";
 $referencia_pago3 = "";
 $activo = 1;//SECUENCIA DE FACTURACION
-$efectivo = 0;
+$efectivo = $importe;
 $tarjeta = 0;
 
 //CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION

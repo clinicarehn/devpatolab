@@ -459,6 +459,10 @@ function llenarTabla(dato){
 		pagination_preclinica(1);
 	}
 
+	if(dato == "LimiteMuestras"){
+		listar_limiteMuestras();
+	}
+
 	if(dato == "Ubicacion"){
 		listar_ubicacion();
 	}
