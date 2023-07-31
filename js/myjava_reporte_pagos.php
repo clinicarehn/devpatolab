@@ -59,10 +59,10 @@ function pagination(partida){
 	var url = '<?php echo SERVERURL; ?>php/reporte_pagos/paginar.php';
 
 	var fechai = $('#form_main #fecha_b').val();
-  var fechaf = $('#form_main #fecha_f').val();
-  var dato =  $('#form_main #bs_regis').val()
-  var pacientesIDGrupo = $('#form_main #pacientesIDGrupo').val()
-  var estado = '';
+	var fechaf = $('#form_main #fecha_f').val();
+	var dato =  $('#form_main #bs_regis').val()
+	var pacientesIDGrupo = $('#form_main #pacientesIDGrupo').val()
+	var estado = '';
 
   if($('#form_main #estado').val() == ""){
     estado = 1;

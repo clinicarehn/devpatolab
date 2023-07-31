@@ -55,6 +55,7 @@ $query = "SELECT p.facturas_id AS 'facturas_id', p.pagos_id AS 'pagos_id', p.fec
 	ON p.pagos_id = pd.pagos_id
 	INNER JOIN tipo_pago AS tp
 	ON pd.tipo_pago_id = tp.tipo_pago_id
+	WHERE p.fecha BETWEEN '$fechai' AND '$fechaf'
 	$busqueda_paciente
 	$consulta_datos
 	ORDER BY p.fecha DESC";
@@ -101,6 +102,7 @@ $registro = "SELECT p.facturas_id AS 'facturas_id', p.pagos_id AS 'pagos_id', p.
 	ON p.pagos_id = pd.pagos_id
 	INNER JOIN tipo_pago AS tp
 	ON pd.tipo_pago_id = tp.tipo_pago_id
+	WHERE p.fecha BETWEEN '$fechai' AND '$fechaf'
 	$busqueda_paciente
 	$consulta_datos
 	LIMIT $limit, $nroLotes";

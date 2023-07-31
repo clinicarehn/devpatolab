@@ -22,6 +22,7 @@ if($estado == 1){
  }else{
 	$in = "IN(3)";
 }
+
  /*if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL//
 	if($profesional != ""){
 		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.colaborador_id = '$profesional' AND f.estado ".$in;

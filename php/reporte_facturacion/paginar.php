@@ -16,10 +16,10 @@ $estado = $_POST['estado'];
 $usuario = $_SESSION['colaborador_id'];
 
 if($estado == 1){
-   $in = "IN(2,4)";
+	$in = "IN(2,4)";
 }else if($estado == 4){
 	$in = "IN(4)";
- }else{
+}else{
 	$in = "IN(3)";
 }
 
@@ -67,6 +67,7 @@ $query = "SELECT f.facturas_id AS 'facturas_id', f.fecha AS 'fecha', p.identidad
 	$busqueda_paciente
   $consulta_datos
 	ORDER BY f.number DESC";
+
 $result = $mysqli->query($query) or die($mysqli->error);
 
 $nroLotes = 25;
