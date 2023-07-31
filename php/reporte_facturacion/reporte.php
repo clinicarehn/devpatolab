@@ -14,6 +14,8 @@ $profesional = $_GET['colaborador'];
 $estado = $_GET['estado'];
 $usuario = $_SESSION['colaborador_id'];
 $type = $_SESSION['type'];
+$dato = $_GET['dato'];
+$pacientesIDGrupo = $_GET['pacientesIDGrupo'];
 
 if($estado == 1){
    $in = "IN(2,4)";
@@ -49,9 +51,20 @@ if($profesional == ""){
 	$where = "WHERE f.colaborador_id = '$profesional' AND f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in;
 }
 
+$busqueda_paciente = "";
+$consulta_datos = "";
+
+if($pacientesIDGrupo != ""){
+	$busqueda_paciente = "AND f.pacientes_id = '$pacientesIDGrupo'";
+}
+
+if($dato == !""){
+	$consulta_datos = "AND (CONCAT(p.nombre,' ',p.apellido) LIKE '%$dato%' OR p.apellido LIKE '$dato%' OR p.identidad LIKE '$dato%' OR f.number LIKE '$dato%' OR m.number LIKE '$dato%')";
+}
+
 //EJECUTAMOS LA CONSULTA DE BUSQUEDA
 
-$registro = "SELECT f.facturas_id AS 'facturas_id', f.fecha AS 'fecha', p.identidad AS 'identidad', CONCAT(p.nombre,' ',p.apellido) AS 'paciente', sc.prefijo AS 'prefijo', f.number AS 'numero', s.nombre AS 'servicio', CONCAT(c.nombre,'',c.apellido) AS 'profesional', sc.relleno AS 'relleno', DATE_FORMAT(f.fecha, '%d/%m/%Y') AS 'fecha1', f.pacientes_id AS 'pacientes_id', f.cierre AS 'cierre', f.servicio_id AS 'servicio_id', f.colaborador_id AS 'colaborador_id', f.fecha AS 'fecha_consulta', (CASE WHEN f.tipo_factura = 1 THEN 'Contado' ELSE 'Crédito' END) AS 'tipo_documento'
+$registro = "SELECT f.facturas_id AS 'facturas_id', f.fecha AS 'fecha', p.identidad AS 'identidad', CONCAT(p.nombre,' ',p.apellido) AS 'paciente', sc.prefijo AS 'prefijo', f.number AS 'numero', s.nombre AS 'servicio', CONCAT(c.nombre,'',c.apellido) AS 'profesional', sc.relleno AS 'relleno', DATE_FORMAT(f.fecha, '%d/%m/%Y') AS 'fecha1', f.pacientes_id AS 'pacientes_id', f.cierre AS 'cierre', (CASE WHEN f.tipo_factura = 1 THEN 'Contado' ELSE 'Crédito' END) AS 'tipo_documento', f.tipo_factura, m.number AS 'muestra'
 	FROM facturas AS f
 	INNER JOIN pacientes AS p
 	ON f.pacientes_id = p.pacientes_id
@@ -61,9 +74,12 @@ $registro = "SELECT f.facturas_id AS 'facturas_id', f.fecha AS 'fecha', p.identi
 	ON f.servicio_id = s.servicio_id
 	INNER JOIN colaboradores AS c
 	ON f.colaborador_id = c.colaborador_id
-	".$where."
-	GROUP BY f.number
-	ORDER BY f.fecha, f.number ASC";
+	INNER JOIN muestras AS m
+	ON f.muestras_id = m.muestras_id
+	WHERE f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in."
+	$busqueda_paciente
+	$consulta_datos
+	ORDER BY f.number DESC";
 $result = $mysqli->query($registro) or die($mysqli->error);
 
 //OBTENER NOMBRE DE EMPRESA
@@ -294,13 +310,13 @@ $total_total_neto = 0;
 
 if($result->num_rows>0){
 	while($registro2 = $result->fetch_assoc()){
-		$facturas_id = $registro2['numero'];
+		$facturas_id = $registro2['facturas_id'];
+		//$facturas_id = $registro2['numero'];
 		//CONSULTAR DATOS DETALLE DE Factura
-		$query_detalle = "SELECT SUM(precio) AS 'precio', SUM(descuento) AS 'descuento', cantidad, SUM(isv_valor) As 'isv_valor'
-			FROM facturas_detalle fd
-			INNER JOIN facturas AS f
-			ON fd.facturas_id = f.facturas_id
-			WHERE f.number = '$facturas_id'";
+		$query_detalle = "SELECT precio, descuento, cantidad, isv_valor
+			FROM facturas_detalle
+			WHERE facturas_id = '$facturas_id'";
+		//echo $query_detalle."***";
 		$result_detalles = $mysqli->query($query_detalle) or die($mysqli->error);
 
 		$cantidad = 0;
@@ -309,18 +325,18 @@ if($result->num_rows>0){
 		$total_precio = 0;
 		$total = 0;
 		$isv_neto = 0;
-		$neto_antes_isv = 0;
+		$neto_antes_isv = 0;	
 	
-		while($registrodetalles = $result_detalles->fetch_assoc()){
-			$precio = ($registrodetalles["precio"] * $registrodetalles["cantidad"]);
-			$cantidad = $registrodetalles["cantidad"];
-			$descuento = $registrodetalles["descuento"];
+		while($registrodetalles = $result_detalles->fetch_assoc()){					
+			$precio += $registrodetalles["precio"];
+			$cantidad += $registrodetalles["cantidad"];
+			$descuento += $registrodetalles["descuento"];
 			$total_precio = $registrodetalles["precio"] * $registrodetalles["cantidad"];
 			$neto_antes_isv += $total_precio;
 			$isv_neto += $registrodetalles["isv_valor"];
 		}
 	
-		$total = ($neto_antes_isv + $isv_neto) - $descuento; 
+		$total = ($neto_antes_isv + $isv_neto) - $descuento;
 		
 		$fila+=1;
 
@@ -341,7 +357,7 @@ if($result->num_rows>0){
 		}
 			  
 		$objPHPExcel->getActiveSheet()->SetCellValue("E$fila", $registro2['paciente']);			  
-		$objPHPExcel->getActiveSheet()->SetCellValue("F$fila", $numero);
+		$objPHPExcel->getActiveSheet()->SetCellValue("F$fila", $numero);	
 		$objPHPExcel->getActiveSheet()->SetCellValue("G$fila", $precio);
 		$objPHPExcel->getActiveSheet()->SetCellValue("H$fila", $isv_neto);		
 		$objPHPExcel->getActiveSheet()->SetCellValue("I$fila", $descuento);

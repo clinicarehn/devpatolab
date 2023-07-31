@@ -15,7 +15,7 @@ $estado_pago = 2; //1. Borrador 2. Cancelado
 $estado_atencion = 1;//ESTADO DE LA ATENCION DEL PACIENTE PARA LA FACTURACION 1. PENDIENTE 2. PAGADA
 
 //OBTENER DATOS DE LA FACTURA
-$query_factura = "SELECT sf.prefijo AS 'prefijo', f.number AS 'numero', sf.relleno AS 'relleno', f.pacientes_id AS 'pacientes_id', p.expediente AS 'expediente', f.colaborador_id AS 'colaborador_id', f.servicio_id AS 'servicio_id', f.fecha AS 'fecha_factura'
+$query_factura = "SELECT sf.prefijo AS 'prefijo', f.number AS 'numero', sf.relleno AS 'relleno', f.pacientes_id AS 'pacientes_id', p.expediente AS 'expediente', f.colaborador_id AS 'colaborador_id', f.servicio_id AS 'servicio_id', f.fecha AS 'fecha_factura', f.muestras_id
    FROM facturas AS f
    INNER JOIN secuencia_facturacion AS sf
    ON f.secuencia_facturacion_id = sf.secuencia_facturacion_id
@@ -31,6 +31,7 @@ $expediente = '';
 $colaborador_id = '';
 $servicio_id = '';
 $fecha_factura = '';
+$muestras_id = '';
 
 if($result->num_rows>0){
 	$numero_factura = $consultaDatosFactura['prefijo'].''.rellenarDigitos($consultaDatosFactura['numero'], $consultaDatosFactura['relleno']);
@@ -39,6 +40,7 @@ if($result->num_rows>0){
 	$colaborador_id = $consultaDatosFactura['colaborador_id'];
 	$servicio_id = $consultaDatosFactura['servicio_id'];
 	$fecha_factura = $consultaDatosFactura['fecha_factura'];
+	$muestras_id = $consultaDatosFactura['muestras_id'];
 }
 
 /*******************************************************************************************************************************************************************/
@@ -71,6 +73,9 @@ if($query){
 	$update_atencion = "UPDATE atenciones_medicas SET estado = '$estado_atencion' WHERE atencion_id  = '$atencion_id'";
 	$mysqli->query($update_atencion) or die($mysqli->error);
 	/*********************************************************************************************************************************************************************/
+	//ACTUALIZAMOS LA MUESTRA PARA PONERLA DISPONIBLE
+	$update_muestra = "UPDATE muestras SET estado = 0 WHERE muestras_id = '$muestras_id'";
+	$mysqli->query($update_muestra) or die($mysqli->error);
 
 	/*********************************************************************************************************************************************************************/
 	$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'

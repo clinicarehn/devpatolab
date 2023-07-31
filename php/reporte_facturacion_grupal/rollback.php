@@ -51,13 +51,14 @@ if($query){
 	$mysqli->query($update_factura) or die($mysqli->error);
 
 	//CONSULTAMOS LAS FACTRURAS ID PARA ANULARLAS
-	$query_facturas = "SELECT facturas_id
+	$query_facturas = "SELECT facturas_id, muestras_id
 		FROM facturas_grupal_detalle
 		WHERE facturas_grupal_id = '$facturas_id'";
 	$result_faturas = $mysqli->query($query_facturas) or die($mysqli->error);
 
 	while($registro2 = $result_faturas->fetch_assoc()){
 		$factura_consulta_id = $registro2['facturas_id'];
+		$muestras_id = $registro2['muestras_id'];
 
 		//ANULAMOS LA FACTURA
 		$update_factura = "UPDATE facturas SET estado = '3' WHERE facturas_id = '$factura_consulta_id'";
@@ -66,6 +67,10 @@ if($query){
 		//ANULAMOS EL PAGO
 		$update_factura = "UPDATE pagos SET estado = '2' WHERE facturas_id = '$factura_consulta_id'";
 		$mysqli->query($update_factura) or die($mysqli->error);
+
+		//ACTUALIZAMOS LA MUESTRA PARA PONERLA DISPONIBLE
+		$update_muestra = "UPDATE muestras SET estado = 0 WHERE muestras_id = '$muestras_id'";
+		$mysqli->query($update_muestra) or die($mysqli->error);		
 
 		/*********************************************************************************************************************************************************************/
 		//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL

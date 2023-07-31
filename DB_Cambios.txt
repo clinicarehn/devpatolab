@@ -1,4 +1,27 @@
 ####25/07/2023####
+tabla => cobrar_clientes
+cobrar_clientes_id      int
+clientes_id             int
+facturas_id		int
+fecha			date
+saldo			float(12,2)
+estado			int
+usuario			int
+empresa_id		int
+fecha_registro		datetime
+
+tabla => cobrar_clientes_grupales
+cobrar_clientes_id      int
+clientes_id             int
+facturas_id		int
+fecha			date
+saldo			float(12,2)
+estado			int
+usuario			int
+empresa_id		int
+fecha_registro		datetime
+
+####25/07/2023####
 tabla => limite_muetras
 limite_muetras_id 	int
 limite			int

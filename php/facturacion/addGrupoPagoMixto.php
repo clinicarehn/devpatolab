@@ -108,7 +108,8 @@ if($result_ConsultaPagos->num_rows==0){
 		//ACTUALIZAMOS EL ESTADO DE LA FACTURA GRUPAL
 		$update_factura = "UPDATE facturas_grupal
 			SET
-				estado = '$estado'
+				estado = '$estado',
+				number = '$numero'
 			WHERE facturas_grupal_id = '$facturas_id'";
 		$mysqli->query($update_factura) or die($mysqli->error);
 

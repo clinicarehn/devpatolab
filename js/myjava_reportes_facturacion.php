@@ -270,7 +270,16 @@ function reporteEXCEL(){
 	var desde = $('#form_main_facturacion_reportes #fecha_b').val();
 	var hasta = $('#form_main_facturacion_reportes #fecha_f').val();
 	var url = '';
-	var estado = 1;
+	
+	var dato =  $('#form_main_facturacion_reportes #bs_regis').val()
+	var pacientesIDGrupo = $('#form_main_facturacion_reportes #pacientesIDGrupo').val()
+	var estado = '';
+
+	if($('#form_main_facturacion_reportes #estado').val() == ""){
+		estado = 1;
+	}else{
+		estado = $('#form_main_facturacion_reportes #estado').val();
+	}	
 
     if($('#form_main_facturacion_reportes #profesional').val() == "" || $('#form_main_facturacion_reportes #profesional').val() == null){
 		colaborador = '';
@@ -278,13 +287,7 @@ function reporteEXCEL(){
 		colaborador = $('#form_main_facturacion_reportes #profesional').val();
 	}
 
-    if($('#form_main_facturacion_reportes #estado').val() == "" || $('#form_main_facturacion_reportes #estado').val() == null){
-		estado = 1;
-	}else{
-		estado = $('#form_main_facturacion_reportes #estado').val();
-	}
-
-	url = '<?php echo SERVERURL; ?>php/reporte_facturacion/reporte.php?desde='+desde+'&hasta='+hasta+'&colaborador='+colaborador+'&estado='+estado,
+	url = '<?php echo SERVERURL; ?>php/reporte_facturacion/reporte.php?desde='+desde+'&hasta='+hasta+'&colaborador='+colaborador+'&estado='+estado+'&dato='+dato+'&pacientesIDGrupo='+pacientesIDGrupo,
 
 	window.open(url);
 }

@@ -53,6 +53,7 @@ if($result->num_rows>0){
 	$rango_final = $consulta2['rango_final'];
 	$fecha_limite = $consulta2['fecha_limite'];
 	$incremento = $consulta2['incremento'];
+	$numero = $consulta2['numero'];
 }
 
 //OBTENEMOS EL TAMAÑO DE LA TABLA
@@ -85,163 +86,340 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 		$isv_neto = 0;
 		$total_despues_isv = 0;
 
-		for ($i = 0; $i < count( $_POST['productName']); $i++){//INICIO CICLO FOR
-			$facturas_detalle_id = correlativo("facturas_detalle_id","facturas_detalle");
-			$productoID = $_POST['productoID'][$i];
-			$productName = $_POST['productName'][$i];
-			$quantity = $_POST['quantity'][$i];
-			$price = $_POST['price'][$i];
-			$discount = $_POST['discount'][$i];
-			$total = $_POST['total'][$i];
-			$isv_valor = 0;
-
-			if($productoID != "" && $productName != "" && $quantity != "" && $price != "" && $total != ""){
-				//OBTENER EL ISV
-				$query_isv = "SELECT nombre
-					FROM isv";
-				$result_isv = $mysqli->query($query_isv) or die($mysqli->error);
-
-				$porcentajeISV = 0;
-
-				if($result_isv->num_rows>0){
-					$consulta_isv_valor = $result_isv->fetch_assoc();
-					$porcentajeISV = $consulta_isv_valor["nombre"];
-				}
-
-				//CONSULTAMOS EL ISV ACTIVO EN EL PRODUCTO
-				$query_isv_activo = "SELECT isv
-					FROM productos
-					WHERE productos_id = '$productoID'";
-				$result_productos_isv_activo = $mysqli->query($query_isv_activo) or die($mysqli->error);
-				$aplica_isv = 0;
-
-				if($result_productos_isv_activo->num_rows>0){
-					$consulta_aplica_isv_productos = $result_productos_isv_activo->fetch_assoc();
-					$aplica_isv = $consulta_aplica_isv_productos["isv"];
-				}
-
-				$porcentaje_isv = 0;
-
-				if($aplica_isv == 1){
-					$porcentaje_isv = ($porcentajeISV / 100);
-					$isv_valor = $price * $quantity * $porcentaje_isv;
-				}
-
-				//VERIFICAMOS SI NO EXISTE LA FACTURA, DE NO EXISTIR LA ACTUALIZAMOS
-				$query_factura_detalle = "SELECT facturas_id
-					FROM facturas_detalle
-					WHERE facturas_id = '$facturas_id' AND productos_id  = '$productoID'";
-				$result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli->error);
-
-				if($result_factura_detalle->num_rows>0){
-					//ACTUALIZAMOS EL DETALLE DE LA FACTURA
-					$update_factura_detalle = "UPDATE facturas_detalle
-						SET
-							cantidad = '$quantity',
-							precio = '$price',
-							isv_valor = '$isv_valor',
-							descuento = '$discount'
-						WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
-					$mysqli->query($update_factura_detalle);
-				}else{
-					$facturas_detalle_id = correlativo("facturas_detalle_id","facturas_detalle");
-					$insert_detalle = "INSERT INTO facturas_detalle
-						VALUES('$facturas_detalle_id','$facturas_id','$productoID','$quantity','$price','$isv_valor','$discount')";
-					$mysqli->query($insert_detalle);
-				}
-
-				//CONSULTAMOS LA CATEGORIA DEL PRODUCTO
-				$query_categoria = "SELECT cp.nombre AS 'categoria'
-					FROM productos AS p
-					INNER JOIN categoria_producto AS cp
-					ON p.categoria_producto_id = cp.categoria_producto_id
-					WHERE p.productos_id = '$productoID'
-					GROUP BY p.productos_id";
-				$result_categoria = $mysqli->query($query_categoria) or die($mysqli->error);
-
-				$categoria_producto = "";
-
-				if($result_categoria->num_rows>0){
-					$consulta_categoria = $result_categoria->fetch_assoc();
-					$categoria_producto = $consulta_categoria["categoria"];
-
-					if($categoria_producto == "Producto"){
-						//CONSULTAMOS LA CANTIDAD EN LA ENTIDAD PRODUCTOS
-						$query_productos = "SELECT cantidad
-							FROM productos
-							WHERE productos_id = '$productoID'";
-						$result_productos = $mysqli->query($query_productos) or die($mysqli->error);
-
-						$cantidad_productos = "";
-
-						if($result_productos->num_rows>0){
-							$consulta = $result_productos->fetch_assoc();
-							$cantidad_productos = $consulta['cantidad'];
-						}
-
-						$cantidad = $cantidad_productos - $quantity;
-
-						//ACTUALIZAMOS LA NUEVA CANTIDAD EN LA ENTIDAD PRODUCTOS
-						$update_productos = "UPDATE productos
-							SET
-								cantidad = '$cantidad'
-							WHERE productos_id = '$productoID'";
-						$mysqli->query($update_productos);
-
-						//CONSULTAMOS EL SALDO DEL PRODUCTO EN LA ENTIDAD MOVIMIENTOS
-						$query_movimientos = "SELECT saldo
-							FROM movimientos
-							WHERE productos_id = '$productoID'
-							ORDER BY movimientos_id DESC LIMIT 1";
-						$result_movimientos = $mysqli->query($query_movimientos) or die($mysqli->error);
-
-						$saldo_productos = 0;
-
-						if($result_movimientos->num_rows>0){
-							$consulta = $result_movimientos->fetch_assoc();
-							$saldo_productos = $consulta['saldo'];
-						}
-
-						$saldo = $saldo_productos - $quantity;
-
-						$cantidad_entrada = 0;
-						$cantidad_salida = $quantity;
-						$documento = "Factura ".$facturas_id;
-
-						 $movimientos_id = correlativo("movimientos_id","movimientos");
-						 $comentario_movimientos = "Salida por Facturación";
-						 $insert_movimiento = "INSERT INTO movimientos
-							VALUES('$movimientos_id','$productoID','$documento','$cantidad_entrada','$cantidad_salida','$saldo','$fecha_registro','$comentario_movimientos')";
-						 $mysqli->query($insert_movimiento);
+		if($tipo_factura == 1){//FACTURA CONTADO
+			for ($i = 0; $i < count( $_POST['productName']); $i++){//INICIO CICLO FOR
+				$facturas_detalle_id = correlativo("facturas_detalle_id","facturas_detalle");
+				$productoID = $_POST['productoID'][$i];
+				$productName = $_POST['productName'][$i];
+				$quantity = $_POST['quantity'][$i];
+				$price = $_POST['price'][$i];
+				$discount = $_POST['discount'][$i];
+				$total = $_POST['total'][$i];
+				$isv_valor = 0;
+	
+				if($productoID != "" && $productName != "" && $quantity != "" && $price != "" && $total != ""){
+					//OBTENER EL ISV
+					$query_isv = "SELECT nombre
+						FROM isv";
+					$result_isv = $mysqli->query($query_isv) or die($mysqli->error);
+	
+					$porcentajeISV = 0;
+	
+					if($result_isv->num_rows>0){
+						$consulta_isv_valor = $result_isv->fetch_assoc();
+						$porcentajeISV = $consulta_isv_valor["nombre"];
 					}
+	
+					//CONSULTAMOS EL ISV ACTIVO EN EL PRODUCTO
+					$query_isv_activo = "SELECT isv
+						FROM productos
+						WHERE productos_id = '$productoID'";
+					$result_productos_isv_activo = $mysqli->query($query_isv_activo) or die($mysqli->error);
+					$aplica_isv = 0;
+	
+					if($result_productos_isv_activo->num_rows>0){
+						$consulta_aplica_isv_productos = $result_productos_isv_activo->fetch_assoc();
+						$aplica_isv = $consulta_aplica_isv_productos["isv"];
+					}
+	
+					$porcentaje_isv = 0;
+	
+					if($aplica_isv == 1){
+						$porcentaje_isv = ($porcentajeISV / 100);
+						$isv_valor = $price * $quantity * $porcentaje_isv;
+					}
+	
+					//VERIFICAMOS SI NO EXISTE LA FACTURA, DE NO EXISTIR LA ACTUALIZAMOS
+					$query_factura_detalle = "SELECT facturas_id
+						FROM facturas_detalle
+						WHERE facturas_id = '$facturas_id' AND productos_id  = '$productoID'";
+					$result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli->error);
+	
+					if($result_factura_detalle->num_rows>0){
+						//ACTUALIZAMOS EL DETALLE DE LA FACTURA
+						$update_factura_detalle = "UPDATE facturas_detalle
+							SET
+								cantidad = '$quantity',
+								precio = '$price',
+								isv_valor = '$isv_valor',
+								descuento = '$discount'
+							WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
+						$mysqli->query($update_factura_detalle);
+					}else{
+						$facturas_detalle_id = correlativo("facturas_detalle_id","facturas_detalle");
+						$insert_detalle = "INSERT INTO facturas_detalle
+							VALUES('$facturas_detalle_id','$facturas_id','$productoID','$quantity','$price','$isv_valor','$discount')";
+						$mysqli->query($insert_detalle);
+					}
+	
+					//CONSULTAMOS LA CATEGORIA DEL PRODUCTO
+					$query_categoria = "SELECT cp.nombre AS 'categoria'
+						FROM productos AS p
+						INNER JOIN categoria_producto AS cp
+						ON p.categoria_producto_id = cp.categoria_producto_id
+						WHERE p.productos_id = '$productoID'
+						GROUP BY p.productos_id";
+					$result_categoria = $mysqli->query($query_categoria) or die($mysqli->error);
+	
+					$categoria_producto = "";
+	
+					if($result_categoria->num_rows>0){
+						$consulta_categoria = $result_categoria->fetch_assoc();
+						$categoria_producto = $consulta_categoria["categoria"];
+	
+						if($categoria_producto == "Producto"){
+							//CONSULTAMOS LA CANTIDAD EN LA ENTIDAD PRODUCTOS
+							$query_productos = "SELECT cantidad
+								FROM productos
+								WHERE productos_id = '$productoID'";
+							$result_productos = $mysqli->query($query_productos) or die($mysqli->error);
+	
+							$cantidad_productos = "";
+	
+							if($result_productos->num_rows>0){
+								$consulta = $result_productos->fetch_assoc();
+								$cantidad_productos = $consulta['cantidad'];
+							}
+	
+							$cantidad = $cantidad_productos - $quantity;
+	
+							//ACTUALIZAMOS LA NUEVA CANTIDAD EN LA ENTIDAD PRODUCTOS
+							$update_productos = "UPDATE productos
+								SET
+									cantidad = '$cantidad'
+								WHERE productos_id = '$productoID'";
+							$mysqli->query($update_productos);
+	
+							//CONSULTAMOS EL SALDO DEL PRODUCTO EN LA ENTIDAD MOVIMIENTOS
+							$query_movimientos = "SELECT saldo
+								FROM movimientos
+								WHERE productos_id = '$productoID'
+								ORDER BY movimientos_id DESC LIMIT 1";
+							$result_movimientos = $mysqli->query($query_movimientos) or die($mysqli->error);
+	
+							$saldo_productos = 0;
+	
+							if($result_movimientos->num_rows>0){
+								$consulta = $result_movimientos->fetch_assoc();
+								$saldo_productos = $consulta['saldo'];
+							}
+	
+							$saldo = $saldo_productos - $quantity;
+	
+							$cantidad_entrada = 0;
+							$cantidad_salida = $quantity;
+							$documento = "Factura ".$facturas_id;
+	
+							 $movimientos_id = correlativo("movimientos_id","movimientos");
+							 $comentario_movimientos = "Salida por Facturación";
+							 $insert_movimiento = "INSERT INTO movimientos
+								VALUES('$movimientos_id','$productoID','$documento','$cantidad_entrada','$cantidad_salida','$saldo','$fecha_registro','$comentario_movimientos')";
+							 $mysqli->query($insert_movimiento);
+						}
+					}
+	
+					$total_valor += ($price * $quantity);
+					$descuentos += $discount;
+					$isv_neto += $isv_valor;
 				}
+			}//FIN CICLO FOR
+	
+			$total_despues_isv = ($total_valor + $isv_neto) - $descuentos;
+	
+			//ACTUALIZAMOS EL IMPORTE DE LA FACTURA
+			$update = "UPDATE facturas
+				SET
+					importe = '$total_despues_isv'
+				WHERE facturas_id = '$facturas_id'";
+			$mysqli->query($update);
+	
+			$datos = array(
+				0 => "Almacenado",
+				1 => "Registro Almacenado Correctamente",
+				2 => "success",
+				3 => "btn-primary",
+				4 => "formulario_facturacion",
+				5 => "Registro",
+				6 => $tipo,//FUNCION DE LA TABLA QUE LLAMAREMOS PARA QUE ACTUALICE (DATATABLE BOOSTRAP)
+				7 => "", //Modals Para Cierre Automatico
+				8 => $facturas_id, //Modals Para Cierre Automatico
+			);
+		}else{//FACTURA CREDITO
+			for ($i = 0; $i < count( $_POST['productName']); $i++){//INICIO CICLO FOR
+				$facturas_detalle_id = correlativo("facturas_detalle_id","facturas_detalle");
+				$productoID = $_POST['productoID'][$i];
+				$productName = $_POST['productName'][$i];
+				$quantity = $_POST['quantity'][$i];
+				$price = $_POST['price'][$i];
+				$discount = $_POST['discount'][$i];
+				$total = $_POST['total'][$i];
+				$isv_valor = 0;
+	
+				if($productoID != "" && $productName != "" && $quantity != "" && $price != "" && $total != ""){
+					//OBTENER EL ISV
+					$query_isv = "SELECT nombre
+						FROM isv";
+					$result_isv = $mysqli->query($query_isv) or die($mysqli->error);
+	
+					$porcentajeISV = 0;
+	
+					if($result_isv->num_rows>0){
+						$consulta_isv_valor = $result_isv->fetch_assoc();
+						$porcentajeISV = $consulta_isv_valor["nombre"];
+					}
+	
+					//CONSULTAMOS EL ISV ACTIVO EN EL PRODUCTO
+					$query_isv_activo = "SELECT isv
+						FROM productos
+						WHERE productos_id = '$productoID'";
+					$result_productos_isv_activo = $mysqli->query($query_isv_activo) or die($mysqli->error);
+					$aplica_isv = 0;
+	
+					if($result_productos_isv_activo->num_rows>0){
+						$consulta_aplica_isv_productos = $result_productos_isv_activo->fetch_assoc();
+						$aplica_isv = $consulta_aplica_isv_productos["isv"];
+					}
+	
+					$porcentaje_isv = 0;
+	
+					if($aplica_isv == 1){
+						$porcentaje_isv = ($porcentajeISV / 100);
+						$isv_valor = $price * $quantity * $porcentaje_isv;
+					}
+	
+					//VERIFICAMOS SI NO EXISTE LA FACTURA, DE NO EXISTIR LA ACTUALIZAMOS
+					$query_factura_detalle = "SELECT facturas_id
+						FROM facturas_detalle
+						WHERE facturas_id = '$facturas_id' AND productos_id  = '$productoID'";
+					$result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli->error);
+	
+					if($result_factura_detalle->num_rows>0){
+						//ACTUALIZAMOS EL DETALLE DE LA FACTURA
+						$update_factura_detalle = "UPDATE facturas_detalle
+							SET
+								cantidad = '$quantity',
+								precio = '$price',
+								isv_valor = '$isv_valor',
+								descuento = '$discount'
+							WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
+						$mysqli->query($update_factura_detalle);
+					}else{
+						$facturas_detalle_id = correlativo("facturas_detalle_id","facturas_detalle");
+						$insert_detalle = "INSERT INTO facturas_detalle
+							VALUES('$facturas_detalle_id','$facturas_id','$productoID','$quantity','$price','$isv_valor','$discount')";
+						$mysqli->query($insert_detalle);
+					}
+	
+					//CONSULTAMOS LA CATEGORIA DEL PRODUCTO
+					$query_categoria = "SELECT cp.nombre AS 'categoria'
+						FROM productos AS p
+						INNER JOIN categoria_producto AS cp
+						ON p.categoria_producto_id = cp.categoria_producto_id
+						WHERE p.productos_id = '$productoID'
+						GROUP BY p.productos_id";
+					$result_categoria = $mysqli->query($query_categoria) or die($mysqli->error);
+	
+					$categoria_producto = "";
+	
+					if($result_categoria->num_rows>0){
+						$consulta_categoria = $result_categoria->fetch_assoc();
+						$categoria_producto = $consulta_categoria["categoria"];
+	
+						if($categoria_producto == "Producto"){
+							//CONSULTAMOS LA CANTIDAD EN LA ENTIDAD PRODUCTOS
+							$query_productos = "SELECT cantidad
+								FROM productos
+								WHERE productos_id = '$productoID'";
+							$result_productos = $mysqli->query($query_productos) or die($mysqli->error);
+	
+							$cantidad_productos = "";
+	
+							if($result_productos->num_rows>0){
+								$consulta = $result_productos->fetch_assoc();
+								$cantidad_productos = $consulta['cantidad'];
+							}
+	
+							$cantidad = $cantidad_productos - $quantity;
+	
+							//ACTUALIZAMOS LA NUEVA CANTIDAD EN LA ENTIDAD PRODUCTOS
+							$update_productos = "UPDATE productos
+								SET
+									cantidad = '$cantidad'
+								WHERE productos_id = '$productoID'";
+							$mysqli->query($update_productos);
+	
+							//CONSULTAMOS EL SALDO DEL PRODUCTO EN LA ENTIDAD MOVIMIENTOS
+							$query_movimientos = "SELECT saldo
+								FROM movimientos
+								WHERE productos_id = '$productoID'
+								ORDER BY movimientos_id DESC LIMIT 1";
+							$result_movimientos = $mysqli->query($query_movimientos) or die($mysqli->error);
+	
+							$saldo_productos = 0;
+	
+							if($result_movimientos->num_rows>0){
+								$consulta = $result_movimientos->fetch_assoc();
+								$saldo_productos = $consulta['saldo'];
+							}
+	
+							$saldo = $saldo_productos - $quantity;
+	
+							$cantidad_entrada = 0;
+							$cantidad_salida = $quantity;
+							$documento = "Factura ".$facturas_id;
+	
+							 $movimientos_id = correlativo("movimientos_id","movimientos");
+							 $comentario_movimientos = "Salida por Facturación";
+							 $insert_movimiento = "INSERT INTO movimientos
+								VALUES('$movimientos_id','$productoID','$documento','$cantidad_entrada','$cantidad_salida','$saldo','$fecha_registro','$comentario_movimientos')";
+							 $mysqli->query($insert_movimiento);
+						}
+					}
+	
+					$total_valor += ($price * $quantity);
+					$descuentos += $discount;
+					$isv_neto += $isv_valor;
+				}
+			}//FIN CICLO FOR
+	
+			$total_despues_isv = ($total_valor + $isv_neto) - $descuentos;	
 
-				$total_valor += ($price * $quantity);
-				$descuentos += $discount;
-				$isv_neto += $isv_valor;
-			}
-		}//FIN CICLO FOR
+			//ACTUALIZAMOS EL IMPORTE DE LA FACTURA
+			$update = "UPDATE facturas
+				SET
+					importe = '$total_despues_isv',
+					number = '$numero'
+				WHERE facturas_id = '$facturas_id'";
 
-		$total_despues_isv = ($total_valor + $isv_neto) - $descuentos;
+			$mysqli->query($update);
 
-		//ACTUALIZAMOS EL IMPORTE DE LA FACTURA
-		$update = "UPDATE facturas
-			SET
-				importe = '$total_despues_isv'
-			WHERE facturas_id = '$facturas_id'";
-		$mysqli->query($update);
-
-		$datos = array(
-			0 => "Almacenado",
-			1 => "Registro Almacenado Correctamente",
-			2 => "success",
-			3 => "btn-primary",
-			4 => "formulario_facturacion",
-			5 => "Registro",
-			6 => $tipo,//FUNCION DE LA TABLA QUE LLAMAREMOS PARA QUE ACTUALICE (DATATABLE BOOSTRAP)
-			7 => "", //Modals Para Cierre Automatico
-			8 => $facturas_id, //Modals Para Cierre Automatico
-		);
+			//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
+			$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+			
+			//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE		
+			$update = "UPDATE secuencia_facturacion 
+			SET 
+				siguiente = '$numero_secuencia_facturacion' 
+			WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
+			$mysqli->query($update);	
+			
+			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
+			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
+			$insert_cxc = "INSERT INTO cobrar_clientes VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
+			$mysqli->query($insert_cxc);			
+	
+			$datos = array(
+				0 => "Almacenado",
+				1 => "Registro Almacenado Correctamente",
+				2 => "success",
+				3 => "btn-primary",
+				4 => "formulario_facturacion",
+				5 => "Registro",
+				6 => $tipo,//FUNCION DE LA TABLA QUE LLAMAREMOS PARA QUE ACTUALICE (DATATABLE BOOSTRAP)
+				7 => "", //Modals Para Cierre Automatico
+				8 => $facturas_id, //Modals Para Cierre Automatico
+			);		
+		}		
 	}else{//NO SE PUEDO ALMACENAR ESTE REGISTRO
 		$datos = array(
 			0 => "Error",
