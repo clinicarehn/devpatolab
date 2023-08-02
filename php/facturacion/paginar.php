@@ -144,8 +144,8 @@ if($estado == 1){
 	$texto2 = "Imprimir";
 }else if($estado == 4){
 	$estado_ = "Crédito";
-	$texto1 = "Cobrar";
-	$texto2 = "Imprimr";
+	$texto1 = "Imprimir";
+	$texto2 = "";
 }else{
 	$estado_ = "Cancelada";
 	$texto1 = "Imprimir";
@@ -216,6 +216,7 @@ while($registro2 = $result->fetch_assoc()){
 	$pay = "";
 	$send_mail = "";
 	$pay_credit = "";
+	$factura2 = "";
 
 	if($estado==1){
 		$eliminar = '<a class="btn btn btn-secondary ml-2" href="javascript:deleteBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-trash fa-lg"></i> Eliminar</a>';
@@ -225,7 +226,7 @@ while($registro2 = $result->fetch_assoc()){
 		$factura = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';
 	}
 
-	if($estado==4 || $estado == 2){
+	if($estado == 2){
 		$factura1 = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';
 	}
 
@@ -235,6 +236,8 @@ while($registro2 = $result->fetch_assoc()){
 
 	if($estado == 4 ){
 		$pay_credit = '<a class="btn btn btn-secondary ml-2" href="javascript:pago('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fab fa-amazon-pay fa-lg" title="Pagar Factura"></i> Cobrar</a>';
+
+		$factura2 = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';		
 	}
 
 	if($estado==1){
@@ -281,9 +284,9 @@ while($registro2 = $result->fetch_assoc()){
 			<td>'.$estado_.'</td>
 			<td>
 			  '.$pay.'
-				'.$pay_credit.'
 				'.$send_mail.'
 				'.$factura.'
+				'.$factura2.'
 			</td>
 			<td>
 			  '.$eliminar.'

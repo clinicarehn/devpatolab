@@ -70,7 +70,7 @@ if($colaborador_id != "" || $colaborador_id != null){
             <div class="input-group-append">
               <span class="input-group-text"><div class="sb-nav-link-icon"></div>Estado</span>
             </div>
-            <select id="cobrar_clientes_estado" name="cobrar_clientes_estado" class="selectpicker" title="Tipo Cliente" data-live-search="true">
+            <select id="cobrar_clientes_estado" name="cobrar_clientes_estado" class="selectpicker" title="Estado" data-live-search="true">
 				<option value="1">Pendientes</option>
 				<option value="2">Pagadas</option>
             </select>

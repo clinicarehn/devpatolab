@@ -333,4 +333,19 @@ var listar_AbonosCXC = function(){
 	table_cuentas_por_cobrar_clientes.search('').draw();
 	$('#buscar').focus();
 }
+
+function getClientesCXC(){
+    var url = '<?php echo SERVERURL; ?>php/cobrarClientes/getClientesCXC.php';
+
+	$.ajax({
+        type: "POST",
+        url: url,
+	    async: true,
+        success: function(data){
+		    $('#form_main_cobrar_clientes #cobrar_clientes').html("");
+			$('#form_main_cobrar_clientes #cobrar_clientes').html(data);
+			$('#form_main_cobrar_clientes #cobrar_clientes').selectpicker('refresh');
+		}
+     });
+}
 </script>
