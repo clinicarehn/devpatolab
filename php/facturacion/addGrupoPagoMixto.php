@@ -19,6 +19,7 @@ $estado = 2;//FACTURA PAGADA
 $estado_atencion = 1;
 $estado_pago = 1;//ACTIVO
 $fecha_registro = date("Y-m-d H:i:s");
+$tipoLabel = "PagosGrupal";
 
 $referencia_pago1 = cleanStringConverterCase($_POST['cr_bill']);//TARJETA DE CREDITO
 $referencia_pago2 = cleanStringConverterCase($_POST['exp']);//FECHA DE EXPIRACION
@@ -54,7 +55,7 @@ if($result->num_rows>0){
 }
 
 //CONSULTAR DATOS DE LA FACTURA
-$query_factura = "SELECT servicio_id, colaborador_id, fecha, pacientes_id
+$query_factura = "SELECT servicio_id, colaborador_id, fecha, pacientes_id, tipo_factura
 	FROM facturas_grupal
 	WHERE facturas_grupal_id = '$facturas_id'";
 $result_factura = $mysqli->query($query_factura) or die($mysqli->error);
@@ -64,12 +65,25 @@ $servicio_id = "";
 $colaborador_id = "";
 $fecha_factura = "";
 $pacientes_id = "";
+$tipo_factura = "";
 
 if($result_factura->num_rows>0){
 	$servicio_id = $consultaFactura['servicio_id'];
 	$colaborador_id = $consultaFactura['colaborador_id'];
 	$fecha_factura = $consultaFactura['fecha'];
 	$pacientes_id = $consultaFactura['pacientes_id'];
+	$tipo_factura = $consultaFactura['tipo_factura'];
+}
+
+if($tipo_factura == 2){
+	$tipoLabel = "PagosCredito";
+	$update_cobrarclientes = "
+		UPDATE cobrar_clientes_grupales 
+		SET 
+			estado = 2,
+			saldo = 0
+		WHERE facturas_id = '$facturas_id'";
+	$mysqli->query($update_cobrarclientes);
 }
 
 //INSERTAMOS LOS DATOS EN LA ENTIDAD PAGO
@@ -228,7 +242,7 @@ if($result_ConsultaPagos->num_rows==0){
 			3 => "btn-primary",
 			4 => "formEfectivoBillGrupal",
 			5 => "Registro",
-			6 => "PagosGrupal",//FUNCION DE LA TABLA QUE LLAMAREMOS PARA QUE ACTUALICE (DATATABLE BOOSTRAP)
+			6 => $tipoLabel ,//FUNCION DE LA TABLA QUE LLAMAREMOS PARA QUE ACTUALICE (DATATABLE BOOSTRAP)
 			7 => "modal_grupo_pagos", //Modals Para Cierre Automatico
 			8 => $facturas_id, //Modals Para Cierre Automatico
 			9 => "Guardar" //confirmButtonText

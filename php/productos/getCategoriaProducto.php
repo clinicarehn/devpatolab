@@ -14,7 +14,7 @@ if($result->num_rows>0){
 		echo '<option value="'.$consulta2['categoria_producto_id'].'">'.$consulta2['nombre'].'</option>';
 	}
 }else{
-		echo '<option value="">Seleccione</option>';
+	echo '<option value="">Seleccione</option>';
 }
 
 $result->free();//LIMPIAR RESULTADO

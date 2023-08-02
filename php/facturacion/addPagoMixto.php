@@ -18,6 +18,7 @@ $tipo_pago = 1;//1. CONTADO 2. CRÉDITO
 $estado = 2;//FACTURA PAGADA
 $estado_pago = 1;//ACTIVO
 $fecha_registro = date("Y-m-d H:i:s");
+$tipoLabel = "Pagos";
 
 $referencia_pago1 = cleanStringConverterCase($_POST['cr_bill']);//TARJETA DE CREDITO
 $referencia_pago2 = cleanStringConverterCase($_POST['exp']);//FECHA DE EXPIRACION
@@ -26,6 +27,30 @@ $referencia_pago3 = cleanStringConverterCase($_POST['cvcpwd']);//NUMERO DE APROB
 $activo = 1;//SECUENCIA DE FACTURACION
 $efectivo = $_POST['efectivo_bill'];
 $tarjeta = 	$_POST['monto_tarjeta'];
+
+//CONSULTAR DATOS DE LA FACTURA
+$query_factura = "SELECT  tipo_factura
+	FROM facturas
+	WHERE facturas_id = '$facturas_id'";
+$result_factura = $mysqli->query($query_factura) or die($mysqli->error);
+$consultaFactura = $result_factura->fetch_assoc();
+
+$tipo_factura = "";
+
+if($result_factura->num_rows>0){
+	$tipo_factura = $consultaFactura['tipo_factura'];
+}
+
+if($tipo_factura == 2){
+	$tipoLabel = "PagosCredito";
+	$update_cobrarclientes = "
+		UPDATE cobrar_clientes 
+		SET 
+			estado = 2,
+			saldo = 0
+		WHERE facturas_id = '$facturas_id'";
+		$mysqli->query($update_cobrarclientes);
+}
 
 //CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION
 $query_secuencia = "SELECT secuencia_facturacion_id, prefijo, siguiente AS 'numero', rango_final, fecha_limite, incremento, relleno
@@ -115,7 +140,7 @@ if($result_factura->num_rows==0){
 			3 => "btn-primary",
 			4 => "formEfectivoBill",
 			5 => "Registro",
-			6 => "Pagos",//FUNCION DE LA TABLA QUE LLAMAREMOS PARA QUE ACTUALICE (DATATABLE BOOSTRAP)
+			6 => $tipoLabel ,//FUNCION DE LA TABLA QUE LLAMAREMOS PARA QUE ACTUALICE (DATATABLE BOOSTRAP)
 			7 => "modal_pagos", //Modals Para Cierre Automatico
 			8 => $facturas_id, //Modals Para Cierre Automatico
 			9 => "Guardar",

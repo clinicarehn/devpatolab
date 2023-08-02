@@ -2508,3 +2508,53 @@
     </div>
 </div>
 <!--FIN MODAL ADMISION EMPRESAS-->
+
+<!-- modal de abonos cxc -->
+<div class="modal fade" id="ver_abono_cxc">
+	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Abonos Clientes</h4>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+        </div><div class="container"></div>
+        <div class="modal-body">
+			<form class="FormularioAjax" id="formulario_ver_abono_cxc">				
+				<div class="form-group">
+					<input type="hidden" name="abono_facturas_id" id="abono_facturas_id" class="form-control">				  
+					<input type="hidden" name="abono_facturas_id" id="abono_tipo" class="form-control">
+					<div class="col-md-12">			
+						<div class="overflow-auto">											
+							<table id="table-modal-abonos" class="table table-striped table-condensed table-hover" style="width:100%">
+								<h5 id="ver_abono_cxcTitle"></h5>
+								<thead>
+									<tr>
+										<th>Fecha</th>
+										<th>Tipo Pago</th>
+										<th>Descripcion</th>
+										<th>Abono</th>
+										<th>Usuario que recibe</th>
+									</tr>
+								</thead>
+								<tfoot class="bg-info text-white font-weight-bold">
+									<tr>
+										<td colspan='2' class="text-left">Total</td>
+										<td colspan="1"></td>
+										<td colspan='1' id='total-footer-modal-cxc' class="text-right"></td>
+										<td colspan="1"></td>										
+									</tr>
+								</tfoot>								
+							</table>
+						</div>				
+					</div>				  
+				</div>
+			</form>
+        </div>
+		<div class="modal-footer">
+
+		</div>			
+      </div>
+    </div>
+</div>
+<!-- FIN modal de abonos cxc -->

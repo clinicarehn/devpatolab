@@ -18,7 +18,7 @@
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/citas.php">Calendario</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/hospitales.php">Hospitales</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/facturacion.php">Facturación</a>
-          <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/cxc.php">CxC Clientes</a>
+          <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/cobrarClientes.php">Cobrar Clientes</a>
         </div>
       </li>
       <li class="nav-item dropdown active">
@@ -83,7 +83,7 @@
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/citas.php">Calendario</a>
 		  <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/hospitales.php">Hospitales</a>
           <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/facturacion.php">Facturación</a>
-          <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/cxc.php">CxC Clientes</a>
+          <a class="dropdown-item" href="<?php echo SERVERURL; ?>vistas/cobrarClientes.php">Cobrar Clientes</a>
         </div>
       </li>
       <li class="nav-item dropdown active">

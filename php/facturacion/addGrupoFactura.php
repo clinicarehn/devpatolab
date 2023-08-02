@@ -243,7 +243,7 @@ if($tamano_tabla >0){
 			$mysqli->query($update);	
 			
 			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
-			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
+			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes_grupales");
 			$insert_cxc = "INSERT INTO cobrar_clientes_grupales VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
 			$mysqli->query($insert_cxc);				
 
