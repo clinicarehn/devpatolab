@@ -79,6 +79,7 @@ $registro = "SELECT f.facturas_id AS 'facturas_id', f.fecha AS 'fecha', p.identi
 	WHERE f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in."
 	$busqueda_paciente
 	$consulta_datos
+	GROUP BY f.number
 	ORDER BY f.number DESC";
 $result = $mysqli->query($registro) or die($mysqli->error);
 
