@@ -311,12 +311,14 @@ $total_total_neto = 0;
 
 if($result->num_rows>0){
 	while($registro2 = $result->fetch_assoc()){
-		$facturas_id = $registro2['facturas_id'];
+		$number = $registro2['numero'];
 		//$facturas_id = $registro2['numero'];
 		//CONSULTAR DATOS DETALLE DE Factura
-		$query_detalle = "SELECT precio, descuento, cantidad, isv_valor
-			FROM facturas_detalle
-			WHERE facturas_id = '$facturas_id'";
+		$query_detalle = "SELECT f.facturas_id, fd.precio, fd.descuento, fd.cantidad, fd.isv_valor
+			FROM facturas_detalle AS fd
+			INNER JOIN facturas AS f
+			ON fd.facturas_id = f.facturas_id
+			WHERE f.number  = '$number'";
 		//echo $query_detalle."***";
 		$result_detalles = $mysqli->query($query_detalle) or die($mysqli->error);
 
@@ -380,7 +382,8 @@ if($result->num_rows>0){
 			ON f.facturas_id = fd.facturas_id
 			INNER JOIN productos AS p
 			ON fd.productos_id = p.productos_id
-			WHERE f.facturas_id = '$facturas_id'";
+			WHERE f.number = '$number'
+			GROUP BY f.number";
 		$result_atencion = $mysqli->query($query_productos);
 
 		while($registro_atencion = $result_atencion->fetch_assoc()){
@@ -516,11 +519,13 @@ if($result_anuladas->num_rows>0){
 	$total_total_neto = 0;	
 	
 	while($registro2 = $result_anuladas->fetch_assoc()){
-		$facturas_id = $registro2['facturas_id'];
+		$numero = $registro2['numero'];
 		//CONSULTAR DATOS DETALLE DE Factura
-		$query_detalle = "SELECT precio, descuento, cantidad, isv_valor
-			FROM facturas_detalle
-			WHERE facturas_id = '$facturas_id'";
+		$query_detalle = "SELECT f.facturas_id, fd.precio, fd.descuento, fd.cantidad, fd.isv_valor
+			FROM facturas_detalle AS fd
+			INNER JOIN facturas AS f
+			ON fd.facturas_id = f.facturas_id
+			WHERE f.number = '$numero'";
 		$result_detalles = $mysqli->query($query_detalle) or die($mysqli->error);
 
 		$cantidad = 0;
@@ -530,6 +535,8 @@ if($result_anuladas->num_rows>0){
 		$total = 0;
 		$isv_neto = 0;
 		$neto_antes_isv = 0;
+		$facturas_id = 0;
+		$atencion = "";
 	
 		while($registrodetalles = $result_detalles->fetch_assoc()){
 			$precio += ($registrodetalles["precio"] * $registrodetalles["cantidad"]);
@@ -538,6 +545,21 @@ if($result_anuladas->num_rows>0){
 			$total_precio = $registrodetalles["precio"] * $registrodetalles["cantidad"];
 			$neto_antes_isv += $total_precio;
 			$isv_neto += $registrodetalles["isv_valor"];
+			$facturas_id = $registrodetalles["facturas_id"];
+			
+			//CONSULTAR LOS PRODUCTOS ENTREGADOS AL PACIENTE
+			$query_productos = "SELECT p.nombre AS 'producto'
+				FROM facturas AS f
+				INNER JOIN facturas_detalle AS fd
+				ON f.facturas_id = fd.facturas_id
+				INNER JOIN productos AS p
+				ON fd.productos_id = p.productos_id
+				WHERE f.facturas_id = '$facturas_id'";
+			$result_atencion = $mysqli->query($query_productos);
+
+			while($registro_atencion = $result_atencion->fetch_assoc()){
+				$atencion .= $registro_atencion['producto'].", ";
+			}
 		}
 	
 		$total = ($neto_antes_isv + $isv_neto) - $descuento; 
@@ -573,23 +595,7 @@ if($result_anuladas->num_rows>0){
 		$total_isv_neto += $isv_neto;
 		$total_descuento_neto += $descuento;
 		$total_total_neto += $total;	
-		
-		//CONSULTAR LOS PRODUCTOS ENTREGADOS AL PACIENTE
-		$atencion = "";
-		
-		$query_productos = "SELECT p.nombre AS 'producto'
-			FROM facturas AS f
-			INNER JOIN facturas_detalle AS fd
-			ON f.facturas_id = fd.facturas_id
-			INNER JOIN productos AS p
-			ON fd.productos_id = p.productos_id
-			WHERE f.facturas_id = '$facturas_id'";
-		$result_atencion = $mysqli->query($query_productos);
-
-		while($registro_atencion = $result_atencion->fetch_assoc()){
-			$atencion .= $registro_atencion['producto'].", ";
-		}
-
+	
 		$atencion = rtrim($atencion,', ');
 		$objPHPExcel->getActiveSheet()->SetCellValue("O$fila", $atencion);			
 
