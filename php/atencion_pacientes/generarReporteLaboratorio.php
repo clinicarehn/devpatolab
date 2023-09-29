@@ -16,7 +16,7 @@ date_default_timezone_set('America/Tegucigalpa');
 
 $noAtencion = $_GET['atencion_id'];
 $anulada = '';
-
+	
 $query = "SELECT e.nombre AS 'empresa', e.ubicacion AS 'direccion_empresa', e.telefono As 'empresa_telefono', e.correo AS 'empresa_correo', CONCAT(p.nombre,' ',p.apellido) AS 'empresa', p.edad AS 'edad', 
 (CASE WHEN p.genero = 'H' THEN 'Hombre' ELSE 'Mujer' END) AS 'genero', CONCAT(c.nombre,' ',c.apellido) AS 'medico_remitente', m.diagnostico_clinico AS 'diagnostico_clinico', DATE_FORMAT(m.fecha, '%d/%m/%Y')  AS 'fecha_recibido',  DATE_FORMAT(CAST(at.fecha_registro AS date), '%d/%m/%Y') AS 'fecha_emision_reporte', at.antecedentes AS 'diagnostico', at.historia_clinica AS 'factores_pronostico', at.examen_fisico AS 'descripcion_macroscopica', at.diagnostico AS 'descripcion_microscopica', at.seguimiento AS 'comentario', at.estado As 'estado', m.number AS 'numero', e.otra_informacion As 'otra_informacion', e.eslogan AS 'eslogan', e.celular As 'celular', a.descripcion AS 'adendum', m.sitio_muestra AS 'sitio_muestra', CONCAT(p1.nombre, ' ', p1.apellido) As 'paciente', p1.edad AS 'edad_paciente', (CASE WHEN p1.genero = 'H' THEN 'Hombre' ELSE 'Mujer' END) AS 'genero_paciente', h.nombre AS 'hospital'
 FROM atenciones_medicas AS at
@@ -38,6 +38,22 @@ FROM atenciones_medicas AS at
 	ON mh.pacientes_id = p1.pacientes_id 	
 	WHERE at.atencion_id = '$noAtencion'";	
 $result = $mysqli->query($query) or die($mysqli->error);
+
+//CONSULTAMOS TODAS LAS IMAGENES LA ATENCION
+$query_imagenes = "SELECT nombre
+	FROM atenciones_imagenes
+	WHERE atencion_id = '$noAtencion'";
+$result_imagenes = $mysqli->query($query_imagenes) or die($mysqli->error);
+
+if($result_imagenes->num_rows>0){
+// Crear un array para almacenar las imágenes
+	$imagenes = array();
+
+	// Recorrer el resultado y almacenar las rutas de las imágenes en el array
+	while($registro2 = $result_imagenes->fetch_assoc()){
+		$imagenes[] = SERVERURL."img/".$registro2['nombre'];
+	}
+}
 
 if($result->num_rows>0){
 	$consulta_registro = $result->fetch_assoc();

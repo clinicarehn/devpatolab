@@ -89,18 +89,21 @@ $mysqli->close();//CERRAR CONEXIÓN
         </div><div class="container"></div>
         <div class="modal-body">
 			<form class="FormularioAjax" id="formulario_atenciones" action="" method="POST" data-form="" autocomplete="off" enctype="multipart/form-data">
+				<input type="hidden" id="pacientes_id" name="pacientes_id" class="form-control" required="required">
+				<input type="hidden" id="muestras_id" name="muestras_id" class="form-control" required="required">
+				<input type="hidden" id="colaborador_id" name="colaborador_id" class="form-control" required="required">
 				<div class="form-row">
 					<div class="col-md-2 mb-3">
 						<label for="fecha">Número <span class="priority">*<span/></label>
 						<input type="text" required id="bioxia_numero" name="bioxia_numero" readonly class="form-control"/>
 					</div>
-          <div class="col-md-4 mb-3">
-            <label for="cliente_admision">Clientes</label>
-            <div class="input-group mb-3">
-              <select class="selectpicker" id="paciente_consulta" name="paciente_consulta" data-live-search="true" title="Clientes" data-size="10">
-              </select>
-            </div>
-          </div>
+					<div class="col-md-4 mb-3">
+						<label for="cliente_admision">Clientes</label>
+						<div class="input-group mb-3">
+						<select class="selectpicker" id="paciente_consulta" name="paciente_consulta" data-live-search="true" title="Clientes" data-size="10">
+						</select>
+						</div>
+					</div>
 					<div class="col-md-2 mb-3">
 					  <label for="fecha">Fecha <span class="priority">*<span/></label>
 					  <input type="date" required id="fecha" name="fecha" value="<?php echo date ("Y-m-d");?>" class="form-control"/>
@@ -244,7 +247,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 							<h1 class="text-center text-danger">Imágenes</h1><br>
 							<div class="form-group">
 								<div class="file-loading">
-									<input type="file" id="file-1" name="file[]" multiple class="custom-file-label">
+									<input type="file" id="file-1" name="files[]" multiple class="custom-file-label">
 								</div>
 							</div>
 						</div>

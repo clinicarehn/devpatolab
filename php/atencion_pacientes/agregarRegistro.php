@@ -102,14 +102,13 @@ if($pacientes_id != 0){
 			$correlativo = correlativo('atencion_id', 'atenciones_medicas');
 
 			//ALMACENAMOS EL REGISTRO EN LA ENTIDAD atenciones_medicas
-			$insert = "INSERT INTO atenciones_medicas 
-				VALUES('$correlativo','$muestras_id','$pacientes_id','$edad','$fecha','$antecedentes','$historia_clinica','$examen_fisico','$diagnostico','$seguimiento','$tipo_paciente','$servicio_id','$colaborador_id','$estado','$fecha_registro')";
+			$insert = "INSERT INTO atenciones_medicas VALUES('$correlativo','$muestras_id','$pacientes_id','$edad','$fecha','$antecedentes','$historia_clinica','$examen_fisico','$diagnostico','$seguimiento','$tipo_paciente','$servicio_id','$colaborador_id','$estado','$fecha_registro')";
 
 			$query = $mysqli->query($insert) or die($mysqli->error);
 
 			if($query){
 				//FILE IMAGE
-				if($_FILES['file']['name']!=""){
+				if($_FILES['files']['name']!=""){
 					//CONTAMOS CUANTOS REGISTROS VIENEN EN EL INPUT FILE DEL
 					$totalfiles = count($_FILES['files']['name']);
 					echo "El total de archivos encontrados es: ".$totalfiles."***";
