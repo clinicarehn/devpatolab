@@ -145,7 +145,7 @@ if($estado == 1){
 }else if($estado == 4){
 	$estado_ = "Crédito";
 	$texto1 = "Imprimir";
-	$texto2 = "";
+	$texto2 = "Cobrar";
 }else{
 	$estado_ = "Cancelada";
 	$texto1 = "Imprimir";
@@ -289,7 +289,8 @@ while($registro2 = $result->fetch_assoc()){
 				'.$factura2.'
 			</td>
 			<td>
-			  '.$eliminar.'
+				'.$pay_credit.'
+				'.$eliminar.'
 				'.$factura1.'
 			</td>
 
