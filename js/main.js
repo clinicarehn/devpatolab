@@ -10,9 +10,6 @@ $('.FormularioAjax').submit(function (e) {
 	var action = form.attr('action');
 	var method = form.attr('method');
 	var respuesta = form.children('.RespuestaAjax');
-	
-	// Deshabilitar el botón antes de hacer la solicitud AJAX
-	 form.find('button[type="submit"]').prop('disabled', true);
 
 	// Deshabilitar el botón antes de hacer la solicitud AJAX
 	form.find('button[type="submit"]').prop('disabled', true);
@@ -25,7 +22,7 @@ $('.FormularioAjax').submit(function (e) {
 	var classButtom;
 
 	if (tipo == "save") {
-		textoAlerta = "Los datos que enviaras quedaran almacenados en el sistema";
+		textoAlerta = "Los datos que enviarás quedarán almacenados en el sistema";
 		type = "info";
 		classButtom = "btn-primary";
 	} else if (tipo == "delete") {
@@ -43,7 +40,7 @@ $('.FormularioAjax').submit(function (e) {
 	}
 
 	swal({
-		title: "¿Estas seguro?",
+		title: "¿Estás seguro?",
 		text: textoAlerta,
 		type: type,
 		showCancelButton: true,
@@ -54,172 +51,173 @@ $('.FormularioAjax').submit(function (e) {
 		allowEscapeKey: false,
 		allowOutsideClick: false
 	},
-		function () {
-			// Dentro de la función del swal, deshabilita el botón "Aceptar" del swal
-  			swal.disableButtons();
+		function (isConfirm) {
+			if (isConfirm) {
+				// Dentro de la función del swal, deshabilita el botón "Aceptar" del swal
+				swal.disableButtons();
 
-			$.ajax({
-				type: method,
-				url: action,
-				data: formdata ? formdata : form.serialize(),
-				cache: false,
-				contentType: false,
-				processData: false,
-				xhr: function () {
-					var xhr = new window.XMLHttpRequest();
-					xhr.upload.addEventListener("progress", function (evt) {
-						if (evt.lengthComputable) {
-							var percentComplete = evt.loaded / evt.total;
-							percentComplete = parseInt(percentComplete * 100);
-							if (percentComplete < 100) {
-								respuesta.html('<p class="text-center">Procesado... (' + percentComplete + '%)</p><div class="progress progress-striped active"><div class="progress-bar progress-bar-info" style="width: ' + percentComplete + '%;"></div></div>');
-							} else {
-								respuesta.html('<p class="text-center"></p>');
+				$.ajax({
+					type: method,
+					url: action,
+					data: formdata ? formdata : form.serialize(),
+					cache: false,
+					contentType: false,
+					processData: false,
+					xhr: function () {
+						var xhr = new window.XMLHttpRequest();
+						xhr.upload.addEventListener("progress", function (evt) {
+							if (evt.lengthComputable) {
+								var percentComplete = evt.loaded / evt.total;
+								percentComplete = parseInt(percentComplete * 100);
+								if (percentComplete < 100) {
+									respuesta.html('<p class="text-center">Procesado... (' + percentComplete + '%)</p><div class="progress progress-striped active"><div class="progress-bar progress-bar-info" style="width: ' + percentComplete + '%;"></div></div>');
+								} else {
+									respuesta.html('<p class="text-center"></p>');
+								}
 							}
+						}, false);
+						return xhr;
+					},
+					success: function (data) {
+						var datos = eval(data);
+
+						if (datos[0] == "Error") {
+							swal({
+								title: datos[0],
+								text: datos[1],
+								type: datos[2],
+								confirmButtonClass: datos[3]
+							});
+						} else if (datos[0] == "Guardar") {
+							swal({
+								title: datos[0],
+								text: datos[1],
+								type: datos[2],
+								confirmButtonClass: datos[3],
+							});
+						} else {
+							swal({
+								title: datos[0],
+								text: datos[1],
+								type: datos[2],
+								timer: 3000,
+								confirmButtonClass: datos[3]
+							});
 						}
-					}, false);
-					return xhr;
-				},
-				success: function (data) {
-					var datos = eval(data);
 
-					if (datos[0] == "Error") {
-						swal({
-							title: datos[0],
-							text: datos[1],
-							type: datos[2],
-							confirmButtonClass: datos[3]
-						});
-					} else if (datos[0] == "Guardar") {
-						swal({
-							title: datos[0],
-							text: datos[1],
-							type: datos[2],
-							confirmButtonClass: datos[3],
-						});
-					} else {
-						swal({
-							title: datos[0],
-							text: datos[1],
-							type: datos[2],
-							timer: 3000,
-							confirmButtonClass: datos[3]
-						});
+						if (datos[4] != "") {
+							$('#' + datos[4])[0].reset();
+							$('#' + datos[4] + ' #pro').val(datos[5]);
+						}
+
+						llenarTabla(datos[6]);
+
+						if (datos[6] == "formEmpresas") {
+							pagination(1);
+							getEmpresa();
+						}
+
+						if (datos[6] == "formPacientesAdmisionEditar") {
+							getGenero();
+							pagination(1);
+						}
+
+						if (datos[6] == "formPacientesAdmision") {
+							getGenero();
+							getTipo();
+							getTipoMuestra();
+							getEmpresa();
+							getRemitente();
+							getHospitales();
+							getCategorias();
+							getServicio();
+							getClientes();
+							pagination(1);
+							$('#formulario_admision #producto').html("");
+							$('#formulario_admision #producto').selectpicker('refresh');
+						}
+
+						if (datos[6] == "AtencionMedica") {
+							printReport(datos[8]);//LLAMAMOS A LA FUNCION IMPRIMIR REPORTE DE LABORATORIO .-Función se encuentra en myjava_atencion_medica.js
+							setTimeout(sendMailAtencion(datos[8]), 5000);
+						}
+
+						if (datos[6] == "Adendum") {
+							printReport(datos[8]);//LLAMAMOS A LA FUNCION IMPRIMIR REPORTE DE LABORATORIO .-Función se encuentra en myjava_atencion_medica.js
+						}
+
+						if (datos[6] == "Facturacion") {
+							pago(datos[8]); //LLAMAMOS LA FUNCION PARA REALIZAR EL PAGO .-Función se encuentra en myjava_facturacion.js
+							pagination(1);
+						}
+
+						if (datos[6] == "FacturacionCredito") {
+							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							pagination(1);
+						}
+
+						if (datos[6] == "facturacionGrupal") {
+							pagoGrupal(datos[8]); //LLAMAMOS LA FUNCION PARA REALIZAR EL PAGO .-Función se encuentra en myjava_facturacion.js
+							pagination(1);
+						}
+
+						if (datos[6] == "facturacionGrupalCredito") {
+							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							pagination(1);
+						}
+
+						if (datos[6] == "Pagos") {
+							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							limpiarTabla();
+							pagination(1);
+							volver();
+							setTimeout(sendMail(datos[8]), 5000);
+							$('#' + datos[7]).modal('hide');
+						}
+
+						if (datos[6] == "PagosGrupal") {
+							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							limpiarTablaFacturaGrupo();
+							pagination(1);
+							volver();
+							setTimeout(sendMailGroup(datos[8]), 5000);
+							$('#' + datos[7]).modal('hide');
+						}
+
+						if (datos[6] == "Muestras") {
+							//printMuestra(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_muestras.js
+							createBill(datos[8]);//LLAMAMOS LA FACTURA .-Función se encuentra en myjava_atencioN_medica.js
+						}
+
+						if (datos[6] == "formPacientesAdmision") {
+							//printMuestra(datos[10]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_muestras.js
+							createBill(datos[10], datos[11], datos[12], datos[13], datos[14]);//LLAMAMOS LA FACTURA .-Función se encuentra en myjava_atencioN_medica.js
+						}
+
+						if (datos[9] == "Eliminar") {
+							$('#' + datos[7]).modal('hide');
+						}
+
+						if (datos[9] == "Guardar") {
+							$('#' + datos[7]).modal('hide');
+						}
+
+						if (datos[6] == "formCita") {
+							reportePDF(datos[8]);
+							sendEmailReprogramación(datos[8]);
+						}
+
+						// Habilitar el botón después de completar la transacción
+						form.find('button[type="submit"]').prop('disabled', false);
+					},
+					error: function () {
+						respuesta.html(msjError);
 					}
-
-					if (datos[4] != "") {
-						$('#' + datos[4])[0].reset();
-						$('#' + datos[4] + ' #pro').val(datos[5]);
-					}
-
-					llenarTabla(datos[6]);
-
-					if (datos[6] == "formEmpresas") {
-						pagination(1);
-						getEmpresa();
-					}
-
-					if (datos[6] == "formPacientesAdmisionEditar") {
-						getGenero();
-						pagination(1);
-					}
-
-					if (datos[6] == "formPacientesAdmision") {
-						getGenero();
-						getTipo();
-						getTipoMuestra();
-						getEmpresa();
-						getRemitente();
-						getHospitales();
-						getCategorias();
-						getServicio();
-						getClientes();
-						pagination(1);
-						$('#formulario_admision #producto').html("");
-						$('#formulario_admision #producto').selectpicker('refresh');
-					}
-
-					if (datos[6] == "AtencionMedica") {
-						printReport(datos[8]);//LLAMAMOS A LA FUNCION IMPRIMIR REPORTE DE LABORATORIO .-Función se encuenta en myjava_atencion_medica.js
-						setTimeout(sendMailAtencion(datos[8]), 5000);
-					}
-
-					if (datos[6] == "Adendum") {
-						printReport(datos[8]);//LLAMAMOS A LA FUNCION IMPRIMIR REPORTE DE LABORATORIO .-Función se encuenta en myjava_atencion_medica.js
-					}
-
-					if (datos[6] == "Facturacion") {
-						pago(datos[8]); //LLAMAMOS LA FUNCION PARA REALIZAR EL PAGO .-Función se encuenta en myjava_facturacion.js
-						pagination(1);
-					}
-
-					if (datos[6] == "FacturacionCredito") {
-						printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuenta en myjava_facturacion.js
-						pagination(1);
-					}
-
-					if (datos[6] == "facturacionGrupal") {
-						pagoGrupal(datos[8]); //LLAMAMOS LA FUNCION PARA REALIZAR EL PAGO .-Función se encuenta en myjava_facturacion.js
-						pagination(1);
-					}
-
-					if (datos[6] == "facturacionGrupalCredito") {
-						printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuenta en myjava_facturacion.js
-						pagination(1);
-					}
-
-					if (datos[6] == "Pagos") {
-						printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuenta en myjava_facturacion.js
-						limpiarTabla();
-						pagination(1);
-						volver();
-						setTimeout(sendMail(datos[8]), 5000);
-						$('#' + datos[7]).modal('hide');
-					}
-
-					if (datos[6] == "PagosGrupal") {
-						printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuenta en myjava_facturacion.js
-						limpiarTablaFacturaGrupo();
-						pagination(1);
-						volver();
-						setTimeout(sendMailGroup(datos[8]), 5000);
-						$('#' + datos[7]).modal('hide');
-					}
-
-					if (datos[6] == "Muestras") {
-						//printMuestra(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuenta en myjava_muestras.js
-						createBill(datos[8]);//LLAMAMOS LA FACTURA .-Función se encuenta en myjava_atencioN_medica.js
-					}
-
-					if (datos[6] == "formPacientesAdmision") {
-						//printMuestra(datos[10]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuenta en myjava_muestras.js
-						createBill(datos[10], datos[11], datos[12], datos[13], datos[14]);//LLAMAMOS LA FACTURA .-Función se encuenta en myjava_atencioN_medica.js
-					}
-
-
-					if (datos[9] == "Eliminar") {
-						$('#' + datos[7]).modal('hide');
-					}
-
-					if (datos[9] == "Guardar") {
-						$('#' + datos[7]).modal('hide');
-					}
-
-					if (datos[6] == "formCita") {
-						reportePDF(datos[8]);
-						sendEmailReprogramación(datos[8]);
-					}
-
-					// Habilitar el botón después de completar la transacción
-					form.find('button[type="submit"]').prop('disabled', false);
-
-					return false;
-				},
-				error: function () {
-					respuesta.html(msjError);
-				}
-			});
-			return false;
+				});
+			} else {
+				// Si el usuario hizo clic en "Cancelar", habilita el botón del formulario
+				form.find('button[type="submit"]').prop('disabled', false);
+			}
 		});
 });
 
