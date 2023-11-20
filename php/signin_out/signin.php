@@ -52,7 +52,7 @@ $row = $result->fetch_assoc();
 			else
 			   $numero = $numero + 1;				
 			
-			$comentario = mb_convert_case("Inicio de Sesion", MB_CASE_TITLE, "UTF-8");
+			$comentario = "Inicio de Sesion";
 			$insert = "INSERT INTO historial_acceso 
 				VALUES('$numero','$fecha','$colaborador_id','$nombre_host','$comentario'";
 			$mysqli->query($insert);						

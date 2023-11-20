@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Reporte de Laboratorio</title>
     <link rel="stylesheet" href="<?php echo SERVERURL; ?>css/stylelab.css">
     <link rel="shortcut icon" href="<?php echo SERVERURL; ?>img/logo_icono.png">
 </head>
+
 <body>
     <div id="header">
         <div class="logo_factura">
             <img src="<?php echo SERVERURL; ?>img/logo_factura.jpg">
-        </div>  
+        </div>
         <div class="title"><i><?php echo $consulta_registro['eslogan']; ?></i></div>
         <div class="title1">Biopsia N° <?php echo $consulta_registro['numero']; ?></div>
         <div class="title">INFORME DE ANATOMÍA PATOLÓGICA</div>
-        <hr/>
+        <hr />
     </div>
-    
+
     <div class="clearfix"></div>
 
     <div id="footer">
@@ -23,37 +25,37 @@
             <tr>
                 <td>
                     <div class="item">
-                        <img src="<?php echo SERVERURL; ?>img/email.jpg" alt=""/>
+                        <img src="<?php echo SERVERURL; ?>img/email.jpg" alt="" />
                         <p><?php echo $consulta_registro['empresa_correo']; ?></p>
-                    </div>                
+                    </div>
                 </td>
                 <td>
                     <div class="item">
-                        <img src="<?php echo SERVERURL; ?>img/telephone.jpg" alt=""/>
+                        <img src="<?php echo SERVERURL; ?>img/telephone.jpg" alt="" />
                         <p><?php echo $consulta_registro['empresa_telefono']; ?></p>
-                    </div>                
+                    </div>
                 </td>
                 <td>
                     <div class="item">
-                        <img src="<?php echo SERVERURL; ?>img/whatsapp.jpg" alt=""/>
+                        <img src="<?php echo SERVERURL; ?>img/whatsapp.jpg" alt="" />
                         <p><?php echo $consulta_registro['celular']; ?></p>
-                    </div>        
+                    </div>
                 </td>
                 <td>
                     <div class="item">
-                        <img src="<?php echo SERVERURL; ?>img/address.jpg" alt=""/>
+                        <img src="<?php echo SERVERURL; ?>img/address.jpg" alt="" />
                         <p><?php echo $consulta_registro['direccion_empresa']; ?></p>
-                    </div>        
+                    </div>
                 </td>
             </tr>
         </table>
-    </div>  
+    </div>
 
     <div class="content-container">
         <div class="left-right-group">
             <div class="left-group">
                 <p><b>Registro Número:</b> <?php echo $consulta_registro['numero']; ?></p>
-                <p><b>Nombre:</b> 
+                <p><b>Nombre:</b>
                     <?php 
                     $paciente = $consulta_registro['paciente'];
                     $empresa = "";  
@@ -77,8 +79,8 @@
                     }
 
                     echo $edad; 
-                ?> <b>Sexo:</b> 
-                <?php 
+                ?> <b>Sexo:</b>
+                    <?php 
                     $paciente = $consulta_registro['paciente'];
                     $genero = "";  
                     if($paciente != ""){
@@ -100,11 +102,11 @@
             </div>
             <div class="right-group">
                 <p><b>Sitio Preciso de la Muestra: </b><?php echo $consulta_registro['sitio_muestra']; ?></p>
-                <p><b>Fecha de Recibido:</b>  <?php echo $consulta_registro['fecha_recibido']; ?></p>
+                <p><b>Fecha de Recibido:</b> <?php echo $consulta_registro['fecha_recibido']; ?></p>
                 <p><b>Fecha de la Toma:</b> <?php echo $consulta_registro['fecha_recibido']; ?></p>
                 <p><b>Fecha de Emisión de Reporte:</b> <?php echo $consulta_registro['fecha_emision_reporte']; ?></p>
-                <p><br/></p>
-            </div>  
+                <p><br /></p>
+            </div>
         </div>
         <div class="clearfix"></div>
 
@@ -117,7 +119,7 @@
             ?>
         </div>
         <div class="diagnostico-group">
-            <b>FACTORES PRONÓSTICOS / PROTOCOLO SEGÚN EL COLEGIO AMERICANO DE PATOLÓGOS:</b><br/>
+            <b>FACTORES PRONÓSTICOS / PROTOCOLO SEGÚN EL COLEGIO AMERICANO DE PATOLÓGOS:</b><br />
             <?php 
             if($consulta_registro['factores_pronostico'] != ""){
                 echo nl2br($consulta_registro['factores_pronostico']);
@@ -125,7 +127,7 @@
             ?>
         </div>
         <div class="diagnostico-group">
-            <b>DESCRIPCIÓN MACROSCÓPICA:</b><br/>
+            <b>DESCRIPCIÓN MACROSCÓPICA:</b><br />
             <?php 
             if($consulta_registro['descripcion_macroscopica'] != ""){
                 echo nl2br($consulta_registro['descripcion_macroscopica']);
@@ -133,7 +135,7 @@
             ?>
         </div>
         <div class="diagnostico-group">
-            <b>DESCRIPCIÓN MICROSCÓPICA:</b><br/>
+            <b>DESCRIPCIÓN MICROSCÓPICA:</b><br />
             <?php 
             if($consulta_registro['descripcion_microscopica'] != ""){
                 echo nl2br($consulta_registro['descripcion_microscopica']);
@@ -141,7 +143,7 @@
             ?>
         </div>
         <div class="diagnostico-group">
-            <b>COMENTARIO:</b><br/>
+            <b>COMENTARIO:</b><br />
             <?php 
             if($consulta_registro['comentario'] != ""){
                 echo nl2br($consulta_registro['comentario']);
@@ -180,6 +182,11 @@
                 <img src="<?php echo SERVERURL; ?>img/firma_sello_nombre.png" width="300px" height="120px">
             </div>
         </div>
+
+        <br />
+        <br />
+        <center><img src="<?php echo $pngAbsoluteFilePath; ?>"></center>
     </div>
 </body>
+
 </html>

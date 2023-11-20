@@ -6,7 +6,7 @@ include "../funtions.php";
 $mysqli = connect_mysqli();
 
 $pacientes_id = $_POST['clienteIDGrupo'];
-$fecha = $_POST['fechaGrupo'];
+$fecha = date("Y-m-d");
 $colaborador_id = $_POST['colaborador_idGrupo'];
 $servicio_id = $_POST['servicio_idGrupo'];
 $notes = cleanStringStrtolower($_POST['notesBillGrupo']);

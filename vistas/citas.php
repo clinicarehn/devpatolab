@@ -20,7 +20,7 @@ $type = $_SESSION['type'];
 
 $nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME
 $fecha = date("Y-m-d H:i:s");
-$comentario = mb_convert_case("Ingreso al Menu Citas", MB_CASE_TITLE, "UTF-8");
+$comentario = "Ingreso al Menu Citas";
 
 //OBTENER CORRELATIVO
 $query = "SELECT MAX(acceso_id) AS max, COUNT(acceso_id) AS count FROM historial_acceso";

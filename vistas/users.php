@@ -21,7 +21,7 @@ $type = $_SESSION['type'];
 
 $nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME
 $fecha = date("Y-m-d H:i:s");
-$comentario = mb_convert_case("Ingreso al Modulo de Usuarios del Sistema", MB_CASE_TITLE, "UTF-8");
+$comentario = "Ingreso al Modulo de Usuarios del Sistema";
 
 if($colaborador_id != "" || $colaborador_id != null){
    historial_acceso($comentario, $nombre_host, $colaborador_id);

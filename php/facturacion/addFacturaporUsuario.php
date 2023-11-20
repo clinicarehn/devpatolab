@@ -7,7 +7,7 @@ $mysqli = connect_mysqli();
 
 $facturas_id = $_POST['facturas_id'];
 $pacientes_id = $_POST['pacientes_id'];
-$fecha = $_POST['fecha'];
+$fecha = date("Y-m-d");
 $colaborador_id = $_POST['colaborador_id'];
 $servicio_id = $_POST['servicio_id'];
 $notes = cleanStringStrtolower($_POST['notes']);

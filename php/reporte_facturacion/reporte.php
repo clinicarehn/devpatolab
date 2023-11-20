@@ -537,6 +537,89 @@ if($result_anuladas->num_rows>0){
 		$neto_antes_isv = 0;
 		$facturas_id = 0;
 		$atencion = "";
+		
+		$fila+=1;
+
+		if($registro2['numero'] != ""){
+			$numero = $registro2['prefijo'].''.rellenarDigitos($registro2['numero'], $registro2['relleno']);
+		}else{
+			$numero = "Aún no se ha generado";
+		}
+	
+		$objPHPExcel->getActiveSheet()->SetCellValue("A$fila", $valor);
+		$objPHPExcel->getActiveSheet()->SetCellValue("B$fila", "Anuladas");
+		$objPHPExcel->getActiveSheet()->SetCellValue("C$fila", $registro2['fecha']);
+
+		if( strlen($registro2['identidad'])<10 ){
+		   $objPHPExcel->getActiveSheet()->setCellValueExplicit("D$fila", 'No porta identidad', PHPExcel_Cell_DataType::TYPE_STRING);		   
+		}else{
+		   $objPHPExcel->getActiveSheet()->setCellValueExplicit("D$fila", $registro2['identidad'], PHPExcel_Cell_DataType::TYPE_STRING);
+		}
+			  
+		$objPHPExcel->getActiveSheet()->SetCellValue("E$fila", $registro2['paciente']);			  
+		$objPHPExcel->getActiveSheet()->SetCellValue("F$fila", $numero);
+		$objPHPExcel->getActiveSheet()->SetCellValue("G$fila", "0");
+		$objPHPExcel->getActiveSheet()->SetCellValue("H$fila", "0");		
+		$objPHPExcel->getActiveSheet()->SetCellValue("I$fila", "0");
+		$objPHPExcel->getActiveSheet()->SetCellValue("J$fila", "0");
+		$objPHPExcel->getActiveSheet()->SetCellValue("K$fila", $registro2['servicio']);
+		$objPHPExcel->getActiveSheet()->SetCellValue("L$fila", $registro2['profesional']);
+
+		$total_precio_neto += $precio; 
+		$total_isv_neto += $isv_neto;
+		$total_descuento_neto += $descuento;
+		$total_total_neto += $total;	
+	
+		$atencion = rtrim($atencion,', ');
+		$objPHPExcel->getActiveSheet()->SetCellValue("O$fila", "");			
+
+		//Establecer estilo
+		$objPHPExcel->getActiveSheet()->setSharedStyle($bordes, "A$fila:O$fila");	
+		$valor++;
+   }	
+   
+	$fila+=1;
+	$objPHPExcel->getActiveSheet()->SetCellValue("A$fila", "TOTAL");
+	$objPHPExcel->getActiveSheet()->SetCellValue("G$fila", "0");
+	$objPHPExcel->getActiveSheet()->SetCellValue("H$fila", "0");
+	$objPHPExcel->getActiveSheet()->SetCellValue("I$fila", "0");
+	$objPHPExcel->getActiveSheet()->SetCellValue("J$fila", "0");
+	$objPHPExcel->getActiveSheet()->mergeCells("A$fila:F$fila"); //unir celdas 
+	$objPHPExcel->getActiveSheet()->setSharedStyle($totales, "A$fila:J$fila");    
+}
+
+/*if($result_anuladas->num_rows>0){
+	$fila+=4;
+	$objPHPExcel->getActiveSheet()->SetCellValue("A$fila", "FACTURAS ANULADAS");
+	$objPHPExcel->getActiveSheet()->mergeCells("A$fila:O$fila"); //unir celdas 
+	$objPHPExcel->getActiveSheet()->setSharedStyle($subtitulo, "A$fila:O$fila");
+	
+	$valor = 1;
+	
+	$total_precio_neto = 0; 
+	$total_isv_neto = 0;
+	$total_descuento_neto = 0;
+	$total_total_neto = 0;	
+	
+	while($registro2 = $result_anuladas->fetch_assoc()){
+		$numero = $registro2['numero'];
+		//CONSULTAR DATOS DETALLE DE Factura
+		$query_detalle = "SELECT f.facturas_id, fd.precio, fd.descuento, fd.cantidad, fd.isv_valor
+			FROM facturas_detalle AS fd
+			INNER JOIN facturas AS f
+			ON fd.facturas_id = f.facturas_id
+			WHERE f.number = '$numero'";
+		$result_detalles = $mysqli->query($query_detalle) or die($mysqli->error);
+
+		$cantidad = 0;
+		$descuento = 0;
+		$precio = 0;
+		$total_precio = 0;
+		$total = 0;
+		$isv_neto = 0;
+		$neto_antes_isv = 0;
+		$facturas_id = 0;
+		$atencion = "";
 	
 		while($registrodetalles = $result_detalles->fetch_assoc()){
 			$precio += ($registrodetalles["precio"] * $registrodetalles["cantidad"]);
@@ -612,7 +695,7 @@ if($result_anuladas->num_rows>0){
 	$objPHPExcel->getActiveSheet()->SetCellValue("J$fila", $total_total_neto);
 	$objPHPExcel->getActiveSheet()->mergeCells("A$fila:F$fila"); //unir celdas 
 	$objPHPExcel->getActiveSheet()->setSharedStyle($totales, "A$fila:J$fila");    
-}
+}*/
 //Establecer estilo
 //*************Guardar como excel 2003*********************************
 $objWriter = new PHPExcel_Writer_Excel5($objPHPExcel); //Escribir archivo

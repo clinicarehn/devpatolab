@@ -13,7 +13,7 @@ if(isset($_SESSION['colaborador_id'])){
    $colaborador_id = "";
 }
 
-$comentario = mb_convert_case("Salio del Sistema", MB_CASE_TITLE, "UTF-8");   
+$comentario = "Salio del Sistema";   
 
 //OBTENER CORRELATIVO
 $query = "SELECT MAX(acceso_id) AS max, COUNT(acceso_id) AS count 

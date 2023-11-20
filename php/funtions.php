@@ -1042,8 +1042,7 @@ function cleanStringStrtolower($string){
 	$string = str_ireplace("{", "", $string);
 	$string = str_ireplace("}", "", $string);               
 	$string = str_ireplace("==", "", $string);
-	$string = str_ireplace("'", "", $string);
-	$string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8");		
+	$string = str_ireplace("'", "", $string);	
 	
 	return $string;
 }	
@@ -1078,7 +1077,7 @@ function cleanStringStrtoupper($string){
 
 function cleanStringConverterCase($string){
 	//Limpia espacios al inicio y al final
-	$string =  mb_convert_case(trim($string), MB_CASE_TITLE, "UTF-8");
+	$string =  trim($string);
 
 	//Quita las barras de un string con comillas escapadas
 	$string = stripslashes($string); 
