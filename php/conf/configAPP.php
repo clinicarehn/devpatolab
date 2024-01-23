@@ -5,14 +5,14 @@
 
 		//DATOS DE CONEXION DEL CLIENTE
 		date_default_timezone_set('America/Tegucigalpa');
-		const SERVERURL = "http://localhost/githubPatolab/";
+		const SERVERURL = "http://localhost/devpatolab/";
 		const SERVEREMPRESA = "Patolab";
 		const SERVER = "localhost";
 		const DB = "clinicarehn_clientes_patolab";
 		const USER = "clinicarehn_clinicare";
 		const PASS = "Clin1c@r32022#";
 
-		const PRODUCT_PATH = "/githubPatolab/php/atencion_pacientes/Examenes/";
+		const PRODUCT_PATH = "/devpatolab/php/atencion_pacientes/Examenes/";
 
 		//DATOS DE CONEXION SERVIDOR PRINCIPAL
 		const SERVER_MAIN = "localhost";
