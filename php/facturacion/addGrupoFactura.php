@@ -44,12 +44,11 @@ $consulta2 = $result->fetch_assoc();
 
 $secuencia_facturacion_id = "";
 $prefijo = "";
-$numero = "";
+$numero = "0";
 $rango_final = "";
 $fecha_limite = "";
 $incremento = "";
 $no_factura = "";
-$number = 0;
 
 if($result->num_rows>0){
 	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];
@@ -59,7 +58,6 @@ if($result->num_rows>0){
 	$fecha_limite = $consulta2['fecha_limite'];
 	$incremento = $consulta2['incremento'];
 	$no_factura = $consulta2['prefijo']."".str_pad($consulta2['numero'], $consulta2['relleno'], "0", STR_PAD_LEFT);
-	$number = $consulta2['numero'];
 }
 
 //OBTENEMOS EL TAMAÑO DE LA TABLA
@@ -78,7 +76,7 @@ if($tamano_tabla >0){
 		//INSERTAMOS LOS DATOS EN LA ENTIDAD FACTURA
 		$facturas_grupal_id = correlativo("facturas_grupal_id","facturas_grupal");
 		$insert = "INSERT INTO facturas_grupal
-			VALUES('$facturas_grupal_id','$secuencia_facturacion_id','$numero','$tipo_factura','$pacientes_id','$colaborador_id','$servicio_id','$importe','$notes','$fecha','$estado_factura','$cierre','$usuario','$empresa_id','$fecha_registro')";
+			VALUES('$facturas_grupal_id','$secuencia_facturacion_id','$numero','$tipo_factura','$pacientes_id','$colaborador_id','$servicio_id','$importe','$notes','$fecha','2','$cierre','$usuario','$empresa_id','$fecha_registro')";
 		$query = $mysqli->query($insert);
 
 		if($query){
@@ -90,6 +88,13 @@ if($tamano_tabla >0){
 			$lineaISV = 0;
 			$lineaDescuento = 0;
 			$lineaCantidad = 0;
+			$isv_valor = 0;
+			$lineaTotal = 0;
+			$muestra_id = 0;
+			$materialEnviado = "";
+			$lineaFactura_id = 0;
+			$lineaPacientes_id = 0;
+			$isv_valor = 0;
 
 			//ALMACENAMOS EL DETALLE DE LA FACTURA EN LA ENTIDAD FACTURAS DETALLE
 			for ($i = 0; $i < $tamano; $i++){//INICIO CICLO FOR
@@ -117,7 +122,8 @@ if($tamano_tabla >0){
 					$update = "UPDATE facturas
 						SET
 							fecha = '$fecha',
-							estado = '$estado'
+							number = '$numero',
+							estado = '2'
 						WHERE facturas_id = '$lineaFactura_id'";
 					$mysqli->query($update);
 
@@ -140,6 +146,22 @@ if($tamano_tabla >0){
 					usuario = '$usuario'
 				WHERE facturas_grupal_id = '$facturas_grupal_id'";
 			$mysqli->query($update);
+
+			//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
+			$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+
+			//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE
+			$update = "UPDATE secuencia_facturacion
+			SET
+				siguiente = '$numero_secuencia_facturacion'
+			WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
+			$mysqli->query($update);
+
+			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
+			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes_grupales");
+			$insert_cxc = "INSERT INTO cobrar_clientes_grupales 
+			(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
+			$mysqli->query($insert_cxc);
 
 			$datos = array(
 				0 => "Almacenado",
@@ -166,7 +188,7 @@ if($tamano_tabla >0){
 		//INSERTAMOS LOS DATOS EN LA ENTIDAD FACTURA
 		$facturas_grupal_id = correlativo("facturas_grupal_id","facturas_grupal");
 		$insert = "INSERT INTO facturas_grupal
-			VALUES('$facturas_grupal_id','$secuencia_facturacion_id','$numero','$tipo_factura','$pacientes_id','$colaborador_id','$servicio_id','$importe','$notes','$fecha','$estado_factura','$cierre','$usuario','$empresa_id','$fecha_registro')";
+			VALUES('$facturas_grupal_id','$secuencia_facturacion_id','$numero','$tipo_factura','$pacientes_id','$colaborador_id','$servicio_id','$importe','$notes','$fecha','2','$cierre','$usuario','$empresa_id','$fecha_registro')";
 		$query = $mysqli->query($insert);
 
 		if($query){
@@ -178,6 +200,12 @@ if($tamano_tabla >0){
 			$lineaISV = 0;
 			$lineaDescuento = 0;
 			$lineaCantidad = 0;
+			$lineaTotal = 0;
+			$muestra_id = 0;
+			$materialEnviado = "";
+			$lineaFactura_id = 0;
+			$lineaPacientes_id = 0;
+			$isv_valor = 0;
 
 			//ALMACENAMOS EL DETALLE DE LA FACTURA EN LA ENTIDAD FACTURAS DETALLE
 			for ($i = 0; $i < $tamano; $i++){//INICIO CICLO FOR
@@ -205,8 +233,8 @@ if($tamano_tabla >0){
 					$update = "UPDATE facturas
 						SET
 							fecha = '$fecha',
-							estado = '$estado',
-							number = '$number'
+							number = '$numero',
+							estado = '2'
 						WHERE facturas_id = '$lineaFactura_id'";
 					$mysqli->query($update);
 
@@ -222,14 +250,14 @@ if($tamano_tabla >0){
 			}//FIN CICLO FOR
 			$total_despues_isv = ($total_valor + $isv_neto) - $descuentos;
 
+
 			//ACTUALIZAMOS EL IMPORTE DE LA FACTURA
 			$update = "UPDATE facturas_grupal
 				SET
 					importe = '$total_despues_isv',
-					usuario = '$usuario',
-					number = '$numero',
-					estado = '4'
+					usuario = '$usuario'
 				WHERE facturas_grupal_id = '$facturas_grupal_id'";
+
 			$mysqli->query($update);
 
 			//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
@@ -244,8 +272,9 @@ if($tamano_tabla >0){
 			
 			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
 			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes_grupales");
-			$insert_cxc = "INSERT INTO cobrar_clientes_grupales VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
-			$mysqli->query($insert_cxc);				
+			$insert_cxc = "INSERT INTO cobrar_clientes_grupales 
+			(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
+			$mysqli->query($insert_cxc);
 
 			$datos = array(
 				0 => "Almacenado",
@@ -281,4 +310,3 @@ if($tamano_tabla >0){
 }
 
 echo json_encode($datos);
-?>

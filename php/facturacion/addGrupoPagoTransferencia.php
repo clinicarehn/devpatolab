@@ -27,32 +27,6 @@ $efectivo = 0;
 $tarjeta = $importe;
 $tipoLabel = "PagosGrupal";
 
-//CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION
-$query_secuencia = "SELECT secuencia_facturacion_id, prefijo, siguiente AS 'numero', rango_final, fecha_limite, incremento, relleno
-   FROM secuencia_facturacion
-   WHERE activo = '$activo' AND empresa_id = '$empresa_id'";
-$result = $mysqli->query($query_secuencia) or die($mysqli->error);
-$consulta2 = $result->fetch_assoc();
-
-$secuencia_facturacion_id = "";
-$prefijo = "";
-$numero = "";
-$rango_final = "";
-$fecha_limite = "";
-$incremento = "";
-$no_factura = "";
-$tipo_factura = "";
-
-if($result->num_rows>0){
-	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];
-	$prefijo = $consulta2['prefijo'];
-	$numero = $consulta2['numero'];
-	$rango_final = $consulta2['rango_final'];
-	$fecha_limite = $consulta2['fecha_limite'];
-	$incremento = $consulta2['incremento'];
-	$no_factura = $consulta2['prefijo']."".str_pad($consulta2['numero'], $consulta2['relleno'], "0", STR_PAD_LEFT);
-}
-
 //CONSULTAR DATOS DE LA FACTURA
 $query_factura = "SELECT servicio_id, colaborador_id, fecha, pacientes_id, tipo_factura
 	FROM facturas_grupal
@@ -75,13 +49,6 @@ if($result_factura->num_rows>0){
 
 if($tipo_factura == 2){
 	$tipoLabel = "PagosCredito";
-	$update_cobrarclientes = "
-		UPDATE cobrar_clientes_grupales 
-		SET 
-			estado = 2,
-			saldo = 0
-		WHERE facturas_id = '$facturas_id'";
-	$mysqli->query($update_cobrarclientes);
 }
 
 //INSERTAMOS LOS DATOS EN LA ENTIDAD PAGO
@@ -120,10 +87,9 @@ if($result_ConsultaPagos->num_rows==0){
 		//ACTUALIZAMOS EL ESTADO DE LA FACTURA GRUPAL
 		$update_factura = "UPDATE facturas_grupal
 			SET
-				estado = '$estado',
-				number = '$numero'
+				estado = '$estado'
 			WHERE facturas_grupal_id = '$facturas_id'";
-		$mysqli->query($update_factura) or die($mysqli->error);
+		$mysqli->query($update_factura) or die($mysqli->error);	
 
 		//CONSULTAMOS LOS NUMEROS DE FACTURAS QUE SE ATENDIERON
 		$query_facturas = "SELECT facturas_id
@@ -168,7 +134,7 @@ if($result_ConsultaPagos->num_rows==0){
 
 			//ACTUALIZAMOS EL PAGO DE LA FACTURA CONSULTADA
 			//INSERTAMOS LOS DATOS EN LA ENTIDAD PAGO
-			$pagos_id = correlativo("pagos_id","pagos");
+			/*$pagos_id = correlativo("pagos_id","pagos");
 			$insert = "INSERT INTO pagos
 			VALUES ('$pagos_id','$facturaConsulta','$tipo_pago','$fecha','$total_despues_isv','$cambio','$usuario','$estado_pago','$empresa_id','$fecha_registro')";
 			$query_pagos = $mysqli->query($insert);
@@ -179,7 +145,7 @@ if($result_ConsultaPagos->num_rows==0){
 					$insert = "INSERT INTO pagos_detalles
 					VALUES ('$pagos_detalles_id','$pagos_id','$tipo_pago_id','$banco_id','$total_despues_isv','$referencia_pago1','$referencia_pago2','$referencia_pago3')";
 					$query = $mysqli->query($insert);
-			}
+			}*/
 
 			//CONSULTAMOS EL NUMERO DE LA MUESTRA
 			$query_muestra = "SELECT muestras_id
@@ -202,8 +168,7 @@ if($result_ConsultaPagos->num_rows==0){
 			//ACTUALIZAMOS EL ESTADO DE LA FACTURA
 			$update_factura = "UPDATE facturas
 				SET
-					estado = '$estado',
-					number = '$numero'
+					estado = '$estado'
 				WHERE facturas_id = '$facturaConsulta'";
 			$mysqli->query($update_factura) or die($mysqli->error);
 		}//FIN CICLO WHILE
@@ -214,16 +179,31 @@ if($result_ConsultaPagos->num_rows==0){
 				estado = '$estado_atencion'
 			WHERE atencion_id  = '$atencion_id'";
 		$mysqli->query($update_atencion) or die($mysqli->error);
-
-		//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
-		$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
-
-		//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE
-		$update = "UPDATE secuencia_facturacion
-		SET
-			siguiente = '$numero_secuencia_facturacion'
-		WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
-		$mysqli->query($update);
+		
+		//CONSULTAMOS EL SALDO ANTERIOR cobrar_clientes
+		$query_saldo_cxc = "SELECT saldo FROM cobrar_clientes_grupales WHERE facturas_id = '$facturas_id'";
+		$result_saldo_cxc = $mysqli->query($query_saldo_cxc) or die($mysqli->error);
+		
+		if($result_saldo_cxc->num_rows>0){
+			$consulta2Saldo = $result_saldo_cxc->fetch_assoc();
+			$saldo_cxc = (float)$consulta2Saldo['saldo'];
+			$nuevo_saldo = (float)$saldo_cxc - (float)$importe;
+			$estado_cxc = 1;
+			
+			$tolerancia = 0.0001; // Puedes ajustar esta tolerancia según sea necesario
+			if (abs($nuevo_saldo) < $tolerancia) {
+				$estado_cxc = 2;
+			}
+			
+			//ACTUALIZAR CUENTA POR cobrar_clientes
+			$update_ccx = "UPDATE cobrar_clientes_grupales 
+				SET 
+					saldo = '$nuevo_saldo',
+					estado = '$estado_cxc'
+				WHERE 
+					facturas_id = '$facturas_id'";
+			$mysqli->query($update_ccx) or die($mysqli->error);					
+		}			
 
 		$datos = array(
 			0 => "Almacenado",

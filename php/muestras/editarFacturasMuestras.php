@@ -24,8 +24,10 @@ $profesional = "";
 $servicio_id = "";
 $material_eviando = "";
 $number = "";
+$pacientes_id_cliente_codigo = "";
+$pacientes_id_cliente = "";
 
-if($result->num_rows>=0){	
+if($result->num_rows>0){	
 	$valores2 = $result->fetch_assoc();
 
 	$pacientes_id = $valores2['pacientes_id'];
@@ -36,23 +38,20 @@ if($result->num_rows>=0){
 	$servicio_id = $valores2['servicio_id'];
 	$material_eviando = $valores2['material_eviando'];
 	$number = $valores2['number'];	
-}
 
-//CONSULTAR EL PACIENTE SI ES ENVIADO POR UNA EMPRESA O CLINICA
-$query_paciente = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) As 'paciente'
-	FROM muestras_hospitales AS mh
-	INNER JOIN pacientes AS p
-	ON mh.pacientes_id = p.pacientes_id
-	WHERE mh.muestras_id = '$muestras_id'";
-$result_paciente = $mysqli->query($query_paciente) or die($mysqli->error);
+	//CONSULTAR EL PACIENTE SI ES ENVIADO POR UNA EMPRESA O CLINICA
+	$query_paciente = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) As 'paciente'
+		FROM muestras_hospitales AS mh
+		INNER JOIN pacientes AS p
+		ON mh.pacientes_id = p.pacientes_id
+		WHERE mh.muestras_id = '$muestras_id'";
+	$result_paciente = $mysqli->query($query_paciente) or die($mysqli->error);
 
-$pacientes_id_cliente_codigo = "";
-$pacientes_id_cliente = "";
-
-if($result_paciente->num_rows>=0){	
-	$valores_paciente = $result_paciente->fetch_assoc();
-	$pacientes_id_cliente_codigo = $valores_paciente['pacientes_id'];
-	$pacientes_id_cliente = $valores_paciente['paciente'];	
+	if($result_paciente->num_rows>0){	
+		$valores_paciente = $result_paciente->fetch_assoc();
+		$pacientes_id_cliente_codigo = $valores_paciente['pacientes_id'];
+		$pacientes_id_cliente = $valores_paciente['paciente'];	
+	}	
 }
 
 $datos = array(

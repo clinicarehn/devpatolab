@@ -10,7 +10,7 @@ $(document).ready(function() {
 	funciones();
 
     //INICIO PAGINATION (PARA LAS BUSQUEDAS SEGUN SELECCIONES)
-	$('#form_main_facturas #bs_regis').on('keyup',function(){
+	/*$('#form_main_facturas #bs_regis').on('keyup',function(){
 	  pagination(1);
 	});
 
@@ -31,8 +31,14 @@ $(document).ready(function() {
 	});
 
 	$('#form_main_facturas #estado').on('change',function(){
-	  pagination(1);
+		pagination(1);
+	});*/
+
+	$("#form_main_facturas #buscar").on("click", function(e){
+		e.preventDefault();
+		pagination(1);
 	});
+
 	//FIN PAGINATION (PARA LAS BUSQUEDAS SEGUN SELECCIONES)
 });
 //FIN CONTROLES DE ACCION
@@ -97,10 +103,21 @@ function pagination(partida){
 		url:url,
 		async: true,
 		data:'partida='+partida+'&fechai='+fechai+'&fechaf='+fechaf+'&dato='+dato+'&tipo_paciente_grupo='+tipo_paciente_grupo+'&pacientesIDGrupo='+pacientesIDGrupo+'&estado='+estado,
+		beforeSend: function(){
+			swal({
+			title: "",
+			text: "Por favor espere...",
+			imageUrl: '<?php echo SERVERURL; ?>img/gif-load.gif',
+			closeOnConfirm: false,
+			showConfirmButton: false,
+			imageSize: '150x150',
+			});
+		},
 		success:function(data){
 			var array = eval(data);
 			$('#agrega-registros').html(array[0]);
 			$('#pagination').html(array[1]);
+			swal.close();
 		}
 	});
 	return false;

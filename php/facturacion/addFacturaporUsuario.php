@@ -34,26 +34,28 @@ if(isset($_POST['facturas_activo'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 
 //CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION
 $query_secuencia = "SELECT secuencia_facturacion_id, prefijo, siguiente AS 'numero', rango_final, fecha_limite, incremento, relleno
-   FROM secuencia_facturacion
-   WHERE activo = '$activo' AND empresa_id = '$empresa_id'";
+	FROM secuencia_facturacion
+	WHERE activo = '$activo' AND empresa_id = '$empresa_id'";
+
 $result = $mysqli->query($query_secuencia) or die($mysqli->error);
 $consulta2 = $result->fetch_assoc();
 
 $secuencia_facturacion_id = "";
 $prefijo = "";
-$numero = 0;
+$numero = "0";
 $rango_final = "";
 $fecha_limite = "";
 $incremento = "";
 $no_factura = "";
 
 if($result->num_rows>0){
-	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];
+	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];	
 	$prefijo = $consulta2['prefijo'];
-	$rango_final = $consulta2['rango_final'];
-	$fecha_limite = $consulta2['fecha_limite'];
-	$incremento = $consulta2['incremento'];
 	$numero = $consulta2['numero'];
+	$rango_final = $consulta2['rango_final'];
+	$fecha_limite = $consulta2['fecha_limite'];	
+	$incremento = $consulta2['incremento'];
+	$no_factura = $consulta2['prefijo']."".str_pad($consulta2['numero'], $consulta2['relleno'], "0", STR_PAD_LEFT);		
 }
 
 //OBTENEMOS EL TAMAÑO DE LA TABLA
@@ -74,6 +76,7 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 		SET
 			fecha = '$fecha',
 			tipo_factura = '$tipo_factura',
+			number = '$numero',
 			secuencia_facturacion_id = '$secuencia_facturacion_id',
 			estado = '$estado',
 			notas = '$notes'
@@ -229,9 +232,28 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 			//ACTUALIZAMOS EL IMPORTE DE LA FACTURA
 			$update = "UPDATE facturas
 				SET
-					importe = '$total_despues_isv'
+					importe = '$total_despues_isv',
+					number = '$numero',
+					estado = '$activo',
 				WHERE facturas_id = '$facturas_id'";
 			$mysqli->query($update);
+
+			//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
+			$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+
+			//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE		
+			$update = "UPDATE secuencia_facturacion 
+			SET 
+				siguiente = '$numero_secuencia_facturacion' 
+			WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
+			$mysqli->query($update);
+
+			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
+			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
+			$insert_cxc = "INSERT INTO cobrar_clientes 
+			(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) 
+			VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";			
+			$mysqli->query($insert_cxc);
 	
 			$datos = array(
 				0 => "Almacenado",
@@ -401,13 +423,15 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 			SET 
 				siguiente = '$numero_secuencia_facturacion' 
 			WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
-			$mysqli->query($update);	
+			$mysqli->query($update);			
 			
 			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
 			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
-			$insert_cxc = "INSERT INTO cobrar_clientes VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
-			$mysqli->query($insert_cxc);			
-	
+			$insert_cxc = "INSERT INTO cobrar_clientes 
+			(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) 
+			VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";			
+			$mysqli->query($insert_cxc);	
+
 			$datos = array(
 				0 => "Almacenado",
 				1 => "Registro Almacenado Correctamente",
@@ -452,4 +476,3 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 }
 
 echo json_encode($datos);
-?>

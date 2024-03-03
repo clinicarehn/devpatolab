@@ -8,6 +8,7 @@ $(document).ready(function(){
 /*FIN DE FUNCIONES PARA ESTABLECER EL FOCUS PARA LAS VENTANAS MODALES*/
 
 $('#form_main_cobrar_clientes #buscar').on('click',function(e){
+		e.preventDefault();
 		listar_cuentas_por_cobrar_clientes();		
 	});
 

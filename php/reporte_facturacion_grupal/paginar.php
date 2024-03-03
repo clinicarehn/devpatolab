@@ -15,7 +15,9 @@ $pacientesIDGrupo = $_POST['pacientesIDGrupo'];
 $estado = $_POST['estado'];
 $usuario = $_SESSION['colaborador_id'];
 
-if($estado == 1){
+if($estado == 0){
+	$in = "IN(1)";
+}else if($estado == 1){
    $in = "IN(2,4)";
 }else if($estado == 4){
 	$in = "IN(4)";
@@ -161,8 +163,21 @@ while($registro2 = $result->fetch_assoc()){
 
 	$total = ($neto_antes_isv + $isv_neto) - $descuento;
 
+	$pago = false;
+	$tiene_numero = false;
+
 	if($registro2['numero'] != ""){
 		$numero = $registro2['prefijo'].''.rellenarDigitos($registro2['numero'], $registro2['relleno']);
+
+		$tiene_numero = true;
+
+		//CONSULTAMOS SI HAY UN PAGO PARA LA FACTURA
+		$query_pago = "SELECT pagos_id FROM pagos WHERE facturas_id = '$facturas_id'";
+		$result_pago = $mysqli->query($query_pago) or die($mysqli->error);
+
+		if($result_pago->num_rows>0){
+			$pago = true;
+		}
 	}else{
 		$numero = "Aún no se ha generado";
 	}
@@ -174,6 +189,7 @@ while($registro2 = $result->fetch_assoc()){
 	}else{
 		$cierre_ = '<a style="text-decoration:none; pointer-events: none; cursor: default;" data-toggle="tooltip" data-placement="right" href="#" class="fas fa-check fa-lg" title="No se ha cerrado la factura"></a>';
 	}
+	
 	$tabla = $tabla.'<tr>
 			<td>'.$i.'</td>
 			<td><a style="text-decoration:none" href="javascript:invoicesDetails('.$registro2['facturas_id'].');">'.$registro2['fecha1'].'</a></td>

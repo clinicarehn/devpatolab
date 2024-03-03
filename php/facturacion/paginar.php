@@ -35,9 +35,9 @@ if($estado == 2 || $estado == 4){
 	if($tipo_paciente_grupo == "" && $pacientesIDGrupo == ""){
 		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado = '$estado' AND f.usuario = '$colaborador_id' ";
 	}else if($tipo_paciente_grupo != "" && $pacientesIDGrupo == ""){
-		$where = "WHERE p.tipo_paciente_id = '$tipo_paciente_grupo' AND f.estado = '$estado' AND f.usuario = '$colaborador_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
+		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND p.tipo_paciente_id = '$tipo_paciente_grupo' AND f.estado = '$estado' AND f.usuario = '$colaborador_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}else if($tipo_paciente_grupo != "" && $pacientesIDGrupo != ""){
-		$where = "WHERE p.tipo_paciente_id = '$tipo_paciente_grupo' AND p.pacientes_id = '$pacientesIDGrupo' AND f.usuario = '$colaborador_id' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
+		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND p.tipo_paciente_id = '$tipo_paciente_grupo' AND p.pacientes_id = '$pacientesIDGrupo' AND f.usuario = '$colaborador_id' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}else{
 		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado = '$estado' AND f.usuario = '$colaborador_id' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}
@@ -45,9 +45,9 @@ if($estado == 2 || $estado == 4){
 	if($tipo_paciente_grupo == "" && $pacientesIDGrupo == ""){
 		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}else if($tipo_paciente_grupo != "" && $pacientesIDGrupo == ""){
-		$where = "WHERE p.tipo_paciente_id = '$tipo_paciente_grupo' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
+		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND p.tipo_paciente_id = '$tipo_paciente_grupo' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}else if($tipo_paciente_grupo != "" && $pacientesIDGrupo != ""){
-		$where = "WHERE p.tipo_paciente_id = '$tipo_paciente_grupo' AND p.pacientes_id = '$pacientesIDGrupo' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
+		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND p.tipo_paciente_id = '$tipo_paciente_grupo' AND p.pacientes_id = '$pacientesIDGrupo' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}else{
 		$where = "WHERE f.fecha BETWEEN '$fechai' AND '$fechaf' AND f.estado = '$estado' AND (p.expediente LIKE '$dato%' OR p.nombre LIKE '$dato%' OR p.apellido LIKE '$dato%' OR CONCAT(p.apellido,' ',p.nombre) LIKE '%$dato%' OR f.number LIKE '$dato%')";
 	}
@@ -68,13 +68,14 @@ $query = "SELECT f.facturas_id AS facturas_id, DATE_FORMAT(f.fecha, '%d/%m/%Y') 
 	LEFT JOIN pacientes As p1
 	ON mh.pacientes_id = p1.pacientes_id
 	INNER JOIN muestras AS m
-  ON f.muestras_id = m.muestras_id
+    ON f.muestras_id = m.muestras_id
 	WHERE f.estado = '$estado'
 	$busqueda_tipo_paciente_grupo
 	$busqueda_pacientesIDGrupo
 	$consulta_datos
 	GROUP BY m.muestras_id
 	ORDER BY f.pacientes_id ASC";
+
 $result = $mysqli->query($query) or die($mysqli->error);
 
 $nroLotes = 200;
@@ -120,7 +121,7 @@ $registro = "SELECT f.facturas_id AS facturas_id, DATE_FORMAT(f.fecha, '%d/%m/%Y
 	LEFT JOIN pacientes As p1
 	ON mh.pacientes_id = p1.pacientes_id
 	INNER JOIN muestras AS m
-  ON f.muestras_id = m.muestras_id
+    ON f.muestras_id = m.muestras_id
 	WHERE f.estado = '$estado'
 	$busqueda_tipo_paciente_grupo
 	$busqueda_pacientesIDGrupo
@@ -128,6 +129,7 @@ $registro = "SELECT f.facturas_id AS facturas_id, DATE_FORMAT(f.fecha, '%d/%m/%Y
 	GROUP BY m.muestras_id
 	ORDER BY f.pacientes_id ASC
 	LIMIT $limit, $nroLotes";
+	
 $result = $mysqli->query($registro) or die($mysqli->error);
 
 $estado_ = "";
@@ -175,6 +177,7 @@ $i = 1;
 $fila = 0;
 while($registro2 = $result->fetch_assoc()){
 	$facturas_id = $registro2['facturas_id'];
+
 	//CONSULTAR DATOS DEL DE TALLE DE LA FACTURACION
 	$query_detalle = "SELECT cantidad, precio, descuento, isv_valor
 		FROM facturas_detalle
@@ -235,9 +238,8 @@ while($registro2 = $result->fetch_assoc()){
 	}
 
 	if($estado == 4 ){
-		$pay_credit = '<a class="btn btn btn-secondary ml-2" href="javascript:pago('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fab fa-amazon-pay fa-lg" title="Pagar Factura"></i> Cobrar</a>';
-
-		$factura2 = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';		
+			$pay_credit = '<a class="btn btn btn-secondary ml-2" href="javascript:pago('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fab fa-amazon-pay fa-lg" title="Pagar Factura"></i> Cobrar</a>';
+			$factura2 = '<a class="btn btn btn-secondary ml-2" href="javascript:printBill('.$registro2['facturas_id'].');void(0);"><div class="sb-nav-link-icon"></div><i class="fas fa-print fa-lg"></i> Imprimir</a>';	
 	}
 
 	if($estado==1){
@@ -326,4 +328,3 @@ echo json_encode($array);
 
 $result->free();//LIMPIAR RESULTADO
 $mysqli->close();//CERRAR CONEXIÓN
-?>

@@ -1163,5 +1163,4 @@ function getTablesDB(){
 	
 	return $result;
 }
-/*INICIO CONVERTIR NUMEROS A LETRAS*/   
-?>
+/*INICIO CONVERTIR NUMEROS A LETRAS*/  

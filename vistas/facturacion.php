@@ -134,20 +134,20 @@ $mysqli->close();//CERRAR CONEXIÓN
                                 </div>
                                 <input type="date" required="required" id="fecha_b" name="fecha_b" style="width:160px;"
                                     data-toggle="tooltip" data-placement="top" title="Fecha Inicial" value="<?php
-                  $fecha = date ("Y-m-d");
+                                        $fecha = date ("Y-m-d");
 
-                  $año = date("Y", strtotime($fecha));
-                  $mes = date("m", strtotime($fecha));
-                  $dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
+                                        $año = date("Y", strtotime($fecha));
+                                        $mes = date("m", strtotime($fecha));
+                                        $dia = date("d", mktime(0,0,0, $mes+1, 0, $año));
 
-                  $dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
-                  $dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
+                                        $dia1 = date('d', mktime(0,0,0, $mes, 1, $año)); //PRIMER DIA DEL MES
+                                        $dia2 = date('d', mktime(0,0,0, $mes, $dia, $año)); // ULTIMO DIA DEL MES
 
-                  $fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
-                  $fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));
+                                        $fecha_inicial = date("Y-m-d", strtotime($año."-".$mes."-".$dia1));
+                                        $fecha_final = date("Y-m-d", strtotime($año."-".$mes."-".$dia2));
 
-                  echo $fecha_inicial;
-                ?>" class="form-control" />
+                                        echo $fecha_inicial;
+                                    ?>" class="form-control" />
                             </div>
                         </div>
                         <div class="form-group mr-1">
@@ -166,15 +166,21 @@ $mysqli->close();//CERRAR CONEXIÓN
                             <input type="text" placeholder="Buscar por: Paciente, Identidad o Factura"
                                 data-toggle="tooltip" data-placement="top"
                                 title="Buscar por: Expediente, Nombre, Apellido, Identidad o Número de Factura"
-                                id="bs_regis" autofocus class="form-control mt-2" size="55" />
+                                id="bs_regis" autofocus class="form-control mt-2 mr-1" size="55" />
+                        </div>
+                        <div class="form-group mr-1">
+                            <button class="btn btn-primary mt-2 mr-1" type="submit" id="buscar" data-toggle="tooltip"
+                                data-placement="top" title="Buscar">
+                                <div class="sb-nav-link-icon"></div><i class="fas fa-search fa-lg"></i> Buscar
+                            </button>
                         </div>
                         <div class="form-group" style="display:none" id="factura_manual">
                             <button class="btn btn-primary mt-2 mr-1" type="submit" id="nuevo_registro">
                                 <div class="sb-nav-link-icon"></div><i class="fas fa-file-invoice fa-lg"></i> Factura
                             </button>
                         </div>
-                        <div class="form-group mt-2">
-                            <button class="btn btn-primary" type="submit" id="cierre" data-toggle="tooltip"
+                        <div class="form-group mr1-1">
+                            <button class="btn btn-primary mt-2 mr-1" type="submit" id="cierre" data-toggle="tooltip"
                                 data-placement="top" title="Realizar Cierre">
                                 <div class="sb-nav-link-icon"></div><i class="fas fa-cash-register fa-lg"></i> Cierre
                             </button>

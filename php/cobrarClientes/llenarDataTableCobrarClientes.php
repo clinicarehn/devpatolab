@@ -21,15 +21,15 @@
 	}
 
 	if($datos['clientes_id'] != 0){
-		$clientes_id = "AND cc.clientes_id = '".$datos['clientes_id']."'";
+		$clientes_id = "AND cc.pacientes_id = '".$datos['clientes_id']."'";
 	}
 
-	$queryCobrarClientes = "SELECT cc.cobrar_clientes_id AS 'cobrar_clientes_id', f.facturas_id AS 'facturas_id', p.nombre AS 'cliente',
+	$queryCobrarClientes = "SELECT cc.cobrar_clientes_id AS 'cobrar_clientes_id', f.facturas_id AS 'facturas_id', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente',
 	f.fecha AS 'fecha', cc.saldo AS 'saldo', CONCAT(sf.prefijo,'',LPAD(f.number, sf.relleno, 0)) AS 'numero', cc.estado,
 	f.importe, CONCAT(co.nombre, ' ', co.apellido) AS 'vendedor', CONCAT('Cliente') As 'Tipo'
 		FROM cobrar_clientes AS cc
 		INNER JOIN pacientes AS p
-		ON cc.clientes_id = p.pacientes_id
+		ON cc.pacientes_id = p.pacientes_id
 		INNER JOIN facturas AS f
 		ON cc.facturas_id = f.facturas_id
 		INNER JOIN secuencia_facturacion AS sf
@@ -40,12 +40,12 @@
 		$fecha
 		$clientes_id
 		UNION
-		SELECT cc.cobrar_clientes_id AS 'cobrar_clientes_id', f.facturas_grupal_id AS 'facturas_id', p.nombre AS 'cliente',
+		SELECT cc.cobrar_clientes_id AS 'cobrar_clientes_id', f.facturas_grupal_id AS 'facturas_id', CONCAT(p.nombre, ' ', p.apellido) AS 'cliente',
 		f.fecha AS 'fecha', cc.saldo AS 'saldo', CONCAT(sf.prefijo,'',LPAD(f.number, sf.relleno, 0)) AS 'numero', cc.estado,
 		f.importe, CONCAT(co.nombre, ' ', co.apellido) AS 'vendedor', CONCAT('Grupo') As 'Tipo'
 		FROM cobrar_clientes_grupales AS cc
 		INNER JOIN pacientes AS p
-		ON cc.clientes_id = p.pacientes_id
+		ON cc.pacientes_id = p.pacientes_id
 		INNER JOIN facturas_grupal AS f
 		ON cc.facturas_id = f.facturas_grupal_id
 		INNER JOIN secuencia_facturacion AS sf

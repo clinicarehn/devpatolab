@@ -15,7 +15,7 @@ $usuario = $_SESSION['colaborador_id'];
 $fecha_registro = date("Y-m-d H:i:s");
 $activo = 1;
 $estado = 1;
-$numero = "";
+$numero = 0;
 $secuencia_facturacion_id = 1;
 $cierre = 2;
 $importe = 0;
@@ -52,6 +52,7 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 		$facturas_id = correlativo("facturas_id","facturas");
 		$insert = "INSERT INTO facturas 
 			VALUES('$facturas_id','$secuencia_facturacion_id','$muestras_id','$numero','$tipo_factura','$pacientes_id','$colaborador_id','$servicio_id','$importe','$notes','$fecha','$estado','$cierre','$usuario','$empresa_id','$fecha_registro')";
+
 		$query = $mysqli->query($insert);
 
 		if($query){	

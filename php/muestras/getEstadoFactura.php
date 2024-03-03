@@ -13,12 +13,15 @@ $query = "SELECT facturas_id
 	WHERE muestras_id = '$muestras_id' AND estado IN(1,2,4)";
 
 $result = $mysqli->query($query);
-$consulta2 = $result->fetch_assoc();
+$facturas_id = "";
 
-$facturas_id = $consulta2['facturas_id'];
+if($result->num_rows>0){
+  $consulta2 = $result->fetch_assoc();
+  $facturas_id = $consulta2['facturas_id'];
+}
+
 
 echo $facturas_id;
 
 $result->free();//LIMPIAR RESULTADO
 $mysqli->close();//CERRAR CONEXIÓN
-?>

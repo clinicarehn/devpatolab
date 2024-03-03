@@ -43,38 +43,6 @@ if($result_factura->num_rows>0){
 
 if($tipo_factura == 2){
 	$tipoLabel = "PagosCredito";
-	$update_cobrarclientes = "
-		UPDATE cobrar_clientes 
-		SET 
-			estado = 2,
-			saldo = 0
-		WHERE facturas_id = '$facturas_id'";
-		$mysqli->query($update_cobrarclientes);
-}
-
-//CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION
-$query_secuencia = "SELECT secuencia_facturacion_id, prefijo, siguiente AS 'numero', rango_final, fecha_limite, incremento, relleno
-   FROM secuencia_facturacion
-   WHERE activo = '$activo' AND empresa_id = '$empresa_id'";
-$result = $mysqli->query($query_secuencia) or die($mysqli->error);
-$consulta2 = $result->fetch_assoc();
-
-$secuencia_facturacion_id = "";
-$prefijo = "";
-$numero = "";
-$rango_final = "";
-$fecha_limite = "";
-$incremento = "";
-$no_factura = "";
-
-if($result->num_rows>0){
-	$secuencia_facturacion_id = $consulta2['secuencia_facturacion_id'];	
-	$prefijo = $consulta2['prefijo'];
-	$numero = $consulta2['numero'];
-	$rango_final = $consulta2['rango_final'];
-	$fecha_limite = $consulta2['fecha_limite'];	
-	$incremento = $consulta2['incremento'];
-	$no_factura = $consulta2['prefijo']."".str_pad($consulta2['numero'], $consulta2['relleno'], "0", STR_PAD_LEFT);		
 }
 
 //VERIFICAMOS QUE NO SE HA INGRESADO EL PAGO, SI NO SE HA REALIZADO EL INGRESO, PROCEDEMOS A ALMACENAR EL PAGO
@@ -100,8 +68,7 @@ if($result_factura->num_rows==0){
 		//ACTUALIZAMOS EL ESTADO DE LA FACTURA
 		$update_factura = "UPDATE facturas
 			SET
-				estado = '$estado',
-				number = '$numero'
+				estado = '$estado'
 			WHERE facturas_id = '$facturas_id'";
 		$mysqli->query($update_factura) or die($mysqli->error);	
 
@@ -121,17 +88,32 @@ if($result_factura->num_rows==0){
 					estado = '1'
 				WHERE muestras_id = '$muestras_id'";
 			$mysqli->query($update_muestra) or die($mysqli->error);
-		}		
+		}
 
-		//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
-		$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+		//CONSULTAMOS EL SALDO ANTERIOR cobrar_clientes
+		$query_saldo_cxc = "SELECT saldo FROM cobrar_clientes WHERE facturas_id = '$facturas_id'";
+		$result_saldo_cxc = $mysqli->query($query_saldo_cxc) or die($mysqli->error);
 		
-		//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE		
-		$update = "UPDATE secuencia_facturacion 
-		SET 
-			siguiente = '$numero_secuencia_facturacion' 
-		WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
-		$mysqli->query($update);	
+		if($result_saldo_cxc->num_rows>0){
+			$consulta2Saldo = $result_saldo_cxc->fetch_assoc();
+			$saldo_cxc = (float)$consulta2Saldo['saldo'];
+			$nuevo_saldo = (float)$saldo_cxc - (float)$importe;
+			$estado_cxc = 1;
+			
+			$tolerancia = 0.0001; // Puedes ajustar esta tolerancia según sea necesario
+			if (abs($nuevo_saldo) < $tolerancia) {
+				$estado_cxc = 2;
+			}
+			
+			//ACTUALIZAR CUENTA POR cobrar_clientes
+			$update_ccx = "UPDATE cobrar_clientes 
+				SET 
+					saldo = '$nuevo_saldo',
+					estado = '$estado_cxc'
+				WHERE 
+					facturas_id = '$facturas_id'";
+			$mysqli->query($update_ccx) or die($mysqli->error);					
+		}
 		
 		$datos = array(
 			0 => "Guardar", 
