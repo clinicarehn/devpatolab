@@ -587,6 +587,14 @@ function llenarTabla(dato) {
 		listar_cuentas_por_cobrar_clientes();
 		printBillGroup(datos[8]);
 	}
+
+	if (dato == "formEmpresas") {
+		pagination(1);
+	}
+
+	if (dato == "formulario_admision_clientes_editar") {
+		pagination(1);
+	}
 }
 
 $(function () {

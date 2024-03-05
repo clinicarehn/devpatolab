@@ -872,9 +872,10 @@ function editarRegistro(pacientes_id){
 
 				if($('#form_main_admision #tipo').val() == 1 || $('#form_main_admision #tipo').val() == "")
 				{
+					var nombre_completo = datos[0] + " " + datos[1];
 					$('#formulario_admision_clientes_editar #edi_admision').show();
 					$('#formulario_admision_clientes_editar #pacientes_id').val(pacientes_id);
-					$('#formulario_admision_clientes_editar #name').val(datos[0]);
+					$('#formulario_admision_clientes_editar #name').val(nombre_completo.trim());
 					$('#formulario_admision_clientes_editar #lastname').val(datos[1]);
 					$('#formulario_admision_clientes_editar #rtn').val(datos[2]);
 					$('#formulario_admision_clientes_editar #edad').val(datos[3]);
@@ -916,7 +917,7 @@ function editarRegistro(pacientes_id){
 					$('#formulario_admision_empresas #correo').val(datos[7]);
 
 					$('#formulario_admision_empresas').attr({ 'data-form': 'update' });
-					$('#formulario_admision_empresas').attr({ 'action': '<?php echo SERVERURL; ?>php/admision/modificarrRegistroEmpresas.php' });
+					$('#formulario_admision_empresas').attr({ 'action': '<?php echo SERVERURL; ?>php/admision/modificarRegistroEmpresas.php' });
 
 					//HABILITAR OBJETOS
 					$('#formulario_admision_empresas #name').attr('readonly', false);
