@@ -11,7 +11,7 @@ $pacientes_id = $_POST['pacientes_id'];
 $query_historia = "SELECT pacientes_id, antecedentes, historia_clinica, examen_fisico
 	FROM atenciones_medicas
 	WHERE pacientes_id = '$pacientes_id'
-	ORDER BY atencion_id DESC limit 1"
+	ORDER BY atencion_id DESC limit 1";
 $result_historia = $mysqli->query($query_historia) or die($mysqli->error);
 	
 $antecedentes = "";
@@ -30,5 +30,4 @@ $datos = array(
      0 => $antecedentes,
      1 => $historia_clinica,
      2 => $examen_fisico,	 
-);	
-?>
+);

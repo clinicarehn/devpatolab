@@ -20,7 +20,7 @@ if($_POST['estado'] == ""){
 	$estado = $_POST['estado'];
 }
 
-$query = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) AS 'nombre', p.edad, p.telefono1 AS 'telefono', p.email AS 'correo', p.localidad AS 'direccion', p.identidad AS 'identidad'
+$query = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) AS 'nombre', p.edad, p.telefono1 AS 'telefono', p.telefono2 AS 'telefono1', p.email AS 'correo', p.localidad AS 'direccion', p.identidad AS 'identidad'
 	FROM pacientes AS p
 	WHERE p.estado = '$estado' AND p.tipo_paciente_id = '$tipo' AND (expediente LIKE '$dato%' OR nombre LIKE '$dato%' OR apellido LIKE '$dato%' OR CONCAT(apellido,' ',nombre) LIKE '%$dato%' OR CONCAT(nombre,' ',apellido) LIKE '%$dato%' OR telefono1 LIKE '$dato%' OR identidad LIKE '$dato%')
 	ORDER BY p.pacientes_id";  
@@ -55,7 +55,7 @@ if($paginaActual <= 1){
 	$limit = $nroLotes*($paginaActual-1);
 }
 
-$registro = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) AS 'nombre', p.edad, p.telefono1 AS 'telefono', p.email AS 'correo', p.localidad AS 'direccion', p.identidad AS 'identidad'
+$registro = "SELECT p.pacientes_id, CONCAT(p.nombre, ' ', p.apellido) AS 'nombre', p.edad, p.telefono1 AS 'telefono', p.telefono2 AS 'telefono1', p.email AS 'correo', p.localidad AS 'direccion', p.identidad AS 'identidad'
 	FROM pacientes AS p
 	WHERE p.estado = '$estado' AND  p.tipo_paciente_id = '$tipo' AND (expediente LIKE '$dato%' OR nombre LIKE '$dato%' OR apellido LIKE '$dato%' OR CONCAT(apellido,' ',nombre) LIKE '%$dato%' OR CONCAT(nombre,' ',apellido) LIKE '%$dato%' OR telefono1 LIKE '$dato%' OR identidad LIKE '$dato%')
     ORDER BY p.pacientes_id LIMIT $limit, $nroLotes";
@@ -64,16 +64,17 @@ $result = $mysqli->query($registro);
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 		  <tr>
-			<th width="2%">N°</th>
-			<th width="10%">RTN</th>
-			<th width="18%">Cliente</th>
-			<th width="10%">Edad</th>
-			<th width="10%">Teléfono</th>
-			<th width="16%">Correo</th>	
-			<th width="10%">Dirección</th>						
-			<th width="8%">Ver Mas</th>
-			<th width="8%">Editar</th>
-			<th width="8%">Eliminar</th>
+			<th width="2.09%">N°</th>
+			<th width="9.09%">RTN</th>
+			<th width="17.09%">Cliente</th>
+			<th width="3.09%">Edad</th>
+			<th width="6.09%">Teléfono 1</th>
+			<th width="6.09%">Teléfono 2</th>
+			<th width="17.09%">Correo</th>	
+			<th width="15.09%">Dirección</th>						
+			<th width="8.09%">Ver Mas</th>
+			<th width="7.09%">Editar</th>
+			<th width="8.09%">Eliminar</th>
 		   </tr>';
 			
 $i=1;			
@@ -84,6 +85,7 @@ while($registro2 = $result->fetch_assoc()){
 	   <td>'.$registro2['nombre'].'</td>   
 	   <td>'.$registro2['edad'].'</td>  
 	   <td>'.$registro2['telefono'].'</td>   
+	   <td>'.$registro2['telefono1'].'</td>
 	   <td>'.$registro2['correo'].'</td>  
 	   <td>'.$registro2['direccion'].'</td>     
 	   <td>

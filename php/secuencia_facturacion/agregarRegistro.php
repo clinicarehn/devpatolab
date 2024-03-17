@@ -8,7 +8,63 @@ $mysqli = connect_mysqli();
 $fecha_registro = date("Y-m-d H:i:s");
 $fecha = date("Y-m-d");
 $secuencia_facturacion_id = $_POST['secuencia_facturacion_id'];
+
+//CONSULTAR DATOS DEL METODO DE PAGO
+$query = "SELECT 
+			secuencia_facturacion_id,
+			empresa_id,
+			cai,
+			prefijo,
+			relleno,
+			incremento,
+			siguiente,
+			rango_inicial,
+			rango_final,
+			fecha_activacion,
+			fecha_limite,
+			comentario,
+			activo,
+			usuario,
+			CAST(fecha_registro AS DATE) AS 'fecha_registro',
+			documento_id
+		FROM 
+				secuencia_facturacion
+		 WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
+$result = $mysqli->query($query) or die($mysqli->error);
+$consulta_registro = $result->fetch_assoc();   
+     
+$empresa = "";
+$cai = "";
+$prefijo = "";
+$relleno = "";
+$incremento = "";
+$rango_inicial = "";
+$rango_final = "";
+$fecha_limite = "";
+$activo = "";
+$comentario = "";
+$documento_id = "";
+$fecha_registro = "";
+
+//OBTENEMOS LOS VALORES DEL REGISTRO
+if($result->num_rows>0){
+	$empresa = $consulta_registro['empresa_id'];
+	$cai = $consulta_registro['cai'];	
+	$prefijo = $consulta_registro['prefijo'];
+	$relleno = $consulta_registro['relleno'];	
+	$incremento = $consulta_registro['incremento'];
+	$rango_inicial = $consulta_registro['rango_inicial'];	
+	$rango_final = $consulta_registro['rango_final'];
+	$fecha_limite = $consulta_registro['fecha_limite'];
+	$activo = $consulta_registro['activo'];	
+	$comentario = $consulta_registro['comentario'];		
+	$documento_id = $consulta_registro['documento_id'];	
+	$fecha_registro = $consulta_registro['fecha_registro'];
+}
+
 $estado = $_POST['estado'];
+$siguiente = $_POST['siguiente'];
+$usuario = $_SESSION['colaborador_id'];
 
 //CONSULTAR EL NUMERO DEL ADMINISTRADOR DE SECUENCIAS
 $query = "SELECT siguiente as 'numero_anterior'
@@ -23,28 +79,6 @@ if($result_datos->num_rows>0){
 	$numero_anterior = $consulta_datos2['numero_anterior'];		
 }
 
-if(isset($_POST['empresa'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
-	if($_POST['empresa'] == ""){
-		$empresa = 0;
-	}else{
-		$empresa = $_POST['empresa'];
-	}
-}else{
-	$empresa = 0;
-}
-
-$cai = $_POST['cai'];
-$prefijo = $_POST['prefijo'];
-$relleno = $_POST['relleno'];
-$incremento = $_POST['incremento'];
-$siguiente = $_POST['siguiente'];
-$rango_inicial = $_POST['rango_inicial'];
-$rango_final = $_POST['rango_final'];
-$fecha_activacion = $_POST['fecha_activacion'];
-$fecha_limite = $_POST['fecha_limite'];
-$usuario = $_SESSION['colaborador_id'];
-$comentario = "";
-
 if(isset($_POST['estado'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 	if($_POST['estado'] == ""){
 		$estado = 0;
@@ -54,19 +88,6 @@ if(isset($_POST['estado'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 }else{
 	$estado = 0;
 }
-
-//CONSULTAMOS SI EL NUMERO SIGUIENTE NO EXISTE EN LA FACTURACION
-$query = "SELECT facturas_id
-   FROM facturas 
-   WHERE number = '$siguiente' AND secuencia_facturacion_id = '$secuencia_facturacion_id'";
-$result = $mysqli->query($query) or die($mysqli->error);
-
-//VERIFICAMOS SI HAY UNA SECUENCIA ACTIVA ANTES DE ACTIVAR ESTA
-$query_secuencia = "SELECT secuencia_facturacion_id
-	FROM secuencia_facturacion
-	WHERE activo = 1";
-$result_secuencia = $mysqli->query($query_secuencia) or die($mysqli->error);
-
 
 //ACTUALIZAMOS LOS VALORES
 $update = "UPDATE secuencia_facturacion 
@@ -78,10 +99,10 @@ $update = "UPDATE secuencia_facturacion
 		siguiente = '$siguiente', 
 		rango_inicial = '$rango_inicial',
 		rango_final = '$rango_final', 
-		fecha_activacion = '$fecha_activacion', 
 		fecha_limite = '$fecha_limite', 
 		comentario = '$comentario',  		
-		activo = '$estado' 
+		activo = '$estado',
+		documento_id = '$documento_id' 
 	WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
 $query = $mysqli->query($update) or die($mysqli->error);
 
@@ -102,4 +123,3 @@ if($query){
 	echo 2;//ERROR AL ALMACENAR ESTE REGISTRO
 }	
 $mysqli->close();//CERRAR CONEXIÓN
-?>

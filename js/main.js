@@ -148,7 +148,6 @@ $('.FormularioAjax').submit(function (e) {
 
 						if (datos[6] == "Facturacion") {
 							pago(datos[8]); //LLAMAMOS LA FUNCION PARA REALIZAR EL PAGO .-Función se encuentra en myjava_facturacion.js
-							pagination(1);
 						}
 
 						if (datos[6] == "FacturacionCredito") {
@@ -158,7 +157,6 @@ $('.FormularioAjax').submit(function (e) {
 
 						if (datos[6] == "facturacionGrupal") {
 							pagoGrupal(datos[8]); //LLAMAMOS LA FUNCION PARA REALIZAR EL PAGO .-Función se encuentra en myjava_facturacion.js
-							pagination(1);
 						}
 
 						if (datos[6] == "facturacionGrupalCredito") {
@@ -173,15 +171,22 @@ $('.FormularioAjax').submit(function (e) {
 							volver();
 							setTimeout(sendMail(datos[8]), 5000);
 							$('#' + datos[7]).modal('hide');
-							listar_cuentas_por_cobrar_clientes();
 						}
 
 						if (datos[6] == "PagosGrupal") {
-							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
-							limpiarTablaFacturaGrupo();
+							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							limpiarTabla();
 							pagination(1);
 							volver();
-							setTimeout(sendMailGroup(datos[8]), 5000);
+							setTimeout(sendMail(datos[8]), 5000);
+							$('#' + datos[7]).modal('hide');
+						}
+
+						if (datos[6] == "PagosCredito") {
+							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							limpiarTabla();
+							pagination(1);
+							volver();
 							$('#' + datos[7]).modal('hide');
 							listar_cuentas_por_cobrar_clientes();
 						}
@@ -496,7 +501,6 @@ function llenarTabla(dato) {
 	}
 
 	if (dato == "Facturacion") {
-		pagination(1);
 		funciones();
 		limpiarTabla();
 		cleanFooterValueBill();
@@ -505,7 +509,6 @@ function llenarTabla(dato) {
 	}
 
 	if (dato == "facturacionGrupal") {
-		pagination(1);
 		funciones();
 		limpiarTablaFacturaGrupo();
 		cleanFooterValueBill();
@@ -585,7 +588,7 @@ function llenarTabla(dato) {
 
 	if (dato == "PagosCredito") {
 		listar_cuentas_por_cobrar_clientes();
-		printBillGroup(datos[8]);
+		pagination(1);
 	}
 
 	if (dato == "formEmpresas") {

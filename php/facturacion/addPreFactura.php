@@ -165,4 +165,3 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 }
 
 echo json_encode($datos);
-?>

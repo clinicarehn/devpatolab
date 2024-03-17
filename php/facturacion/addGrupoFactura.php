@@ -35,10 +35,17 @@ if(isset($_POST['facturas_grupal_activo'])){//COMPRUEBO SI LA VARIABLE ESTA DIFI
 	$tipo = "facturacionGrupalCredito";
 }
 
+$documento = "";
+if($tipo_factura === "1"){
+	$documento = "1";//Factura Electronica
+}else{
+   $documento = "4";//Factura Proforma
+}
+
 //CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION
 $query_secuencia = "SELECT secuencia_facturacion_id, prefijo, siguiente AS 'numero', rango_final, fecha_limite, incremento, relleno
    FROM secuencia_facturacion
-   WHERE activo = '$activo' AND empresa_id = '$empresa_id'";
+   WHERE activo = '$activo' AND empresa_id = '$empresa_id' AND documento_id = '$documento'";
 $result = $mysqli->query($query_secuencia) or die($mysqli->error);
 $consulta2 = $result->fetch_assoc();
 
@@ -148,7 +155,7 @@ if($tamano_tabla >0){
 			$mysqli->query($update);
 
 			//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
-			$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+			$numero_secuencia_facturacion = correlativoSecuenciaFacturacion("siguiente", "secuencia_facturacion", "documento_id = 1 AND activo = 1");
 
 			//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE
 			$update = "UPDATE secuencia_facturacion
@@ -157,11 +164,17 @@ if($tamano_tabla >0){
 			WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
 			$mysqli->query($update);
 
-			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
-			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes_grupales");
-			$insert_cxc = "INSERT INTO cobrar_clientes_grupales 
-			(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
-			$mysqli->query($insert_cxc);
+			//CONSULTAMOS SI LA FACTURA YA EXISTE EN CUENTAS POR COBRAR
+			$query_factura_cxc = "SELECT cobrar_clientes_id FROM cobrar_clientes_grupales WHERE facturas_id = '$facturas_grupal_id'";
+			$result_factura_cxc = $mysqli->query($query_factura_cxc) or die($mysqli->error);
+	
+			if($result_factura_cxc->num_rows==0){
+				//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
+				$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes_grupales");
+				$insert_cxc = "INSERT INTO cobrar_clientes_grupales 
+				(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
+				$mysqli->query($insert_cxc);
+			}
 
 			$datos = array(
 				0 => "Almacenado",
@@ -261,7 +274,7 @@ if($tamano_tabla >0){
 			$mysqli->query($update);
 
 			//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
-			$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+			$numero_secuencia_facturacion = correlativoSecuenciaFacturacion("siguiente", "secuencia_facturacion", "documento_id = 4 AND activo = 1");
 
 			//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE		
 			$update = "UPDATE secuencia_facturacion 
@@ -270,11 +283,17 @@ if($tamano_tabla >0){
 			WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
 			$mysqli->query($update);	
 			
-			//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
-			$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes_grupales");
-			$insert_cxc = "INSERT INTO cobrar_clientes_grupales 
-			(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
-			$mysqli->query($insert_cxc);
+			//CONSULTAMOS SI LA FACTURA YA EXISTE EN CUENTAS POR COBRAR
+			$query_factura_cxc = "SELECT cobrar_clientes_id FROM cobrar_clientes_grupales WHERE facturas_id = '$facturas_grupal_id'";
+			$result_factura_cxc = $mysqli->query($query_factura_cxc) or die($mysqli->error);
+	
+			if($result_factura_cxc->num_rows==0){
+				//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE			
+				$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes_grupales");
+				$insert_cxc = "INSERT INTO cobrar_clientes_grupales 
+				(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_grupal_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";
+				$mysqli->query($insert_cxc);
+			}
 
 			$datos = array(
 				0 => "Almacenado",

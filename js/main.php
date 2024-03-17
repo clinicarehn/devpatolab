@@ -626,7 +626,7 @@ function showFactura(muestras_id){
 		data:'muestras_id='+muestras_id,
 		success:function(data){
 		    var datos = eval(data);
-	        $('#formulario_facturacion #pro').val("Registro");
+	        $('#formulario_facturacion #pro').val("Registro");			
 			$('#formulario_facturacion #muestras_id').val(muestras_id);
 			$('#formulario_facturacion #pacientes_id').val(datos[0]);
             $('#formulario_facturacion #cliente_nombre').val(datos[1]);
@@ -1371,8 +1371,9 @@ function getImporteFacturas(factura_id){
 }
 
 //INICIO MODAL PAGOS GRUPAL
-function pagoGrupal(facturas_grupal_id){
+function pagoGrupal(facturas_grupal_id,tipoPago ){
 	var url = '<?php echo SERVERURL; ?>php/facturacion/editarPagoGrupal.php';
+	var saldo = 0;
 
 	$.ajax({
 		type:'POST',
@@ -1382,34 +1383,52 @@ function pagoGrupal(facturas_grupal_id){
 			var datos = eval(valores);
 			$('#formEfectivoBillGrupal .border-right a:eq(0) a').tab('show');
 			$("#customer-name-bill-grupal").html("<b>Cliente:</b> " + datos[0]);
-		    $("#customer_bill_pay_grupal-grupal").val(datos[2]);
-			$('#bill-pay-grupal').html("L. " + parseFloat(datos[2]).toFixed(2));
+
+			saldo = datos[2];
+
+            if (tipoPago == 2) {
+				saldo = datos[3];
+
+                $('#bill-pay').html("L. " + parseFloat(saldo));
+                $('#tab5').hide();
+                $("#formEfectivoBillGrupal #tipo_factura_efectivo").val(tipoPago);
+
+                $('#formTarjetaBillGrupal #monto_efectivo_tarjeta').show();
+                $('#formTransferenciaBillGrupal #importe_transferencia').show()
+                $('#formChequeBillGrupal #importe_cheque').show()
+                $("#formEfectivoBillGrupal #grupo_cambio_efectivo").hide();
+
+				
+            }
+
+		    $("#customer_bill_pay_grupal-grupal").val(saldo);
+			$('#bill-pay-grupal').html("L. " + parseFloat(saldo).toFixed(2));
 
 			//EFECTIVO
 			$('#formEfectivoBillGrupal')[0].reset();
-			$('#formEfectivoBillGrupal #monto_efectivo').val(datos[2]);
+			$('#formEfectivoBillGrupal #monto_efectivo').val(saldo);
 			$('#formEfectivoBillGrupal #factura_id_efectivo').val(facturas_grupal_id);
 			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', true);
 
 			//TARJETA
 			$('#formTarjetaBillGrupal')[0].reset();
-			$('#formTarjetaBillGrupal #monto_efectivo').val(datos[2]);
+			$('#formTarjetaBillGrupal #monto_efectivo').val(saldo);
 			$('#formTarjetaBillGrupal #factura_id_tarjeta').val(facturas_grupal_id);
 
 			//MIXTO
 			$('#formMixtoBillGrupal')[0].reset();
-			$('#formMixtoBillGrupal #monto_efectivo_mixto').val(datos[2]);
+			$('#formMixtoBillGrupal #monto_efectivo_mixto').val(saldo);
 			$('#formMixtoBillGrupal #factura_id_mixto').val(facturas_grupal_id);
 			$('#formMixtoBillGrupal #pago_efectivo_mixto_grupal').attr('disabled', true);
 
 			//TRANSFERENCIA
 			$('#formTransferenciaBillGrupal')[0].reset();
-			$('#formTransferenciaBillGrupal #monto_efectivo').val(datos[2]);
+			$('#formTransferenciaBillGrupal #monto_efectivo').val(saldo);
 			$('#formTransferenciaBillGrupal #factura_id_transferencia').val(facturas_grupal_id);
 
 			//CHEQUES
 			$('#formChequeBillGrupal')[0].reset();
-			$('#formChequeBillGrupal #monto_efectivo').val(datos[2]);
+			$('#formChequeBillGrupal #monto_efectivo').val(saldo);
 			$('#formChequeBillGrupal #factura_id_cheque').val(facturas_grupal_id);
 
 			$('#modal_grupo_pagos').modal({
@@ -1515,153 +1534,176 @@ $(document).ready(function(){
 		}
 	});
 });
+
+$(document).ready(function() {
+    $("#formEfectivoBillGrupal #efectivo_bill").on("keyup", function() {
+        var efectivo = parseFloat($("#formEfectivoBillGrupal #efectivo_bill").val()).toFixed(2);
+        var monto = parseFloat($("#formEfectivoBillGrupal #monto_efectivo").val()).toFixed(2);
+        var credito = $("#formEfectivoBillGrupal #tipo_factura").val();
+        var pagos_multiples = $('#pagos_multiples_switch').val();
+
+        if (credito == 2) {
+            $("#formEfectivoBillGrupal #cambio_efectivo").val(0)
+            $("#formEfectivoBillGrupal #grupo_cambio_efectivo").hide();
+        }
+
+        var total = efectivo - monto;
+
+        if (Math.floor(efectivo * 100) >= Math.floor(monto * 100) || credito == 2 || pagos_multiples == 1) {
+            $('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(total).toFixed(2));
+            $('#formEfectivoBillGrupal #pago_efectivo').attr('disabled', false);
+        } else {
+            $('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(0).toFixed(2));
+            $('#formEfectivoBillGrupal #pago_efectivo').attr('disabled', true);
+        }
+        
+       // Deshabilitar el botón si efectivo es mayor que monto
+	   if (parseFloat(efectivo) > parseFloat(monto)) {
+            $('#formEfectivoBillGrupal #pago_efectivo').attr('disabled', true);
+        }
+    });
+});
 //FIN PAGO GRUPAL
 
 //INICIO MODAL PAGOS
-function pago(facturas_id){
+function pago(facturas_id,tipoPago){
 	var url = '<?php echo SERVERURL; ?>php/facturacion/editarPago.php';
+	var saldo = 0;
+    $('#pagos_multiples_switch').attr('checked', false);
 
 	$.ajax({
 		type:'POST',
 		url:url,
 		data:'facturas_id='+facturas_id,
 		success: function(valores){
-			var datos = eval(valores);
-			$('#formEfectivoBill .border-right a:eq(0) a').tab('show');
-			$("#customer-name-bill").html("<b>Cliente:</b> " + datos[0]);
-		    $("#customer_bill_pay").val(datos[2]);
-			$('#bill-pay').html("L. " + parseFloat(datos[2]).toFixed(2));
+            var datos = eval(valores);
+            $('#formEfectivoBill .border-right a:eq(0) a').tab('show');
+            $("#customer-name-bill").html("<b>Cliente:</b> " + datos[0]);
 
-			//EFECTIVO
-			$('#formEfectivoBill')[0].reset();
-			$('#formEfectivoBill #monto_efectivo').val(datos[2]);
-			$('#formEfectivoBill #factura_id_efectivo').val(facturas_id);
-			$('#formEfectivoBill #pago_efectivo').attr('disabled', true);
+			saldo = datos[2];
+            if (tipoPago == 2) {
+				saldo = datos[3];
+                $('#bill-pay').html("L. " + parseFloat(saldo));
+                $('#tab5').hide();
+                $("#formEfectivoBill #tipo_factura_efectivo").val(tipoPago);
 
-			//TARJETA
-			$('#formTarjetaBill')[0].reset();
-			$('#formTarjetaBill #monto_efectivo').val(datos[2]);
-			$('#formTarjetaBill #factura_id_tarjeta').val(facturas_id);
+                $('#formTarjetaBill #monto_efectivo_tarjeta').show();
+                $('#formTransferenciaBill #importe_transferencia').show()
+                $('#formChequeBill #importe_cheque').show()
+                $("#formEfectivoBill #grupo_cambio_efectivo").hide();
+            }
 
-			//TRANSFERENCIA
-			$('#formTransferenciaBill')[0].reset();
-			$('#formTransferenciaBill #monto_efectivo').val(datos[2]);
-			$('#formTransferenciaBill #factura_id_transferencia').val(facturas_id);
+            $("#customer_bill_pay").val(saldo);
+            $('#bill-pay').html("L. " + parseFloat(saldo));
 
-			//MIXTO
-			$('#formMixtoBill')[0].reset();
-			$('#formMixtoBill #monto_efectivo_mixto').val(datos[2]);
-			$('#formMixtoBill #factura_id_mixto').val(facturas_id);
-			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', true);
+            //EFECTIVO
+            $('#formEfectivoBill')[0].reset();
+            $('#formEfectivoBill #monto_efectivo').val(parseFloat(saldo));
 
-			//CHEQUES
-			$('#formChequeBill')[0].reset();
-			$('#formChequeBill #monto_efectivo').val(datos[2]);
-			$('#formChequeBill #factura_id_cheque').val(facturas_id);
+            $('#formEfectivoBill #factura_id_efectivo').val(facturas_id);
+            $('#formEfectivoBill #tipo_factura').val(tipoPago);
+            $('#formEfectivoBill #pago_efectivo').attr('disabled', true);
 
-			$('#modal_pagos').modal({
-				show:true,
-				keyboard: false,
-				backdrop:'static'
-			});
+            //TARJETA
+            $('#formTarjetaBill')[0].reset();
+            $('#formTarjetaBill #monto_efectivo').val(parseFloat(saldo));
+            $('#formTarjetaBill #importe_tarjeta').val(parseFloat(saldo));
+            $('#formTarjetaBill #factura_id_tarjeta').val(facturas_id);
+            $('#formTarjetaBill #tipo_factura').val(tipoPago);
+            $('#formTarjetaBill #pago_efectivo').attr('disabled', true);
 
-			return false;
+            //TRANSFERENCIA
+            $('#formTransferenciaBill')[0].reset();
+            $('#formTransferenciaBill #monto_efectivo').val(parseFloat(saldo));
+            $('#formTransferenciaBill #factura_id_transferencia').val(facturas_id);
+            $('#formTransferenciaBill #tipo_factura_transferencia').val(tipoPago);
+            $('#formTransferenciaBill #pago_efectivo').attr('disabled', true);
+
+            //CHEQUES
+            $('#formChequeBill')[0].reset();
+            $('#formChequeBill #monto_efectivo').val(parseFloat(saldo));
+            $('#formChequeBill #factura_id_cheque').val(facturas_id);
+            $('#formChequeBill #pago_efectivo').attr('disabled', true);
+            $('#formChequeBill #tipo_factura_cheque').val(tipoPago);
+
+            $('#modal_pagos').modal({
+                show: true,
+                keyboard: false,
+                backdrop: 'static'
+            });
+
+            return false;
 		}
 	});
 }
 
-$(document).ready(function(){
-	$("#tab1").on("click", function(){
-		$("#modal_pagos").on('shown.bs.modal', function(){
-           $(this).find('#formTarjetaBill #efectivo_bill').focus();
-		});
-	});
+$(document).ready(function() {
+    $("#tab1").on("click", function() {
+        $("#modal_pagos").on('shown.bs.modal', function() {
+            $(this).find('#formTarjetaBill #efectivo_bill').focus();
+        });
+    });
 
-	$("#tab2").on("click", function(){
-		$("#modal_pagos").on('shown.bs.modal', function(){
-           $(this).find('#formTarjetaBill #cr_bill').focus();
-		});
-	});
+    $("#tab2").on("click", function() {
+        $("#modal_pagos").on('shown.bs.modal', function() {
+            $(this).find('#formTarjetaBill #cr_bill').focus();
+        });
+    });
 
-	$("#tab3").on("click", function(){
-		$("#modal_pagos").on('shown.bs.modal', function(){
-           $(this).find('#formTarjetaBill #bk_nm').focus();
-		});
-	});
+    $("#tab3").on("click", function() {
+        $("#modal_pagos").on('shown.bs.modal', function() {
+            $(this).find('#formTarjetaBill #bk_nm').focus();
+        });
+    });
 
-	$("#tab4").on("click", function(){
-		$("#modal_pagos").on('shown.bs.modal', function(){
-           $(this).find('#formChequeBill #bk_nm_chk').focus();
-		});
-	});
-
-	$("#tab5").on("click", function(){
-		$("#modal_pagos").on('shown.bs.modal', function(){
-           $(this).find('#formMixtoBill #efectivo_bill_mixto').focus();
-		});
-	});
+    $("#tab4").on("click", function() {
+        $("#modal_pagos").on('shown.bs.modal', function() {
+            $(this).find('#formChequeBill #bk_nm_chk').focus();
+        });
+    });
 });
 
-//mixto
-$(document).ready(function(){
-	$('#formMixtoPurchaseBill #cr_bill_mixtoPurchase').inputmask("9999");
+$(document).ready(function() {
+    $('#formTarjetaBill #cr_bill').inputmask("9999");
 });
 
-$(document).ready(function(){
-	$('#formMixtoPurchaseBill #exp_mixtoPurchase').inputmask("99/99");
+$(document).ready(function() {
+    $('#formTarjetaBill #exp').inputmask("99/99");
 });
 
-$(document).ready(function(){
-	$('#formMixtoPurchaseBill #cvcpwd_mixtoPurchase').inputmask("999999");
+$(document).ready(function() {
+    $('#formTarjetaBill #cvcpwd').inputmask("999999");
 });
 
-$(document).ready(function(){
-	$('#formTarjetaBill #cr_bill').inputmask("9999");
+$(document).ready(function() {
+    $("#formEfectivoBill #efectivo_bill").on("keyup", function() {
+        var efectivo = parseFloat($("#formEfectivoBill #efectivo_bill").val()).toFixed(2);
+        var monto = parseFloat($("#formEfectivoBill #monto_efectivo").val()).toFixed(2);
+        var credito = $("#formEfectivoBill #tipo_factura").val();
+        var pagos_multiples = $('#pagos_multiples_switch').val();
+
+        if (credito == 2) {
+            $("#formEfectivoBill #cambio_efectivo").val(0)
+            $("#formEfectivoBill #grupo_cambio_efectivo").hide();
+        }
+
+        var total = efectivo - monto;
+
+        if (Math.floor(efectivo * 100) >= Math.floor(monto * 100) || credito == 2 || pagos_multiples == 1) {
+            $('#formEfectivoBill #cambio_efectivo').val(parseFloat(total).toFixed(2));
+            $('#formEfectivoBill #pago_efectivo').attr('disabled', false);
+        } else {
+            $('#formEfectivoBill #cambio_efectivo').val(parseFloat(0).toFixed(2));
+            $('#formEfectivoBill #pago_efectivo').attr('disabled', true);
+        }
+        
+       // Deshabilitar el botón si efectivo es mayor que monto
+	   if (parseFloat(efectivo) > parseFloat(monto)) {
+            $('#formEfectivoBill #pago_efectivo').attr('disabled', true);
+        }
+    });
 });
 
-$(document).ready(function(){
-	$('#formTarjetaBill #exp').inputmask("99/99");
-});
-
-$(document).ready(function(){
-	$('#formTarjetaBill #cvcpwd').inputmask("999999");
-});
-
-$(document).ready(function(){
-	$("#formEfectivoBill #efectivo_bill").on("keyup", function(){
-		var efectivo = parseFloat($("#formEfectivoBill #efectivo_bill").val()).toFixed(2);
-		var monto = parseFloat($("#formEfectivoBill #monto_efectivo").val()).toFixed(2);
-
-		var total = efectivo - monto;
-
-		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){
-			$('#formEfectivoBill #cambio_efectivo').val(parseFloat(total).toFixed(2));
-			$('#formEfectivoBill #pago_efectivo').attr('disabled', false);
-		}else{
-			$('#formEfectivoBill #cambio_efectivo').val(parseFloat(0).toFixed(2));
-			$('#formEfectivoBill #pago_efectivo').attr('disabled', true);
-		}
-	});
-
-	//MIXTO
-	$("#formMixtoBill #efectivo_bill_mixto").on("keyup", function(){
-		var efectivo = parseFloat($("#formMixtoBill #efectivo_bill_mixto").val()).toFixed(2);
-		var monto = parseFloat($("#formMixtoBill #monto_efectivo_mixto").val()).toFixed(2);
-
-		var total = efectivo - monto;
-
-		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){
-			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', true);
-			$('#formMixtoBill #monto_tarjeta').val(parseFloat(0).toFixed(2));
-			$('#formMixtoBill #monto_tarjeta').attr('disabled', true);
-		}else{
-			var tarjeta = monto - efectivo;
-			$('#formMixtoBill #monto_tarjeta').val(parseFloat(tarjeta).toFixed(2))
-			$('#formMixtoBill #cambio_efectivo_mixto').val(parseFloat(0).toFixed(2));
-			$('#formMixtoBill #pago_efectivo_mixto').attr('disabled', false);
-		}
-	});
-});
 //FIN MODAL PAGOS
 
 //INICIO FUNCION PARA OBTENER LOS BANCOS DISPONIBLES

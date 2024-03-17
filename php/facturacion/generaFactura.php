@@ -17,7 +17,7 @@ date_default_timezone_set('America/Tegucigalpa');
 $noFactura = $_GET['facturas_id'];
 $anulada = '';
 
-$query = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS 'paciente', p.identidad AS 'identidad', p.expediente AS 'expediente', p.telefono1 AS 'tel_paciente', p.localidad AS 'localidad_paciente', e.nombre AS 'empresa', e.ubicacion AS 'direccion_empresa', e.telefono AS 'empresa_telefono', e.correo AS 'empresa_correo', CONCAT(c.nombre, ' ', c.apellido) AS 'profesional', s.nombre AS 'servicio', sf.prefijo AS 'prefijo', sf.siguiente AS 'numero', sf.relleno AS 'relleno', DATE_FORMAT(f.fecha, '%d/%m/%Y') AS 'fecha', time(f.fecha_registro) AS 'hora', sf.cai AS 'cai', e.rtn AS 'rtn', sf.fecha_activacion AS 'fecha_activacion', sf.fecha_limite AS 'fecha_limite', pc.nombre AS 'puesto', f.estado AS 'estado', sf.rango_inicial AS 'rango_inicial', sf.rango_final AS 'rango_final', am.edad AS 'edad', f.number AS 'numero_factura', f.notas AS 'notas', e.otra_informacion As 'otra_informacion', e.eslogan AS 'eslogan', e.celular As 'celular', (CASE WHEN f.tipo_factura = 1 THEN 'Contado' ELSE 'Crédito' END) AS 'tipo_documento', m.referencia AS 'referencia'
+$query = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS 'paciente', p.identidad AS 'identidad', p.expediente AS 'expediente', p.telefono1 AS 'tel_paciente', p.localidad AS 'localidad_paciente', e.nombre AS 'empresa', e.ubicacion AS 'direccion_empresa', e.telefono AS 'empresa_telefono', e.correo AS 'empresa_correo', CONCAT(c.nombre, ' ', c.apellido) AS 'profesional', s.nombre AS 'servicio', sf.prefijo AS 'prefijo', sf.siguiente AS 'numero', sf.relleno AS 'relleno', DATE_FORMAT(f.fecha, '%d/%m/%Y') AS 'fecha', time(f.fecha_registro) AS 'hora', sf.cai AS 'cai', e.rtn AS 'rtn', sf.fecha_activacion AS 'fecha_activacion', sf.fecha_limite AS 'fecha_limite', pc.nombre AS 'puesto', f.estado AS 'estado', sf.rango_inicial AS 'rango_inicial', sf.rango_final AS 'rango_final', am.edad AS 'edad', f.number AS 'numero_factura', f.notas AS 'notas', e.otra_informacion As 'otra_informacion', e.eslogan AS 'eslogan', e.celular As 'celular', (CASE WHEN f.tipo_factura = 1 THEN 'Contado' ELSE 'Crédito' END) AS 'tipo_documento', m.referencia AS 'referencia', d.nombre AS 'documento'
 	FROM facturas AS f
 	INNER JOIN pacientes AS p
 	ON f.pacientes_id = p.pacientes_id
@@ -35,27 +35,44 @@ $query = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS 'paciente', p.identidad AS
   	ON f.pacientes_id = am.pacientes_id
 	LEFT JOIN muestras AS m
 	ON f.muestras_id = m.muestras_id
+	LEFT JOIN documento AS d
+	ON sf.documento_id = d.documento_id
   	WHERE f.facturas_id = '$noFactura'";
 $result = $mysqli->query($query) or die($mysqli->error);
 
 //OBTENER DETALLE DE FACTURA
-$query_factura_detalle = "SELECT p.nombre AS 'producto', fd.cantidad As 'cantidad', fd.precio AS 'precio', fd.descuento AS 'descuento', fd.productos_id  AS 'productos_id', fd.isv_valor AS 'isv_valor', CONCAT(p1.nombre, ' ', p1.apellido) AS 'paciente'
-FROM facturas_detalle AS fd
-INNER JOIN productos AS p
-ON fd.productos_id = p.productos_id
-INNER JOIN facturas AS f
-ON fd.facturas_id = f.facturas_id
-LEFT JOIN muestras_hospitales As mh
-ON f.muestras_id = mh.muestras_id
-LEFT JOIN pacientes AS p1
-ON mh.pacientes_id = p1.pacientes_id
-WHERE fd.facturas_id = '$noFactura'
-GROUP BY fd.productos_id";
+$query_factura_detalle = "SELECT p.nombre AS 'producto', 
+		SUM(fd.cantidad) AS 'cantidad', 
+		fd.precio AS 'precio', 
+		SUM(fd.descuento) AS 'descuento', 
+		fd.productos_id  AS 'productos_id', 
+		SUM(fd.isv_valor) AS 'isv_valor', 
+		CONCAT(p1.nombre, ' ', p1.apellido) AS 'paciente'
+	FROM facturas_detalle AS fd
+	INNER JOIN productos AS p ON fd.productos_id = p.productos_id
+	INNER JOIN facturas AS f ON fd.facturas_id = f.facturas_id
+	LEFT JOIN muestras_hospitales AS mh ON f.muestras_id = mh.muestras_id
+	LEFT JOIN pacientes AS p1 ON mh.pacientes_id = p1.pacientes_id
+	WHERE fd.facturas_id = '$noFactura'
+	GROUP BY fd.productos_id";
 $result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli->error);
+
+$abono = 0;
+$saldo = 0;
+
+//CONSULTAMOS EL TOTAL DEL PAGO REALIZADO
+$query_pagos = "SELECT CAST(COALESCE(SUM(importe), 0) AS UNSIGNED) AS 'importe'
+	FROM pagos
+	WHERE facturas_id = '$noFactura'";
+$result_pagos = $mysqli->query($query_pagos) or die($mysqli->error);
+
+if($result_pagos->num_rows>0){
+	$consulta2Saldo = $result_pagos->fetch_assoc();
+	$abono = $consulta2Saldo['importe'];
+}
 
 if($result->num_rows>0){
 	$consulta_registro = $result->fetch_assoc();
-
 	$no_factura = str_pad($consulta_registro['numero_factura'], $consulta_registro['relleno'], "0", STR_PAD_LEFT);
 
 	if($consulta_registro['estado'] == 3){

@@ -35,10 +35,17 @@ if(isset($_POST['facturas_activo'])){//COMPRUEBO SI LA VARIABLE ESTA DIFINIDA
 	$tipo = "FacturacionCredito";
 }
 
+$documento = "";
+if($tipo_factura === "1"){
+	$documento = "1";//Factura Electronica
+}else{
+   $documento = "4";//Factura Proforma
+}
+
 //CONSULTAR DATOS DE LA SECUENCIA DE FACTURACION
 $query_secuencia = "SELECT secuencia_facturacion_id, prefijo, siguiente AS 'numero', rango_final, fecha_limite, incremento, relleno
 	FROM secuencia_facturacion
-	WHERE activo = '$activo' AND empresa_id = '$empresa_id'";
+	WHERE activo = '$activo' AND empresa_id = '$empresa_id' AND documento_id = '$documento'";
 
 $result = $mysqli->query($query_secuencia) or die($mysqli->error);
 $consulta2 = $result->fetch_assoc();
@@ -131,19 +138,32 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 						}
 
 						//VERIFICAMOS SI NO EXISTE LA FACTURA, DE NO EXISTIR LA ACTUALIZAMOS
-						$query_factura_detalle = "SELECT facturas_id
+						$query_factura_detalle = "SELECT facturas_id, cantidad, isv_valor, descuento
 							FROM facturas_detalle
 							WHERE facturas_id = '$facturas_id' AND productos_id  = '$productoID'";
 						$result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli->error);
 
+						$producto_cantidad = 0;
+						$producto_isv_valor = 0.0;
+						$producto_descuento = 0.0;
+
 						if($result_factura_detalle->num_rows>0){
+							$consulta_facturas_detalles = $result_factura_detalle->fetch_assoc();
+							$producto_cantidad = (int)$consulta_facturas_detalles["cantidad"] ?? 0;
+							$producto_isv_valor = (float)$consulta_facturas_detalles["isv_valor"] ?? 0;
+							$producto_descuento = (float)$consulta_facturas_detalles["descuento"] ?? 0;
+
+							$producto_cantidad += $quantity;
+							$producto_isv_valor += $isv_valor;
+							$producto_descuento += $discount;
+
 							//ACTUALIZAMOS EL DETALLE DE LA FACTURA
 							$update_factura_detalle = "UPDATE facturas_detalle
 								SET
-									cantidad = '$quantity',
+									cantidad = '$producto_cantidad',
 									precio = '$price',
-									isv_valor = '$isv_valor',
-									descuento = '$discount'
+									isv_valor = '$producto_isv_valor',
+									descuento = '$producto_descuento'
 								WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
 							$mysqli->query($update_factura_detalle);
 						}else{
@@ -237,7 +257,7 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 				$mysqli->query($update);
 
 				//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
-				$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+				$numero_secuencia_facturacion = correlativoSecuenciaFacturacion("siguiente", "secuencia_facturacion", "documento_id = 1 AND activo = 1");
 				
 				//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE		
 				$update = "UPDATE secuencia_facturacion 
@@ -246,12 +266,18 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 				WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
 				$mysqli->query($update);
 
-				//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
-				$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
-				$insert_cxc = "INSERT INTO cobrar_clientes 
-				(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) 
-				VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";			
-				$mysqli->query($insert_cxc);	
+				//CONSULTAMOS SI LA FACTURA YA EXISTE EN CUENTAS POR COBRAR
+				$query_factura_cxc = "SELECT cobrar_clientes_id FROM cobrar_clientes WHERE facturas_id = '$facturas_id'";
+				$result_factura_cxc = $mysqli->query($query_factura_cxc) or die($mysqli->error);
+		
+				if($result_factura_cxc->num_rows==0){
+					//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
+					$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
+					$insert_cxc = "INSERT INTO cobrar_clientes 
+					(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) 
+					VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";			
+					$mysqli->query($insert_cxc);
+				}	
 
 				$datos = array(
 					0 => "Almacenado",
@@ -331,19 +357,32 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 						}
 
 						//VERIFICAMOS SI NO EXISTE LA FACTURA, DE NO EXISTIR LA ACTUALIZAMOS
-						$query_factura_detalle = "SELECT facturas_id
+						$query_factura_detalle = "SELECT facturas_id, cantidad, isv_valor, descuento
 							FROM facturas_detalle
 							WHERE facturas_id = '$facturas_id' AND productos_id  = '$productoID'";
 						$result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli->error);
 
+						$producto_cantidad = 0;
+						$producto_isv_valor = 0.0;
+						$producto_descuento = 0.0;
+
 						if($result_factura_detalle->num_rows>0){
 							//ACTUALIZAMOS EL DETALLE DE LA FACTURA
+							$consulta_facturas_detalles = $result_factura_detalle->fetch_assoc();
+							$producto_cantidad = (int)$consulta_facturas_detalles["cantidad"] ?? 0;
+							$producto_isv_valor = (float)$consulta_facturas_detalles["isv_valor"] ?? 0;
+							$producto_descuento = (float)$consulta_facturas_detalles["descuento"] ?? 0;
+	
+							$producto_cantidad += $quantity;
+							$producto_isv_valor += $isv_valor;
+							$producto_descuento += $discount;
+
 							$update_factura_detalle = "UPDATE facturas_detalle
 								SET
-									cantidad = '$quantity',
+									cantidad = '$producto_cantidad',
 									precio = '$price',
-									isv_valor = '$isv_valor',
-									descuento = '$discount'
+									isv_valor = '$producto_isv_valor',
+									descuento = '$producto_descuento'
 								WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
 							$mysqli->query($update_factura_detalle);
 						}else{
@@ -438,7 +477,7 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 				$mysqli->query($update);
 
 				//CONSULTAMOS EL NUMERO QUE SIGUE DE EN LA SECUENCIA DE FACTURACION
-				$numero_secuencia_facturacion = correlativo("siguiente", "secuencia_facturacion");
+				$numero_secuencia_facturacion = correlativoSecuenciaFacturacion("siguiente", "secuencia_facturacion", "documento_id = 4 AND activo = 1");
 				
 				//ACTUALIZAMOS LA SECUENCIA DE FACTURACION AL NUMERO SIGUIENTE		
 				$update = "UPDATE secuencia_facturacion 
@@ -447,12 +486,18 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 				WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
 				$mysqli->query($update);	
 				
-				//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
-				$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
-				$insert_cxc = "INSERT INTO cobrar_clientes 
-				(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) 
-				VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";			
-				$mysqli->query($insert_cxc);		
+				//CONSULTAMOS SI LA FACTURA YA EXISTE EN CUENTAS POR COBRAR
+				$query_factura_cxc = "SELECT cobrar_clientes_id FROM cobrar_clientes WHERE facturas_id = '$facturas_id'";
+				$result_factura_cxc = $mysqli->query($query_factura_cxc) or die($mysqli->error);
+		
+				if($result_factura_cxc->num_rows==0){
+					//INGRESAMOS LOS DATOS EN LA CUENTA POR COBRAR DEL CLIENTE
+					$cobrar_clientes_id = correlativo("cobrar_clientes_id","cobrar_clientes");
+					$insert_cxc = "INSERT INTO cobrar_clientes 
+					(`cobrar_clientes_id`, `pacientes_id`, `facturas_id`, `fecha`, `saldo`, `estado`, `usuario`, `empresa_id`, `fecha_registro`) 
+					VALUES('$cobrar_clientes_id','$pacientes_id','$facturas_id','$fecha','$total_despues_isv','1','$usuario','$empresa_id','$fecha_registro')";			
+					$mysqli->query($insert_cxc);
+				}		
 
 				$datos = array(
 					0 => "Almacenado",

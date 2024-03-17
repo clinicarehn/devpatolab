@@ -88,14 +88,21 @@ $mysqli->close();//CERRAR CONEXIÓN
 					</div>
 				</div>
 				<div class="form-row">
-          <div class="col-md-3 mb-3">
+          			<div class="col-md-3 mb-3">
 					    <label for="empresa">Empresa <span class="priority">*<span/></label>
 						<div class="input-group mb-3">
 							<select class="selectpicker" id="empresa" name="empresa" required data-live-search="true" title="Empresa">
 							</select>
 						</div>
 					</div>
-					<div class="col-md-9 mb-3">
+					<div class="col-md-3 mb-3">
+					    <label for="documento_id">Documento <span class="priority">*<span/></label>
+						<div class="input-group mb-3">
+							<select class="selectpicker" id="documento_id" name="documento_id" required data-live-search="true" title="Documento">
+							</select>
+						</div>
+					</div>					
+					<div class="col-md-6 mb-3">
 					  <label for="cai">CAI</label>
 					  <div class="input-group mb-3">
 						  <input type="text" name="cai" id="cai" class="form-control" placeholder="CAI" data-toggle="tooltip" data-placement="top" title="Este es el número entregado en la documentación solicitada el cual tendrá el siguiente formato: CAI: 57606A-B57ED1-224B98-7DA363-38B33B-B1">
@@ -172,7 +179,7 @@ $mysqli->close();//CERRAR CONEXIÓN
 					  <label for="fecha_limite">Fecha Límite <span class="priority">*<span/></label>
 					  <input type="date" required="required" id="fecha_limite" name="fecha_limite" value="<?php echo date ("Y-m-d");?>" class="form-control"/>
 					</div>
-          <div class="col-md-3 mb-3">
+          			<div class="col-md-3 mb-3">
 					    <label for="estado">Estado <span class="priority">*<span/></label>
 						<div class="input-group mb-3">
 							<select class="selectpicker" id="estado" name="estado" required data-live-search="true" title="Estado">
@@ -220,6 +227,15 @@ $mysqli->close();//CERRAR CONEXIÓN
   						</select>
             </div>
           </div>
+          <div class="form-group mr-1">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text"><div class="sb-nav-link-icon"></div>Documento</span>
+              </div>
+				<select id="documento" name="documento" class="selectpicker" title="Documento" data-live-search="true">
+				</select>
+            </div>
+          </div>		  
           <div class="form-group mr-1">
             <div class="input-group">
               <div class="input-group-append">

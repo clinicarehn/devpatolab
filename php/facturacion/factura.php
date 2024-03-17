@@ -34,14 +34,49 @@
 			</td>
 			<td class="info_factura">
 				<div class="round">
-					<span class="h3">Factura</span>
-					<p><b>N° Factura:</b> <?php echo $consulta_registro['prefijo'].''.str_pad($consulta_registro['numero_factura'], $consulta_registro['relleno'], "0", STR_PAD_LEFT); ?></p>
-					<p><b>Fecha:</b> <?php echo $consulta_registro['fecha'].' '.date('g:i a',strtotime($consulta_registro['hora'])); ?></p>
-					<p><b>CAI:</b> <?php echo $consulta_registro['cai']; ?></p>
-					<p><b>RTN:</b> <?php echo $consulta_registro['rtn']; ?></p>
-					<p><b>Desde:</b> </b><?php echo $consulta_registro['prefijo'].''.$consulta_registro['rango_inicial']; ?> <b>Hasta:</b> <?php echo $consulta_registro['prefijo'].''.$consulta_registro['rango_final']; ?></p>
-					<p><b>Fecha de Activación:</b> <?php echo $consulta_registro['fecha_activacion']; ?></p>
-					<p><b>Fecha Limite de Emisión:</b> <?php echo $consulta_registro['fecha_limite']; ?></p>
+				<span class="h3"><?php 
+						if ($consulta_registro['documento'] === "Factura Electronica") {
+							echo "Factura";
+						} else {
+							echo "Factura Proforma";
+						}?></span>
+					<p> <?php 
+						echo "<b>N° Factura:</b> ".$consulta_registro['prefijo'].''.str_pad($consulta_registro['numero_factura'], $consulta_registro['relleno'], "0", STR_PAD_LEFT);
+					?></p>
+					<p><?php 
+						echo "<b>Fecha:</b> ".$consulta_registro['fecha'].' '.date('g:i a',strtotime($consulta_registro['hora']));
+						?></p>
+					<p><?php 
+						if ($consulta_registro['documento'] === "Factura Electronica") {
+							echo "<b>CAI:</b> ".$consulta_registro['cai'];
+						} else {
+							echo "";
+						}					
+					 ?></p>
+					<p><?php 
+						echo "<b>RTN:</b> ".$consulta_registro['rtn'];
+					?></p>
+					<p><?php 
+						if ($consulta_registro['documento'] === "Factura Electronica") {
+							echo "<b>Desde:</b> ".$consulta_registro['prefijo'].''.$consulta_registro['rango_inicial']." <b>Hasta</b> ".$consulta_registro['prefijo'].''.$consulta_registro['rango_final'];
+						} else {
+							echo "";
+						}					
+					?></p>
+					<p><?php 
+						if ($consulta_registro['documento'] === "Factura Electronica") {
+							echo "<b>Fecha Activacion:</b> ".$consulta_registro['fecha_activacion'];
+						} else {
+							echo "";
+						}					
+					?></p>
+					<p><?php 
+						if ($consulta_registro['documento'] === "Factura Electronica") {
+							echo "<b>Fecha Limite de Emisión:</b> ".$consulta_registro['fecha_limite'];
+						} else {
+							echo "";
+						}					
+					?></p>
 					<p><b>Factura:</b> <?php echo $consulta_registro['tipo_documento']; ?></p>
 					<?php
 						if($consulta_registro['referencia'] != "" || $consulta_registro['referencia'] != null){
@@ -65,7 +100,6 @@
 									}else{
 										echo $consulta_registro['identidad'];
 									}
-
 							?></p></td>
 							<td><label>Expediente:</label><p><?php echo $consulta_registro['expediente']; ?></p></td>
 							<td><label>Teléfono:</label> <p><?php
@@ -111,7 +145,7 @@
 					$importe_gravado = 0;
 					$importe_excento = 0;
 					$subtotal = 0;
-					$i = 1;
+					$i = 1;					
 
 					while($registro_detalles = $result_factura_detalle->fetch_assoc()){
 						$total_ = 0;
@@ -150,7 +184,6 @@
 						$i++;
 					}
 					$total_despues_isv = ($total + $isv_neto) - $descuentos;
-
 				?>
 			</tbody>
 			<tfoot id="detalle_totales">
@@ -200,9 +233,22 @@
 					<td class="textright"><span>L. <?php echo number_format(0,2);?></span></td>
 				</tr>
 				<tr>
-					<td colspan="5" class="textright"><span>Total</span></td>
-					<td class="textright"><span>L. <?php echo number_format($total_despues_isv,2); ?></span></td>
+					<td colspan="5" class="textright"><span style="font-size:13px; font-weight: bold;">Total</span></td>
+					<td class="textright"><span style="font-size:13px; font-weight: bold;">L. <?php echo number_format($total_despues_isv,2); ?></span></td>
 				</tr>
+				<?php 
+					if ($consulta_registro['documento'] === "Factura Proforma") {
+						// Ahora agregamos la fila con los datos de la factura proforma
+						echo '<tr>';
+						echo '<td colspan="5" class="textright"><span style="font-size:13px; font-weight: bold;">Abono</span></td>';
+						echo '<td class="textright"><span style="font-size:13px; font-weight: bold;">L. ' . number_format($abono,2) . '</span></td>';
+						echo '</tr>';
+						echo '<tr>';
+						echo '<td colspan="5" class="textright"><span style="font-size:13px; font-weight: bold;">Saldo</span></td>';
+						echo '<td class="textright"><span style="font-size:13px; font-weight: bold;">L. ' . number_format((float)$total_despues_isv - (float)$abono,2) . '</span></td>';
+						echo '</tr>';
+					}
+				?>
 		</tfoot>
 	</table>
 	<div>

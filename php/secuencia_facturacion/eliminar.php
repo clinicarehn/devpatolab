@@ -6,7 +6,7 @@ include "../funtions.php";
 $mysqli = connect_mysqli(); 
 
 $secuencia_facturacion_id = $_POST['secuencia_facturacion_id'];
-$comentario = cleanStringStrtolower($_POST['comentario']);
+$comentario = isset($_POST['comentario']) ? cleanStringStrtolower($_POST['comentario']) : '';
 $usuario = $_SESSION['colaborador_id'];
 $fecha_registro = date("Y-m-d H:i:s");
 $fecha = date("Y-m-d");
@@ -46,9 +46,9 @@ if($result->num_rows>0){
 }
 
 //VERIFICAMOS QUE LA SECUENCIA NO ESTE ALMACENADA EN LA FACTURACION
-$query = "SELECT factura_id 
-    FROM factura
-	WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
+$query = "SELECT facturas_id 
+    FROM facturas
+	WHERE secuencia_facturacion_id  = '$secuencia_facturacion_id'";
 $result = $mysqli->query($query);
 
 if($result->num_rows==0){
@@ -83,5 +83,4 @@ if($result->num_rows==0){
 	echo 3;//ESTE REGISTRO NO SE PUEDE ELIMINAR CUANTA CON INFORMACIÓN ALMACENADA
 }
 
-$mysqli->close();//CERRAR CONEXIÓN  
-?>
+$mysqli->close();//CERRAR CONEXIÓN 

@@ -76,7 +76,7 @@ $registro = "SELECT f.facturas_id AS 'facturas_id', f.fecha AS 'fecha', p.identi
 	ON f.colaborador_id = c.colaborador_id
 	INNER JOIN muestras AS m
 	ON f.muestras_id = m.muestras_id
-	WHERE f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in."
+	WHERE sc.documento_id = 1 AND f.fecha BETWEEN '$desde' AND '$hasta' AND f.estado ".$in."
 	$busqueda_paciente
 	$consulta_datos
 	GROUP BY f.number

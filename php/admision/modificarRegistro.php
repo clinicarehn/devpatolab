@@ -41,7 +41,7 @@ if($identidad == 0){
 $fecha_nacimiento = $_POST['fecha_nac'];
 $edad = $_POST['edad'];
 $telefono1 = $_POST['telefono1'];
-$telefono2 = "";
+$telefono2 = $_POST['telefono2'];
 $genero = $_POST['genero'];
 $departamento_id = 0;
 $municipio_id = 0;
@@ -62,6 +62,7 @@ $update = "UPDATE pacientes
 		,identidad = '$identidad'
 		,edad = '$edad'
 		,telefono1 = '$telefono1'
+		,telefono2 = '$telefono2'
 		,genero = '$genero'
 		,localidad = '$localidad'
 		,email = '$correo'

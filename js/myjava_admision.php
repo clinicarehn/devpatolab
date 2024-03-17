@@ -880,6 +880,7 @@ function editarRegistro(pacientes_id){
 					$('#formulario_admision_clientes_editar #rtn').val(datos[2]);
 					$('#formulario_admision_clientes_editar #edad').val(datos[3]);
 					$('#formulario_admision_clientes_editar #telefono1').val(datos[4]);
+					$('#formulario_admision_clientes_editar #telefono2').val(datos[8]);
 					$('#formulario_admision_clientes_editar #genero').val(datos[5]);
 					$('#formulario_admision_clientes_editar #genero').selectpicker('refresh');
 					$('#formulario_admision_clientes_editar #direccion').val(datos[6]);
@@ -1186,6 +1187,7 @@ function formFactura(){
 	$('#acciones_atras').removeClass("active");
 	$('#acciones_factura').addClass("active");
 	$('#label_acciones_factura').html("Factura");
+	$('#formulario_facturacion #fact_eval').val(0);//ESTO VIENE DE UNA MUESTRA
 	$('#formulario_facturacion #fecha').attr('disabled', false);
 	$('#formulario_facturacion').attr({ 'data-form': 'save' });
 	$('#formulario_facturacion').attr({ 'action': '<?php echo SERVERURL; ?>php/facturacion/addPreFactura.php' });
@@ -1320,6 +1322,7 @@ function createBill(muestras_id, producto, nombre_producto, precio_venta, isv){
 					data:'muestras_id='+muestras_id+'&producto='+producto,
 					success: function(valores){
 						var datos = eval(valores);
+						$('#formulario_facturacion #fact_eval').val(0);//ESTO VIENE DE UNA FACTURA
 						$('#formulario_facturacion #muestras_id').val(muestras_id);
 						$('#formulario_facturacion #pacientes_id').val(datos[0]);
 						$('#formulario_facturacion #cliente_nombre').val(datos[1]);

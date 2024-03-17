@@ -23,16 +23,15 @@ while ($data = fgetcsv($handle,1000,",",";") ){
 	
 	//CONSULTAR EXISTENCIA DE EXISTENCIA
 	$consultar_expediente = "SELECT pacientes_id 
-		 FROM pacientes WHERE expediente = '$data[0]'");
+		 FROM pacientes WHERE expediente = '$data[0]'";
 	$result = $mysqli->query($consultar_expediente);
 	
-	if(mysql_num_rows($consultar_expediente)>0){
+	if($result->num_rows>0){
 		$result = $mysqli->query($consultar_expediente2);
 		$consultar_expediente2 = $result->fetch_assoc();			
 		$pacientes_id = $consultar_expediente2['pacientes_id'];
 		$update = "UPDATE pacientes SET status = '1' 
 		   WHERE pacientes_id = '$pacientes_id'";
-		$mysqli->query($update);
 	}else{
 		continue;
 	}
@@ -43,4 +42,3 @@ fclose($handle);
 
 $result->free();//LIMPIAR RESULTADO
 $mysqli->close();//CERRAR CONEXIÓN  
-?>

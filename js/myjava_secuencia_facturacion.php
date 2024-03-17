@@ -16,18 +16,21 @@ $(document).ready(function(){
 //INICIO CONTROLES DE ACCION
 $(document).ready(function() {
 	//LLAMADA A LAS FUNCIONES
-	funciones();	
+	funciones();
+	getDocumento();
 	
 	//INICIO ABRIR VENTANA MODAL PARA EL REGISTRO DE DESCUENTOS
 	$('#form_main #nuevo_registro').on('click',function(e){
 		e.preventDefault();
 		funciones();
+		getDocumento1();
 		if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() == 4){	
 		    $('#formularioSecuenciaFacturacion')[0].reset();
             limpiarSeciencia();	
             //HABILITAR CONTROLES PARA SOLO LECTURA
 			$("#formularioSecuenciaFacturacion #cai").attr('disabled', false);
 			$("#formularioSecuenciaFacturacion #empresa").attr('disabled', false);
+			$("#formularioSecuenciaFacturacion #documento_id").attr('disabled', false);
 			$("#formularioSecuenciaFacturacion #prefijo").attr('readonly', false);
 			$("#formularioSecuenciaFacturacion #relleno").attr('readonly', false);
 			$("#formularioSecuenciaFacturacion #incremento").attr('readonly', false);
@@ -42,6 +45,10 @@ $(document).ready(function() {
 			 $('#edi').hide(); 
 			 $('#delete').hide(); 			 
 			 $('#formularioSecuenciaFacturacion #group_comentario').hide();
+
+			// Eliminar la opción cero del select
+			$('#formularioSecuenciaFacturacion #documento_id option[value="0"]').remove();
+
 			 $('#secuenciaFacturacion').modal({
 				show:true,
 				keyboard: false,
@@ -126,6 +133,10 @@ $(document).ready(function() {
 	$('#form_main #profesional').on('change',function(){
 	  pagination(1);
 	});	
+
+	$('#form_main #documento').on('change',function(){
+	  pagination(1);
+	});	
 	//FIN PAGINATION (PARA LAS BUSQUEDAS SEGUN SELECCIONES)
 });
 //FIN CONTROLES DE ACCION
@@ -155,6 +166,7 @@ function agregar(){
 				pagination(1);
 				limpiarSeciencia();
 				getEmpresa();
+				getDocumento();
 				getEstado();
 				return false;				
 			}else if(registro == 2){
@@ -168,7 +180,7 @@ function agregar(){
 			}else if(registro == 3){
 				swal({
 					title: "Error", 
-					text: "Lo sentimos Solo se puede tener un administrador de secuencias activo",
+					text: "Lo sentimos Solo se puede tener un administrador de secuencias activo para cada documento",
 					type: "error", 
 					confirmButtonClass: 'btn-danger'
 				});
@@ -246,6 +258,7 @@ function eliminarRegistro(){
 				});	
 				$('#secuenciaFacturacion').modal('hide');
 				getEmpresa();
+				getDocumento();
 				getEstado();
 				$('#formularioSecuenciaFacturacion #pro').val('Eliminar Registro');
 				pagination(1);
@@ -309,23 +322,28 @@ function editarRegistro(secuencia_facturacion_id){
 				$('#formularioSecuenciaFacturacion #fecha_limite').val(array[8]);	
                 $('#formularioSecuenciaFacturacion #estado').val(array[9]);
 				$('#formularioSecuenciaFacturacion #estado').selectpicker('refresh');
-                $('#formularioSecuenciaFacturacion #comentario').val(array[10]);		
+                $('#formularioSecuenciaFacturacion #comentario').val(array[10]);			
+				$('#formularioSecuenciaFacturacion #documento_id').val(array[11]);
+				$('#formularioSecuenciaFacturacion #documento_id').selectpicker('refresh');
 				$("#edi").attr('disabled', false);	
-
-                //HABILITAR CONTROLES PARA SOLO LECTURA
-				$("#formularioSecuenciaFacturacion #cai").attr('disabled', false);				
-				$("#formularioSecuenciaFacturacion #prefijo").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #relleno").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #incremento").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #rango_inicial").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #rango_final").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #fecha_activacion").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #fecha_limite").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #siguiente").attr('readonly', false);
-				$("#formularioSecuenciaFacturacion #comentario").attr('readonly', false);
 				
-				//DESHABILITAR OBJETOS
+				//DESHABILITAR CONTROLES PARA SOLO LECTURA				
 				$("#formularioSecuenciaFacturacion #empresa").attr('disabled', true);
+				$("#formularioSecuenciaFacturacion #documento_id").attr('disabled', true);
+				$("#formularioSecuenciaFacturacion #cai").attr('disabled', true);				
+				$("#formularioSecuenciaFacturacion #prefijo").attr('readonly', true);
+				$("#formularioSecuenciaFacturacion #relleno").attr('readonly', true);				
+				$("#formularioSecuenciaFacturacion #incremento").attr('readonly', true);
+				$("#formularioSecuenciaFacturacion #rango_inicial").attr('readonly', true);
+				$("#formularioSecuenciaFacturacion #rango_final").attr('readonly', true);
+				$("#formularioSecuenciaFacturacion #fecha_activacion").attr('readonly', true);
+				$("#formularioSecuenciaFacturacion #fecha_limite").attr('readonly', true);
+				$("#formularioSecuenciaFacturacion #comentario").attr('readonly', true);
+
+				
+				//HABILITAR CONTROLES
+				$("#formularioSecuenciaFacturacion #siguiente").attr('readonly', false);
+				$("#formularioSecuenciaFacturacion #estado").attr('disabled', false);
 								
 				$('#formularioSecuenciaFacturacion #group_comentario').hide();
 								
@@ -375,11 +393,14 @@ function modal_eliminar(secuencia_facturacion_id){
 				$('#formularioSecuenciaFacturacion #fecha_limite').val(array[8]);	
                 $('#formularioSecuenciaFacturacion #estado').val(array[9]);	
 				$('#formularioSecuenciaFacturacion #estado').selectpicker('refresh');
-                $('#formularioSecuenciaFacturacion #comentario').val(array[10]);					
+                $('#formularioSecuenciaFacturacion #comentario').val(array[10]);
+				$('#formularioSecuenciaFacturacion #comentario').val(array[10]);			
+				$('#formularioSecuenciaFacturacion #documento_id').val(array[11]);					
 				$("#edi").attr('disabled', false);	
 
                 //DESHABILITAR CONTROLES PARA SOLO LECTURA
 				$("#formularioSecuenciaFacturacion #empresa").attr('disabled', true);
+				$("#formularioSecuenciaFacturacion #documento_id").attr('disabled', true);
 				$("#formularioSecuenciaFacturacion #cai").attr('disabled', true);				
                 $("#formularioSecuenciaFacturacion #estado").attr('disabled', true);				
 				$("#formularioSecuenciaFacturacion #prefijo").attr('readonly', true);
@@ -432,29 +453,16 @@ function pagination(partida){
 	var dato = '';
 	var profesional = '';
 	
-    if($('#form_main #empresa').val() == "" || $('#form_main #empresa').val() == null){
-		empresa = 0;
-	}else{
-		empresa = $('#form_main #empresa').val();
-	}
-	
-    if($('#form_main #estado').val() == "" || $('#form_main #estado').val() == null){
-		estado = 1;
-	}else{
-		estado = $('#form_main #estado').val();
-	}	
-	
-	if($('#form_main #bs_regis').val() == "" || $('#form_main #bs_regis').val() == null){
-		dato = '';
-	}else{
-		dato = $('#form_main #bs_regis').val();
-	}
+	var empresa = $('#form_main #empresa').val() || 0;
+	var estado = $('#form_main #estado').val() || 1;
+	var dato = $('#form_main #bs_regis').val() || '';
+	var documento = $('#form_main #documento').val() || '';
 
 	$.ajax({
 		type:'POST',
 		url:url,
 		async: true,
-		data:'partida='+partida+'&dato='+dato+'&empresa='+empresa+'&estado='+estado,
+		data:'partida='+partida+'&dato='+dato+'&empresa='+empresa+'&estado='+estado+'&documento='+documento,
 		success:function(data){
 			var array = eval(data);
 			$('#agrega-registros').html(array[0]);
@@ -481,6 +489,40 @@ function getEmpresa(){
 		    $('#formularioSecuenciaFacturacion #empresa').html("");
 			$('#formularioSecuenciaFacturacion #empresa').html(data);	
 			$('#formularioSecuenciaFacturacion #empresa').selectpicker('refresh');			
+        }
+     });		
+}
+
+function getDocumento1(){
+    var url = '<?php echo SERVERURL; ?>php/secuencia_facturacion/getDocumento1.php';		
+		
+	$.ajax({
+        type: "POST",
+        url: url,
+	    async: true,
+        success: function(data){
+		    $('#formularioSecuenciaFacturacion #documento_id').html("");
+			$('#formularioSecuenciaFacturacion #documento_id').html(data);
+			$('#formularioSecuenciaFacturacion #documento_id').selectpicker('refresh');		
+        }
+     });		
+}
+
+function getDocumento(){
+    var url = '<?php echo SERVERURL; ?>php/secuencia_facturacion/getDocumento.php';		
+		
+	$.ajax({
+        type: "POST",
+        url: url,
+	    async: true,
+        success: function(data){
+		    $('#form_main #documento').html("");
+			$('#form_main #documento').html(data);
+			$('#form_main #documento').selectpicker('refresh');
+
+		    $('#formularioSecuenciaFacturacion #documento_id').html("");
+			$('#formularioSecuenciaFacturacion #documento_id').html(data);	
+			$('#formularioSecuenciaFacturacion #documento_id').selectpicker('refresh');			
         }
      });		
 }

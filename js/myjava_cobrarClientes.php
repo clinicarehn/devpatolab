@@ -18,6 +18,29 @@ $(document).ready(function(){
 	getBanco();
 });	
 
+function getBanco(){
+    var url = '<?php echo SERVERURL; ?>php/facturacion/getBanco.php';
+
+	$.ajax({
+        type: "POST",
+        url: url,
+	    async: true,
+        success: function(data){
+		    $('#formTransferenciaBill #bk_nm').html("");
+			$('#formTransferenciaBill #bk_nm').html(data);
+
+		    $('#formChequeBill #bk_nm_chk').html("");
+			$('#formChequeBill #bk_nm_chk').html(data);
+
+		    $('#formTransferenciaBillGrupal #bk_nm').html("");
+			$('#formTransferenciaBillGrupal #bk_nm').html(data);
+
+		    $('#formChequeBillGrupal #bk_nm_chk').html("");
+			$('#formChequeBillGrupal #bk_nm_chk').html(data);
+        }
+     });
+}
+
 function getClientesCXC(){
     var url = '<?php echo SERVERURL; ?>php/cobrarClientes/getClientesCXC.php';
 

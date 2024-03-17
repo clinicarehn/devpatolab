@@ -340,6 +340,7 @@ function formFactura(){
 	 $('#acciones_atras').removeClass("active");
 	 $('#acciones_factura').addClass("active");
 	 $('#label_acciones_factura').html("Factura");
+	 $('#formulario_facturacion #fact_eval').val(1);//ESTO VIENE DE UNA FACTURA
 	 $('#formulario_facturacion #fecha').attr('disabled', false);
 	 $('#formulario_facturacion').attr({ 'data-form': 'save' });
 	 $('#formulario_facturacion').attr({ 'action': '<?php echo SERVERURL; ?>php/facturacion/addFactura.php' });
@@ -846,6 +847,7 @@ function pay(facturas_id){
 			data:'facturas_id='+facturas_id,
 			success: function(valores){
 				var datos = eval(valores);
+				$('#formulario_facturacion #fact_eval').val(1);//ESTO VIENE DE UNA FACTURA
 				$('#formulario_facturacion #facturas_id').val(facturas_id);
 				$('#formulario_facturacion #pacientes_id').val(datos[0]);
 				$('#formulario_facturacion #cliente_nombre').val(datos[1]);

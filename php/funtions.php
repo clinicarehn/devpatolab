@@ -357,6 +357,33 @@ function correlativo($campo_id, $tabla){
 	return $numero;
 }
 
+function correlativoSecuenciaFacturacion($campo_id, $tabla, $condicion = "") {
+    $mysqli = connect_mysqli(); 
+
+    // Construir la parte de la consulta SQL con la condición opcional
+    $where_clause = "";
+    if (!empty($condicion)) {
+        $where_clause = " WHERE " . $condicion;
+    }
+
+    $correlativo = "SELECT MAX(" . $campo_id . ") AS max, COUNT(" . $campo_id . ") AS count FROM " . $tabla . $where_clause;
+	
+    $result = $mysqli->query($correlativo);
+    
+    $correlativo2 = $result->fetch_assoc();
+
+    $numero = $correlativo2['max'];
+    $cantidad = $correlativo2['count'];
+
+    if ($cantidad == 0)
+        $numero = 1;
+    else
+        $numero = $numero + 1;    
+    
+    return $numero;
+}
+
+
 function ejecutar($url){
   trim($url);
   return $url;

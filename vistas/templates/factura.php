@@ -15,6 +15,7 @@
 			  <input type="hidden" class="form-control" id="muestras_id" name="muestras_id" readonly>		  
 			  <input type="hidden" class="form-control" id="facturas_id" name="facturas_id" readonly>
 			  <input type="hidden" class="form-control" id="pacientes_id" name="pacientes_id" readonly>
+			  <input type="hidden" class="form-control" id="fact_eval" name="fact_eval" readonly>
 			  <input type="text" class="form-control" placeholder="Paciente" id="cliente_nombre" name="cliente_nombre" readonly required>
 			  <div class="input-group-append" id="grupo_buscar_colaboradores">				
 				<a data-toggle="modal" href="#" class="btn btn-outline-success" id="buscar_paciente"><div class="sb-nav-link-icon"></div><i class="fas fa-search-plus fa-lg"></i></a>

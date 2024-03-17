@@ -7,8 +7,8 @@ $mysqli = connect_mysqli();
 
 $facturas_id = $_POST['factura_id_efectivo'];
 $fecha = date("Y-m-d");
-$fecha_registro = date("Y-m-d H:i:s");
 $importe = $_POST['monto_efectivo'];
+$efectivo_bill = isset($_POST['efectivo_bill']) ? $_POST['efectivo_bill'] : 0;
 $cambio = $_POST['cambio_efectivo'];
 $empresa_id = $_SESSION['empresa_id'];
 $usuario = $_SESSION['colaborador_id'];

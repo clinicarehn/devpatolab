@@ -8,7 +8,7 @@ $mysqli = connect_mysqli();
 $facturas_grupal_id = $_POST['facturas_grupal_id'];
 
 //CONSULTAR DATOS DEL METODO DE PAGO
-$query = "SELECT fg.facturas_grupal_id AS facturas_id, DATE_FORMAT(fg.fecha, '%d/%m/%Y') AS 'fecha', p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre,' ',p.apellido) AS 'paciente', p.identidad AS 'identidad', CONCAT(c.nombre,' ',c.apellido) AS 'profesional', fg.colaborador_id AS 'colaborador_id', fg.estado AS 'estado', s.nombre AS 'consultorio', fg.servicio_id AS 'servicio_id', fg.fecha AS 'fecha_factura', fg.notas AS 'notas'
+$query = "SELECT fg.facturas_grupal_id AS facturas_id, DATE_FORMAT(fg.fecha, '%d/%m/%Y') AS 'fecha', p.pacientes_id AS 'pacientes_id', CONCAT(p.nombre,' ',p.apellido) AS 'paciente', p.identidad AS 'identidad', CONCAT(c.nombre,' ',c.apellido) AS 'profesional', fg.colaborador_id AS 'colaborador_id', fg.estado AS 'estado', s.nombre AS 'consultorio', fg.servicio_id AS 'servicio_id', fg.fecha AS 'fecha_factura', fg.notas AS 'notas', cc.saldo
 	FROM facturas_grupal AS fg
 	INNER JOIN pacientes AS p
 	ON fg.pacientes_id = p.pacientes_id
@@ -16,6 +16,8 @@ $query = "SELECT fg.facturas_grupal_id AS facturas_id, DATE_FORMAT(fg.fecha, '%d
 	ON fg.servicio_id = s.servicio_id
 	INNER JOIN colaboradores AS c
 	ON fg.colaborador_id = c.colaborador_id
+	INNER JOIN cobrar_clientes_grupales AS cc
+	ON fg.facturas_grupal_id = cc.facturas_id
 	WHERE fg.facturas_grupal_id = '$facturas_grupal_id'";
 $result = $mysqli->query($query) or die($mysqli->error);
 $consulta_registro = $result->fetch_assoc();   
@@ -23,11 +25,13 @@ $consulta_registro = $result->fetch_assoc();
 $paciente = "";
 $fecha_factura = "";
 $importe = 0;
+$saldo = 0;
 
 //OBTENEMOS LOS VALORES DEL REGISTRO
 if($result->num_rows>0){
 	$paciente = $consulta_registro['paciente'];
 	$fecha_factura = $consulta_registro['fecha_factura'];	
+	$saldo = $consulta_registro['saldo'];
 }
 
 $query_factura_detalles = "SELECT fgd.importe AS 'precio', fgd.isv_valor AS 'isv_valor', fgd.descuento AS 'descuento'
@@ -47,11 +51,11 @@ while($registro2 = $result_factura->fetch_assoc()){
 $datos = array(
 	 0 => $paciente, 
 	 1 => $fecha_factura, 
-	 2 => $importe,	 
+	 2 => $importe, 
+	 3 => $saldo
 );	
 	
 echo json_encode($datos);
 
 $result->free();//LIMPIAR RESULTADO
 $mysqli->close();//CERRAR CONEXIÓN
-?>

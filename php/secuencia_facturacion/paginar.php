@@ -10,18 +10,29 @@ $paginaActual = $_POST['partida'];
 $dato = $_POST['dato'];
 $empresa = $_POST['empresa'];
 $estado = $_POST['estado'];
+$documento = $_POST['documento'];
 
-if($empresa == 0){
-	$where = "WHERE sf.activo = '$estado' AND (e.nombre LIKE '%$dato%' OR sf.siguiente LIKE '$dato%')";
-}else{
-	$where = "WHERE sf.empresa_id = '$empresa' AND sf.activo = '$estado' AND (e.nombre LIKE '%$dato%' OR sf.siguiente LIKE '$dato%')";	
+// Inicializamos la parte común de la consulta
+$where = "WHERE sf.activo = '$estado' AND (e.nombre LIKE '%$dato%' OR sf.siguiente LIKE '$dato%')";
+
+// Comprobamos si $documento no está vacío
+if($documento !== ''){
+    $where .= " AND sf.documento_id = '$documento'";
 }
-$query = "SELECT sf.secuencia_facturacion_id AS 'secuencia_facturacion_id', e.nombre AS 'empresa', sf.cai AS 'cai', e.rtn AS 'rtn', sf.prefijo AS 'prefijo', sf.siguiente AS 'siguiente', CONCAT(sf.prefijo, '', sf.rango_inicial) AS 'rango_inicial', CONCAT(sf.prefijo, '', sf.rango_final) AS 'rango_final', sf.fecha_limite AS 'fecha_limite', sf.fecha_activacion AS 'fecha_activacion',
+
+// Comprobamos si $empresa es distinto de 0
+if($empresa != 0){
+    $where .= " AND sf.empresa_id = '$empresa'";
+}
+
+$query = "SELECT sf.secuencia_facturacion_id AS 'secuencia_facturacion_id', e.nombre AS 'empresa', d.nombre AS 'documento', sf.cai AS 'cai', e.rtn AS 'rtn', sf.prefijo AS 'prefijo', sf.siguiente AS 'siguiente', CONCAT(sf.prefijo, '', sf.rango_inicial) AS 'rango_inicial', CONCAT(sf.prefijo, '', sf.rango_final) AS 'rango_final', sf.fecha_limite AS 'fecha_limite', sf.fecha_activacion AS 'fecha_activacion',
 (CASE WHEN sf.activo = '1' THEN 'Sí' ELSE 'No' END) AS 'activo',
 CAST(sf.fecha_registro AS DATE) AS 'fecha_registro', sf.relleno AS 'relleno'
 	FROM secuencia_facturacion AS sf
 	INNER JOIN empresa AS e
 	ON sf.empresa_id = e.empresa_id
+	INNER JOIN documento AS d
+	ON sf.documento_id = d.documento_id
 	".$where."
 	ORDER BY sf.secuencia_facturacion_id ASC";
 $result = $mysqli->query($query);
@@ -54,12 +65,14 @@ if($paginaActual <= 1){
 	$limit = $nroLotes*($paginaActual-1);
 }
 
-$registro = "SELECT sf.secuencia_facturacion_id AS 'secuencia_facturacion_id', e.nombre AS 'empresa', sf.cai AS 'cai', e.rtn AS 'rtn', sf.prefijo AS 'prefijo', sf.siguiente AS 'siguiente', CONCAT(sf.prefijo, '', sf.rango_inicial) AS 'rango_inicial', CONCAT(sf.prefijo, '', sf.rango_final) AS 'rango_final', sf.fecha_limite AS 'fecha_limite', sf.fecha_activacion AS 'fecha_activacion',
+$registro = "SELECT sf.secuencia_facturacion_id AS 'secuencia_facturacion_id', e.nombre AS 'empresa', d.nombre AS 'documento', sf.cai AS 'cai', e.rtn AS 'rtn', sf.prefijo AS 'prefijo', sf.siguiente AS 'siguiente', CONCAT(sf.prefijo, '', sf.rango_inicial) AS 'rango_inicial', CONCAT(sf.prefijo, '', sf.rango_final) AS 'rango_final', sf.fecha_limite AS 'fecha_limite', sf.fecha_activacion AS 'fecha_activacion',
 (CASE WHEN sf.activo = '1' THEN 'Sí' ELSE 'No' END) AS 'activo',
 CAST(sf.fecha_registro AS DATE) AS 'fecha_registro', sf.relleno AS 'relleno'
 	FROM secuencia_facturacion AS sf
 	INNER JOIN empresa AS e
 	ON sf.empresa_id = e.empresa_id
+	INNER JOIN documento AS d
+	ON sf.documento_id = d.documento_id
 	".$where."
 	ORDER BY sf.secuencia_facturacion_id ASC
 	LIMIT $limit, $nroLotes";
@@ -68,18 +81,19 @@ $result = $mysqli->query($registro);
 
 $tabla = $tabla.'<table class="table table-striped table-condensed table-hover">
 			<tr>
-			<th width="2.33%">No.</th>
-			<th width="16.33%">Empresa</th>				
-			<th width="12.33%">CAI</th>
-			<th width="8.33%">RTN</th>
-			<th width="8.33%">Número Siguiente</th>
-			<th width="8.33%">Rango Inicial</th>
-			<th width="8.33%">Rango Final</th>
-			<th width="8.33%">Fecha Activación</th>				
-			<th width="8.33%">Fecha Limite</th>
-			<th width="2.33%">Activo</th>
-			<th width="8.33%">Editar</th>				
-            <th width="8.33%">Eliminar</th>				
+			<th width="2.69">No.</th>
+			<th width="14.69%">Empresa</th>	
+			<th width="9.69%">Documento</th>				
+			<th width="12.69%">CAI</th>
+			<th width="7.69%">RTN</th>
+			<th width="7.69%">Número Siguiente</th>
+			<th width="7.69%">Rango Inicial</th>
+			<th width="7.69%">Rango Final</th>
+			<th width="7.69%">Fecha Activación</th>				
+			<th width="7.69%">Fecha Limite</th>
+			<th width="4.69%">Activo</th>
+			<th width="4.69%">Editar</th>				
+            <th width="4.69%">Eliminar</th>				
 			</tr>';
 $i = 1;				
 while($registro2 = $result->fetch_assoc()){ 
@@ -91,6 +105,7 @@ while($registro2 = $result->fetch_assoc()){
 	$tabla = $tabla.'<tr>
 			<td>'.$i.'</td> 
 			<td>'.$registro2['empresa'].'</td>	
+			<td>'.$registro2['documento'].'</td>
 			<td>'.$registro2['cai'].'</td>	
 			<td>'.$registro2['rtn'].'</td>	
 			<td>'.$numero.'</td>	
@@ -111,11 +126,11 @@ while($registro2 = $result->fetch_assoc()){
 
 if($nroProductos == 0){
 	$tabla = $tabla.'<tr>
-	   <td colspan="12" style="color:#C7030D">No se encontraron resultados</td>
+	   <td colspan="13" style="color:#C7030D">No se encontraron resultados</td>
 	</tr>';		
 }else{
    $tabla = $tabla.'<tr>
-	  <td colspan="12"><b><p ALIGN="center">Total de Registros Encontrados '.$nroProductos.'</p></b>
+	  <td colspan="13"><b><p ALIGN="center">Total de Registros Encontrados '.$nroProductos.'</p></b>
    </tr>';		
 }        
 
@@ -127,5 +142,4 @@ $array = array(0 => $tabla,
 echo json_encode($array);
 
 $result->free();//LIMPIAR RESULTADO
-$mysqli->close();//CERRAR CONEXIÓN	
-?>
+$mysqli->close();//CERRAR CONEXIÓN
