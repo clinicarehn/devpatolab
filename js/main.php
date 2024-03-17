@@ -532,7 +532,7 @@ $('#formulario_facturacion #bt_del').on('click', function(e){
 */
 
 //REFRESCAR LA SESION CADA CIERTO TIEMPO PARA QUE NO EXPIRE
-document.addEventListener("DOMContentLoaded", function(){
+/*document.addEventListener("DOMContentLoaded", function(){
     // Invocamos cada 5 segundos ;)
     const milisegundos = 5 * 1000;
     setInterval(function(){
@@ -551,7 +551,7 @@ document.addEventListener("DOMContentLoaded", function(){
             console.error('There was a problem with the fetch operation:', error);
           });
     }, milisegundos);
-});
+});*/
 
 function getPorcentajeISV(){
     var url = '<?php echo SERVERURL; ?>php/productos/getIsv.php';
@@ -1397,20 +1397,16 @@ function pagoGrupal(facturas_grupal_id,tipoPago ){
 			$("#customer-name-bill-grupal").html("<b>Cliente:</b> " + datos[0]);
 
 			saldo = datos[2];
-
             if (tipoPago == 2) {
 				saldo = datos[3];
-
                 $('#bill-pay').html("L. " + parseFloat(saldo));
                 $('#tab5').hide();
-                $("#formEfectivoBillGrupal #tipo_factura_efectivo").val(tipoPago);
+                $("#formEfectivoBillGrupal #tipo_factura").val(tipoPago);
 
                 $('#formTarjetaBillGrupal #monto_efectivo_tarjeta').show();
                 $('#formTransferenciaBillGrupal #importe_transferencia').show()
                 $('#formChequeBillGrupal #importe_cheque').show()
                 $("#formEfectivoBillGrupal #grupo_cambio_efectivo").hide();
-
-				
             }
 
 		    $("#customer_bill_pay_grupal-grupal").val(saldo);
@@ -1420,11 +1416,13 @@ function pagoGrupal(facturas_grupal_id,tipoPago ){
 			$('#formEfectivoBillGrupal')[0].reset();
 			$('#formEfectivoBillGrupal #monto_efectivo').val(saldo);
 			$('#formEfectivoBillGrupal #factura_id_efectivo').val(facturas_grupal_id);
+			$('#formEfectivoBillGrupal #tipo_factura').val(tipoPago);
 			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', true);
 
 			//TARJETA
 			$('#formTarjetaBillGrupal')[0].reset();
 			$('#formTarjetaBillGrupal #monto_efectivo').val(saldo);
+			$('#formTarjetaBillGrupal #tipo_factura').val(tipoPago);
 			$('#formTarjetaBillGrupal #factura_id_tarjeta').val(facturas_grupal_id);
 
 			//MIXTO
@@ -1436,11 +1434,13 @@ function pagoGrupal(facturas_grupal_id,tipoPago ){
 			//TRANSFERENCIA
 			$('#formTransferenciaBillGrupal')[0].reset();
 			$('#formTransferenciaBillGrupal #monto_efectivo').val(saldo);
+            $('#formTransferenciaBillGrupal #tipo_factura_transferencia').val(tipoPago);			
 			$('#formTransferenciaBillGrupal #factura_id_transferencia').val(facturas_grupal_id);
 
 			//CHEQUES
 			$('#formChequeBillGrupal')[0].reset();
 			$('#formChequeBillGrupal #monto_efectivo').val(saldo);
+            $('#formChequeBillGrupal #pago_efectivo').attr('disabled', true);
 			$('#formChequeBillGrupal #factura_id_cheque').val(facturas_grupal_id);
 
 			$('#modal_grupo_pagos').modal({
@@ -1513,18 +1513,30 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 	$("#formEfectivoBillGrupal #efectivo_bill").on("keyup", function(){
-		var efectivo = parseFloat($("#formEfectivoBillGrupal #efectivo_bill").val()).toFixed(2);
-		var monto = parseFloat($("#formEfectivoBillGrupal #monto_efectivo").val()).toFixed(2);
+        var efectivo = parseFloat($("#formEfectivoBillGrupal #efectivo_bill").val()).toFixed(2);
+        var monto = parseFloat($("#formEfectivoBillGrupal #monto_efectivo").val()).toFixed(2);
+        var credito = $("#formEfectivoBillGrupal #tipo_factura").val();
+        var pagos_multiples = $('#pagos_multiples_switch').val();
 
-		var total = efectivo - monto;
+        if (credito == 2) {
+            $("#formEfectivoBillGrupal #cambio_efectivo").val(0)
+            $("#formEfectivoBillGrupal #grupo_cambio_efectivo").hide();
+        }
 
-		if(Math.floor(efectivo*100) >= Math.floor(monto*100)){
-			$('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(total).toFixed(2));
-			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', false);
-		}else{
-			$('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(0).toFixed(2));
-			$('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', true);
-		}
+        var total = efectivo - monto;
+
+        if (Math.floor(efectivo * 100) >= Math.floor(monto * 100) || credito == 2 || pagos_multiples == 1) {
+            $('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(total).toFixed(2));
+            $('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', false);
+        } else {
+            $('#formEfectivoBillGrupal #cambio_efectivo').val(parseFloat(0).toFixed(2));
+            $('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', true);
+        }
+        
+       // Deshabilitar el botón si efectivo es mayor que monto
+	   if (parseFloat(efectivo) > parseFloat(monto)) {
+            $('#formEfectivoBillGrupal #pago_efectivo_grupal').attr('disabled', true);
+       }
 	});
 
 	//MIXTO
@@ -1597,7 +1609,7 @@ function pago(facturas_id,tipoPago){
 				saldo = datos[3];
                 $('#bill-pay').html("L. " + parseFloat(saldo));
                 $('#tab5').hide();
-                $("#formEfectivoBill #tipo_factura_efectivo").val(tipoPago);
+                $("#formEfectivoBill #tipo_factura").val(tipoPago);
 
                 $('#formTarjetaBill #monto_efectivo_tarjeta').show();
                 $('#formTransferenciaBill #importe_transferencia').show()

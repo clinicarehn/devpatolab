@@ -246,6 +246,7 @@ if($tamano_tabla >0){
 					$update = "UPDATE facturas
 						SET
 							fecha = '$fecha',
+							secuencia_facturacion_id = '$secuencia_facturacion_id',
 							number = '$numero',
 							estado = '2'
 						WHERE facturas_id = '$lineaFactura_id'";
@@ -262,7 +263,6 @@ if($tamano_tabla >0){
 				}
 			}//FIN CICLO FOR
 			$total_despues_isv = ($total_valor + $isv_neto) - $descuentos;
-
 
 			//ACTUALIZAMOS EL IMPORTE DE LA FACTURA
 			$update = "UPDATE facturas_grupal

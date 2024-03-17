@@ -189,6 +189,7 @@ $('.FormularioAjax').submit(function (e) {
 							volver();
 							setTimeout(sendMail(datos[8]), 5000);
 							$('#' + datos[7]).modal('hide');
+							listar_cuentas_por_cobrar_clientes();
 						}						
 
 						if (datos[6] == "PagosCredito") {

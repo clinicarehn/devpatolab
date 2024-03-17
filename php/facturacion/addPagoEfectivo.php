@@ -255,6 +255,7 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 				WHERE 
 					facturas_id = '$facturas_id'";
 			$mysqli->query($update_ccx) or die($mysqli->error);	
+			
 			//SI EL SADO LLEGA A CERO PROCEDEMOS EN AGREGAR LA SECUENCIA DE FACTURACION ELIMINANDO LA DE LA FACTURA PROFORMA
 			if($nuevo_saldo == 0){
 				$documento = "1";//Factura Electronica
