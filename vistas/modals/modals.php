@@ -2041,7 +2041,7 @@
 											<div class="far fa-credit-card fa-lg"></div> &nbsp;&nbsp; Tarjeta
 										</div>
 									</a>
-									<a data-toggle="tab" href="#menuGrupal5" id="tabGrupal5" class="tabs list-group-item">
+									<a data-toggle="tab" href="#menuGrupal5" id="tabGrupal5" class="tabs list-group-item" style="display: none;">
 										<div class="list-div my-2">
 											<div class="fa fa-pause fa-lg"></div> &nbsp;&nbsp; Mixto
 										</div>

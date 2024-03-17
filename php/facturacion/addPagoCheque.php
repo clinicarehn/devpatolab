@@ -9,7 +9,7 @@ $facturas_id = $_POST['factura_id_cheque'];
 $fecha = date("Y-m-d");
 $fecha_registro = date("Y-m-d H:i:s");
 $importe = $_POST['monto_efectivo'];
-$efectivo_bill = isset($_POST['efectivo_bill']) ? $_POST['efectivo_bill'] : 0;
+$efectivo_bill = $_POST['importe'] ?? 0;
 $cambio = 0;
 $empresa_id = $_SESSION['empresa_id'];	
 $usuario = $_SESSION['colaborador_id'];			
@@ -158,6 +158,15 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 		);
 	}
 }else{
+	//CONSULTAMOS LA SECUENCIA DE FACTURACION
+	$query_secuencia = "SELECT secuencia_facturacion_id FROM facturas WHERE facturas_id  = '$facturas_id'";
+	$result_secuencia = $mysqli->query($query_secuencia) or die($mysqli->error);
+
+	if($result_secuencia->num_rows>0){
+		$consulta2secuencia = $result_secuencia->fetch_assoc();
+		$secuencia_facturacion_id = $consulta2secuencia['secuencia_facturacion_id'];
+	}
+
 	$abono = $efectivo_bill;
 	$cambio = 0;
 	
@@ -192,7 +201,7 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 			$pagos_detalles_id  = correlativo('pagos_detalles_id', 'pagos_detalles');
 			$insert = "INSERT INTO pagos_detalles
 				VALUES ('$pagos_detalles_id','$pagos_id','$tipo_pago_id','$banco_id','$efectivo_bill','$referencia_pago1','$referencia_pago2','$referencia_pago3')";
-			$query = $mysqli->query($insert);		
+			$query = $mysqli->query($insert);						
 			
 			$estado_cxc = 1;
 			
@@ -241,8 +250,8 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 						WHERE facturas_id = '$facturas_id'";
 					$mysqli->query($update_factura) or die($mysqli->error);	
 
-					$tipoLabel = "Pagos";					
-					
+					$tipoLabel = "PagosCXC";	
+
 					//ACTUALIZAMOS LA SECUENCIA DE FACTURACION PARA LA FACTURA Electronica
 					$numero_secuencia_facturacion = correlativoSecuenciaFacturacion("siguiente", "secuencia_facturacion", "documento_id = 1 AND activo = 1");
 					
@@ -250,7 +259,7 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 					SET 
 						siguiente = '$numero_secuencia_facturacion' 
 					WHERE secuencia_facturacion_id = '$secuencia_facturacion_id'";
-					$mysqli->query($update);						
+					$mysqli->query($update);					
 				}		
 			}			
 
@@ -285,10 +294,7 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 			4 => "",
 			5 => "",			
 		);			
-	}	
+	}
 }
 
-
-
 echo json_encode($datos);
-?>

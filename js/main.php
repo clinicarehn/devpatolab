@@ -534,11 +534,23 @@ $('#formulario_facturacion #bt_del').on('click', function(e){
 //REFRESCAR LA SESION CADA CIERTO TIEMPO PARA QUE NO EXPIRE
 document.addEventListener("DOMContentLoaded", function(){
     // Invocamos cada 5 segundos ;)
-    const milisegundos = 5 *1000;
+    const milisegundos = 5 * 1000;
     setInterval(function(){
         // No esperamos la respuesta de la petición porque no nos importa
-        fetch("<?php echo SERVERURL; ?>php/signin_out/refrescar.php");
-    },milisegundos);
+        fetch("<?php echo SERVERURL; ?>php/signin_out/refrescar.php")
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log(data);
+          })
+          .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
+    }, milisegundos);
 });
 
 function getPorcentajeISV(){
@@ -1717,15 +1729,19 @@ function getBanco(){
         success: function(data){
 		    $('#formTransferenciaBill #bk_nm').html("");
 			$('#formTransferenciaBill #bk_nm').html(data);
+			$('#formTransferenciaBill #bk_nm').selectpicker('refresh');
 
 		    $('#formChequeBill #bk_nm_chk').html("");
 			$('#formChequeBill #bk_nm_chk').html(data);
+			$('#formChequeBill #bk_nm_chk').selectpicker('refresh');
 
 		    $('#formTransferenciaBillGrupal #bk_nm').html("");
 			$('#formTransferenciaBillGrupal #bk_nm').html(data);
+			$('#formTransferenciaBillGrupal #bk_nm').selectpicker('refresh');
 
 		    $('#formChequeBillGrupal #bk_nm_chk').html("");
 			$('#formChequeBillGrupal #bk_nm_chk').html(data);
+			$('#formChequeBillGrupal #bk_nm_chk').selectpicker('refresh');
         }
      });
 }

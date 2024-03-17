@@ -8,7 +8,7 @@ $mysqli = connect_mysqli();
 $facturas_id = $_POST['factura_id_efectivo'];
 $fecha = date("Y-m-d");
 $importe = $_POST['monto_efectivo'];
-$efectivo_bill = isset($_POST['efectivo_bill']) ? $_POST['efectivo_bill'] : 0;
+$efectivo_bill = $_POST['efectivo_bill'] ?? 0;
 $cambio = $_POST['cambio_efectivo'];
 $empresa_id = $_SESSION['empresa_id'];	
 $usuario = $_SESSION['colaborador_id'];			
@@ -280,7 +280,7 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 						WHERE facturas_id = '$facturas_id'";
 					$mysqli->query($update_factura) or die($mysqli->error);	
 
-					$tipoLabel = "Pagos";	
+					$tipoLabel = "PagosCXC";	
 
 					//ACTUALIZAMOS LA SECUENCIA DE FACTURACION PARA LA FACTURA Electronica
 					$numero_secuencia_facturacion = correlativoSecuenciaFacturacion("siguiente", "secuencia_facturacion", "documento_id = 1 AND activo = 1");
@@ -327,6 +327,4 @@ if($tipo_factura === "1"){//NO ES NECESARIO EL ABONO
 	}
 }
 
-
 echo json_encode($datos);
-?>

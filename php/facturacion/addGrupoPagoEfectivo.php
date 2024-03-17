@@ -49,10 +49,9 @@ if($result_factura->num_rows>0){
 }
 
 if($tipo_factura == 2){
-	$tipoLabel = "PagosCredito";
+	$tipoLabel = "PagosGrupalCredito";
 }
 
-//INSERTAMOS LOS DATOS EN LA ENTIDAD PAGO
 //VALIDAMOS QUE EL PAGO PARA LA FACTURA NO EXISTA, DE EXISTIR NO SE ALMACENA
 $queryPagos = "SELECT pagos_grupal_id
 	FROM pagos_grupal

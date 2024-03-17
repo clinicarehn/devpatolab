@@ -174,7 +174,7 @@ $('.FormularioAjax').submit(function (e) {
 						}
 
 						if (datos[6] == "PagosGrupal") {
-							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
 							limpiarTabla();
 							pagination(1);
 							volver();
@@ -182,11 +182,39 @@ $('.FormularioAjax').submit(function (e) {
 							$('#' + datos[7]).modal('hide');
 						}
 
+						if (datos[6] == "PagosGrupalCredito") {
+							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							limpiarTabla();
+							pagination(1);
+							volver();
+							setTimeout(sendMail(datos[8]), 5000);
+							$('#' + datos[7]).modal('hide');
+						}						
+
 						if (datos[6] == "PagosCredito") {
 							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
 							limpiarTabla();
 							pagination(1);
 							volver();
+							$('#' + datos[7]).modal('hide');
+							listar_cuentas_por_cobrar_clientes();
+						}
+
+						if (datos[6] == "PagosCXC") {
+							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							limpiarTabla();
+							pagination(1);
+							volver();
+							$('#' + datos[7]).modal('hide');
+							listar_cuentas_por_cobrar_clientes();
+						}
+
+						if (datos[6] == "PagosCXCGrupal") {
+							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
+							limpiarTabla();
+							pagination(1);
+							volver();
+							setTimeout(sendMail(datos[8]), 5000);
 							$('#' + datos[7]).modal('hide');
 							listar_cuentas_por_cobrar_clientes();
 						}
