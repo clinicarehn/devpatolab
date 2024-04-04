@@ -140,44 +140,59 @@ if($pacientes_id != "" && $colaborador_id != "" && $servicio_id != ""){
 						$isv_valor = $price * $quantity * $porcentaje_isv;
 					}
 	
-					//VERIFICAMOS SI NO EXISTE LA FACTURA, DE NO EXISTIR LA ACTUALIZAMOS
-					$query_factura_detalle = "SELECT facturas_id, cantidad, isv_valor, descuento
-						FROM facturas_detalle
-						WHERE facturas_id = '$facturas_id' AND productos_id  = '$productoID'";
-					$result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli->error);
-	
 					$producto_cantidad = 0;
 					$producto_isv_valor = 0;
 					$producto_descuento = 0;
 
 					//SI LA FACTURA VIENE DE LA MUESTRA SE HACE EL CALCULO PARA GUARDAR LOS PRODUCTOS QUE SE AGREGUEN EN MAS DE UNA LINEA
-					if($fact_eval == 0){
-						if($result_factura_detalle->num_rows>0){
-							//ACTUALIZAMOS EL DETALLE DE LA FACTURA
-							$consulta_facturas_detalles = $result_factura_detalle->fetch_assoc();
-							$producto_cantidad = (int)$consulta_facturas_detalles["cantidad"] ?? 0;
-							$producto_isv_valor = (float)$consulta_facturas_detalles["isv_valor"] ?? 0;
-							$producto_descuento = (float)$consulta_facturas_detalles["descuento"] ?? 0;
-	
-							$producto_cantidad += $quantity;
-							$producto_isv_valor += $isv_valor;
-							$producto_descuento += $discount;
-	
-							$update_factura_detalle = "UPDATE facturas_detalle
-								SET
-									cantidad = '$producto_cantidad',
-									precio = '$price',
-									isv_valor = '$producto_isv_valor',
-									descuento = '$producto_descuento'
-								WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
-							$mysqli->query($update_factura_detalle);
-						}else{
-							$facturas_detalle_id = correlativo("facturas_detalle_id","facturas_detalle");
-							$insert_detalle = "INSERT INTO facturas_detalle
-								VALUES('$facturas_detalle_id','$facturas_id','$productoID','$quantity','$price','$isv_valor','$discount')";
-							$mysqli->query($insert_detalle);
+					//if($fact_eval == 0){
+					// Verificar si el producto ya está en la factura
+						$select_factura_detalle = "SELECT * FROM facturas_detalle WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
+						$result_factura_detalle = $mysqli->query($select_factura_detalle);
+
+						if ($result_factura_detalle) {
+							if ($result_factura_detalle->num_rows > 0) {
+								// El producto ya está en la factura
+								$consulta_facturas_detalles = $result_factura_detalle->fetch_assoc();
+								$producto_cantidad = (int)$consulta_facturas_detalles["cantidad"];
+								$producto_isv_valor = (float)$consulta_facturas_detalles["isv_valor"];
+								$producto_descuento = (float)$consulta_facturas_detalles["descuento"];
+
+								// Verificar si hay cambios en la cantidad, precio o ISV
+								$producto_cantidad_nueva = $producto_cantidad;
+								if ($quantity != $producto_cantidad) {
+									$producto_cantidad_nueva += $quantity;
+								}
+								$producto_isv_valor_nuevo = $producto_isv_valor + $isv_valor;
+								$producto_descuento_nuevo = $discount;
+
+								if ($producto_cantidad_nueva != $producto_cantidad ||
+									$price != $consulta_facturas_detalles["precio"] ||
+									$producto_isv_valor_nuevo != $producto_isv_valor ||
+									$producto_descuento_nuevo != $producto_descuento) {
+
+									// Hay cambios, actualizar la entrada
+									$update_factura_detalle = "UPDATE facturas_detalle
+										SET
+											cantidad = '$producto_cantidad_nueva',
+											precio = '$price',
+											isv_valor = '$producto_isv_valor_nuevo',
+											descuento = '$producto_descuento_nuevo'
+										WHERE facturas_id = '$facturas_id' AND productos_id = '$productoID'";
+									$mysqli->query($update_factura_detalle);
+								}
+							} else {
+								// El producto no está en la factura, agregarlo como una nueva línea
+								$facturas_detalle_id = correlativo("facturas_detalle_id", "facturas_detalle");
+								$insert_detalle = "INSERT INTO facturas_detalle
+									VALUES('$facturas_detalle_id','$facturas_id','$productoID','$quantity','$price','$isv_valor','$discount')";
+								$mysqli->query($insert_detalle);
+							}
+						} else {
+							// Manejar el error de consulta aquí
+							echo "Error: " . $mysqli->error;
 						}
-					}		
+					//}		
 	
 					//CONSULTAMOS LA CATEGORIA DEL PRODUCTO
 					$query_categoria = "SELECT cp.nombre AS 'categoria'
