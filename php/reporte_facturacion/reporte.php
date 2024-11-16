@@ -319,7 +319,6 @@ if($result->num_rows>0){
 			INNER JOIN facturas AS f
 			ON fd.facturas_id = f.facturas_id
 			WHERE f.number  = '$number'";
-		//echo $query_detalle."***";
 		$result_detalles = $mysqli->query($query_detalle) or die($mysqli->error);
 
 		$cantidad = 0;
@@ -410,15 +409,15 @@ $objPHPExcel->getActiveSheet()->setSharedStyle($totales, "A$fila:J$fila");
 
 if($type == 1 || $type == 2 || $type == 4){//SUPER ADMINISTRADOR, ADMINISTRADOR Y CONTADOR GENERAL
 	if($profesional == ""){
-		$where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '$estado'";
+		$where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '1'";
 	}else{
-		$where = "WHERE f.colaborador_id = '$profesional' AND p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '$estado'";
+		$where = "WHERE f.colaborador_id = '$profesional' AND p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '1'";
 	}
 }else{
 	if($profesional == ""){
-		$where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '$estado' AND p.usuario = '$usuario'";
+		$where = "WHERE p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '1' AND p.usuario = '$usuario'";
 	}else{
-		$where = "WHERE f.colaborador_id = '$profesional' AND p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '$estado' AND p.usuario = '$usuario'";
+		$where = "WHERE f.colaborador_id = '$profesional' AND p.fecha BETWEEN '$desde' AND '$hasta' AND p.estado = '1' AND p.usuario = '$usuario'";
 	}
 }
 

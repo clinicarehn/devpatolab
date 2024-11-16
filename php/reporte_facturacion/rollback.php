@@ -77,6 +77,9 @@ if($query){
 	$update_muestra = "UPDATE muestras SET estado = 0 WHERE muestras_id = '$muestras_id'";
 	$mysqli->query($update_muestra) or die($mysqli->error);
 
+	//ANULAMOS TODOS LOS PAGOS
+	$anularPagos = "UPDATE pagos SET estado = 2 WHERE facturas_id = '$facturas_id'";
+	$mysqli->query($anularPagos) or die($mysqli->error);
 	/*********************************************************************************************************************************************************************/
 	$consultar_colaborador = "SELECT CONCAT(nombre, ' ', apellido) AS 'colaborador'
 		FROM colaboradores
@@ -99,4 +102,3 @@ if($query){
 
 $result->free();//LIMPIAR RESULTADO
 $mysqli->close();//CERRAR CONEXIÓN
-?>

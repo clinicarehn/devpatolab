@@ -18,7 +18,7 @@ $type = $_SESSION['type'];
 
 $nombre_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);//HOSTNAME
 $fecha = date("Y-m-d H:i:s");
-$comentario = "Ingreso al Modulo de Reporte de Pagos";
+$comentario = mb_convert_case("Ingreso al Modulo de Reporte de Pagos", MB_CASE_TITLE, "UTF-8");
 
 if($colaborador_id != "" || $colaborador_id != null){
    historial_acceso($comentario, $nombre_host, $colaborador_id);
@@ -164,18 +164,18 @@ if($colaborador_id != "" || $colaborador_id != null){
         <div class="form-group mr-1">
           <div class="input-group">
             <div class="input-group-append">
-              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Tipo Cliente</span>
+              <span class="input-group-text"><div class="sb-nav-link-icon"></div>Profesional</span>
             </div>
-            <select id="tipo_paciente_grupo" name="tipo_paciente_grupo" class="selectpicker" title="Tipo Cliente" data-live-search="true">
+            <select id="profesional" name="profesional" class="selectpicker" title="Profesional" data-live-search="true">
             </select>
           </div>
-        </div>
+        </div>        
         <div class="form-group mr-1">
           <div class="input-group">
             <div class="input-group-append">
               <span class="input-group-text"><div class="sb-nav-link-icon"></div>Cliente</span>
             </div>
-            <select id="pacientesIDGrupo" name="pacientesIDGrupo" class="selectpicker" title="Cliente" data-live-search="true">
+            <select id="clientes" name="clientes" class="selectpicker" title="Cliente" data-live-search="true">
             </select>
           </div>
         </div>
@@ -219,14 +219,6 @@ if($colaborador_id != "" || $colaborador_id != null){
     				<input type="date" required="required" id="fecha_f" name="fecha_f" style="width:160px;" value="<?php echo date ("Y-m-d");?>" data-toggle="tooltip" data-placement="top" title="Fecha Final" class="form-control"/>
     			</div>
         </div>
-        <div class="form-group mt-2 mr-1">
-          <div class="input-group">
-		          <input type="text" placeholder="Buscar por: Expediente, Paciente, Identidad o Número de Factura" data-toggle="tooltip" data-placement="top" title="Buscar por: Expediente, Nombre, Apellido, Identidad o Número de Factura" id="bs_regis" autofocus class="form-control" size="65"/>
-    			</div>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-success mt-2" type="submit" id="reporte"><div class="sb-nav-link-icon"></div><i class="fas fa-user-plus fa-lg"></i> Exportar</button>
-        </div>
       </form>
     </div>
     <div class="card-footer small text-muted">
@@ -234,25 +226,36 @@ if($colaborador_id != "" || $colaborador_id != null){
     </div>
   </div>
 
-    <div class="card mb-4">
-      <div class="card-header">
-        <i class="fab fa-sellsy mr-1"></i>
-        Resultado
-      </div>
-      <div class="card-body">
-        <div class="form-group">
-          <div class="col-sm-12">
-            <div class="registros overflow-auto" id="agrega-registros"></div>
-          </div>
-        </div>
-        <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center" id="pagination"></ul>
-        </nav>
-      </div>
-      <div class="card-footer small text-muted">
-
-      </div>
-    </div>
+  <div class="card mb-4">
+		<div class="card-header">
+			<i class="fab fa-sellsy mr-1"></i>
+			Resultado
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<form id="formPrincipal">
+					<div class="col-md-12 mb-3">
+						<table id="dataTableReportePagosMain" class="table table-striped table-condensed table-hover" style="width:100%">
+							<thead>
+								<tr>
+									<th>Fecha</th>
+									<th>Paciente</th>
+									<th>Identidad</th>
+									<th>Factura</th>
+									<th>Pago Recibido</th>
+									<th>Efectivo</th>
+									<th>Tipo Pago</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="card-footer small text-muted">
+		</div>	
+	</div>
     <?php include("templates/footer.php"); ?>
 </div>
 

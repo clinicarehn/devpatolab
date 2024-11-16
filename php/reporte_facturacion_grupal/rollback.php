@@ -72,6 +72,8 @@ if($query){
 		$update_muestra = "UPDATE muestras SET estado = 0 WHERE muestras_id = '$muestras_id'";
 		$mysqli->query($update_muestra) or die($mysqli->error);		
 
+		$anularPagos = "UPDATE pagos SET estado = 2 WHERE facturas_id = '$factura_consulta_id'";
+		$mysqli->query($anularPagos) or die($mysqli->error);
 		/*********************************************************************************************************************************************************************/
 		//INGRESAR REGISTROS EN LA ENTIDAD HISTORIAL
 		$historial_numero = historial();
