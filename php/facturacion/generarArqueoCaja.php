@@ -70,7 +70,9 @@ if($result->num_rows>0){
 
 	$dompdf->set_option('isRemoteEnabled', true);
 
-	$dompdf->loadHtml(utf8_decode(utf8_encode($html)));
+	$html = mb_convert_encoding($html, 'UTF-8', 'auto');  // Converts $html to UTF-8 encoding
+	$dompdf->loadHtml($html);  // Now load the UTF-8 encoded HTML
+
 	// (Optional) Setup the paper size and orientation
 	$dompdf->setPaper('letter', 'portrait');
 	// Render the HTML as PDF
@@ -83,4 +85,3 @@ if($result->num_rows>0){
 
 	exit;
 }
-?>

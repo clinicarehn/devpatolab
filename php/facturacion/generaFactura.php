@@ -1,14 +1,14 @@
 <?php
 session_start();
-include "../funtions.php";
+include '../funtions.php';
 
-header("Content-Type: text/html;charset=utf-8");
+header('Content-Type: text/html;charset=utf-8');
 
 require_once '../../dompdf/vendor/autoload.php';
 
 use Dompdf\Dompdf;
 
-//CONEXION A DB
+// CONEXION A DB
 $mysqli = connect_mysqli();
 
 date_default_timezone_set('America/Tegucigalpa');
@@ -28,18 +28,18 @@ $query = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS 'paciente', p.identidad AS
 	ON f.colaborador_id = c.colaborador_id
 	INNER JOIN servicios AS s
 	ON f.servicio_id = s.servicio_id
- 	INNER JOIN puesto_colaboradores AS pc
-  	ON c.puesto_id = pc.puesto_id
-  	LEFT JOIN atenciones_medicas AS am
-  	ON f.pacientes_id = am.pacientes_id
+ \tINNER JOIN puesto_colaboradores AS pc
+  \tON c.puesto_id = pc.puesto_id
+  \tLEFT JOIN atenciones_medicas AS am
+  \tON f.pacientes_id = am.pacientes_id
 	LEFT JOIN muestras AS m
 	ON f.muestras_id = m.muestras_id
 	LEFT JOIN documento AS d
 	ON sf.documento_id = d.documento_id
-  	WHERE f.facturas_id = '$noFactura'";
+  \tWHERE f.facturas_id = '$noFactura'";
 $result = $mysqli->query($query) or die($mysqli->error);
 
-//OBTENER DETALLE DE FACTURA
+// OBTENER DETALLE DE FACTURA
 $query_factura_detalle = "SELECT p.nombre AS 'producto', 
 		SUM(fd.cantidad) AS 'cantidad', 
 		fd.precio AS 'precio', 
@@ -59,27 +59,27 @@ $result_factura_detalle = $mysqli->query($query_factura_detalle) or die($mysqli-
 $abono = 0;
 $saldo = 0;
 
-//CONSULTAMOS EL TOTAL DEL PAGO REALIZADO
+// CONSULTAMOS EL TOTAL DEL PAGO REALIZADO
 $query_pagos = "SELECT CAST(COALESCE(SUM(importe), 0) AS UNSIGNED) AS 'importe'
 	FROM pagos
 	WHERE facturas_id = '$noFactura'";
 $result_pagos = $mysqli->query($query_pagos) or die($mysqli->error);
 
-if($result_pagos->num_rows>0){
+if ($result_pagos->num_rows > 0) {
 	$consulta2Saldo = $result_pagos->fetch_assoc();
 	$abono = $consulta2Saldo['importe'];
 }
 
-if($result->num_rows>0){
+if ($result->num_rows > 0) {
 	$consulta_registro = $result->fetch_assoc();
-	$no_factura = str_pad($consulta_registro['numero_factura'], $consulta_registro['relleno'], "0", STR_PAD_LEFT);
+	$no_factura = str_pad($consulta_registro['numero_factura'], $consulta_registro['relleno'], '0', STR_PAD_LEFT);
 
-	if($consulta_registro['estado'] == 3){
+	if ($consulta_registro['estado'] == 3) {
 		$anulada = '<img class="anulada" src="../../img/anulado.png" alt="Anulada">';
 	}
 
 	ob_start();
-	include(dirname('__FILE__').'/factura.php');
+	include (dirname('__FILE__') . '/factura.php');
 	$html = ob_get_clean();
 
 	// instantiate and use the dompdf class
@@ -87,17 +87,18 @@ if($result->num_rows>0){
 
 	$dompdf->set_option('isRemoteEnabled', true);
 
-	$dompdf->loadHtml(utf8_decode(utf8_encode($html)));
+	$html = mb_convert_encoding($html, 'UTF-8', 'auto');  // Converts $html to UTF-8 encoding
+	$dompdf->loadHtml($html);  // Now load the UTF-8 encoded HTML
+
 	// (Optional) Setup the paper size and orientation
 	$dompdf->setPaper('letter', 'portrait');
 	// Render the HTML as PDF
 	$dompdf->render();
 
-	file_put_contents(dirname('__FILE__').'/Facturas/factura_'.$no_factura.'.pdf', $dompdf->output());
+	file_put_contents(dirname('__FILE__') . '/Facturas/factura_' . $no_factura . '.pdf', $dompdf->output());
 
 	// Output the generated PDF to Browser
-	$dompdf->stream('factura_'.$no_factura.'.pdf',array('Attachment'=>0));
+	$dompdf->stream('factura_' . $no_factura . '.pdf', array('Attachment' => 0));
 
 	exit;
 }
-?>
