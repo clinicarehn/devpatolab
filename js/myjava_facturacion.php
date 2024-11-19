@@ -103,16 +103,6 @@ function pagination(partida){
 		url:url,
 		async: true,
 		data:'partida='+partida+'&fechai='+fechai+'&fechaf='+fechaf+'&dato='+dato+'&tipo_paciente_grupo='+tipo_paciente_grupo+'&pacientesIDGrupo='+pacientesIDGrupo+'&estado='+estado,
-		beforeSend: function(){
-			swal({
-			title: "",
-			text: "Por favor espere...",
-			imageUrl: '<?php echo SERVERURL; ?>img/gif-load.gif',
-			closeOnConfirm: false,
-			showConfirmButton: false,
-			imageSize: '150x150',
-			});
-		},
 		success:function(data){
 			var array = eval(data);
 			$('#agrega-registros').html(array[0]);
@@ -796,7 +786,7 @@ var view_pacientes_facturas_tipo_busqueda_dataTable = function(tbody, table){
 		e.preventDefault();
 		var data = table.row( $(this).parents("tr") ).data();
 		$('#form_main_facturas #pacientesIDGrupo').val(data.pacientes_id);
-		pagination(1);
+		//pagination(1);
 		$('#modal_busqueda_pacientes').modal('hide');
 	});
 }
@@ -1007,7 +997,7 @@ var view_pacientes_busqueda_dataTable = function(tbody, table){
 		e.preventDefault();
 		var data = table.row( $(this).parents("tr") ).data();
 		$('#form_main_facturas #pacientesIDGrupo').val(data.pacientes_id);
-		pagination(1);
+		//pagination(1);
 		$('#modal_busqueda_pacientes_main_muetras').modal('hide');
 	});
 }
