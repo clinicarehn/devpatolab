@@ -152,7 +152,7 @@ $('.FormularioAjax').submit(function (e) {
 
 						if (datos[6] == "FacturacionCredito") {
 							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
-							pagination(1);
+							//pagination(1);
 						}
 
 						if (datos[6] == "facturacionGrupal") {
@@ -161,13 +161,13 @@ $('.FormularioAjax').submit(function (e) {
 
 						if (datos[6] == "facturacionGrupalCredito") {
 							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
-							pagination(1);
+							//pagination(1);
 						}
 
 						if (datos[6] == "Pagos") {
 							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
 							limpiarTabla();
-							pagination(1);
+							//pagination(1);
 							volver();
 							setTimeout(sendMail(datos[8]), 5000);
 							$('#' + datos[7]).modal('hide');
@@ -176,7 +176,7 @@ $('.FormularioAjax').submit(function (e) {
 						if (datos[6] == "PagosGrupal") {
 							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
 							limpiarTabla();
-							pagination(1);
+							//pagination(1);
 							volver();
 							setTimeout(sendMail(datos[8]), 5000);
 							$('#' + datos[7]).modal('hide');
@@ -185,7 +185,7 @@ $('.FormularioAjax').submit(function (e) {
 						if (datos[6] == "PagosGrupalCredito") {
 							printBillGroup(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
 							limpiarTabla();
-							pagination(1);
+							//pagination(1);
 							volver();
 							setTimeout(sendMail(datos[8]), 5000);
 							$('#' + datos[7]).modal('hide');
@@ -195,7 +195,7 @@ $('.FormularioAjax').submit(function (e) {
 						if (datos[6] == "PagosCredito") {
 							printBill(datos[8]); //LLAMAMOS LA FUNCION PARA IMPRIMIR LA FACTURA .-Función se encuentra en myjava_facturacion.js
 							limpiarTabla();
-							pagination(1);
+							//pagination(1);
 							volver();
 							$('#' + datos[7]).modal('hide');
 							listar_cuentas_por_cobrar_clientes();
@@ -618,7 +618,7 @@ function llenarTabla(dato) {
 
 	if (dato == "PagosCredito") {
 		listar_cuentas_por_cobrar_clientes();
-		pagination(1);
+		//pagination(1);
 	}
 
 	if (dato == "formEmpresas") {
