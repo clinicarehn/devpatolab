@@ -72,23 +72,19 @@ $(document).ready(function() {
 
     //INICIO PAGINATION (PARA LAS BUSQUEDAS SEGUN SELECCIONES)
   $('#form_main_facturacion_reportes #estado').on('change',function(){
-    pagination(1);
+    listar_reporte_facturacion();
   });
 
   $('#form_main_facturacion_reportes #pacientesIDGrupo').on('change',function(){
-    pagination(1);
-  });
-
-  $('#form_main_facturacion_reportes #bs_regis').on('keyup',function(){
-    pagination(1);
+    listar_reporte_facturacion();
   });
 
   $('#form_main_facturacion_reportes #fecha_b').on('change',function(){
-    pagination(1);
+    listar_reporte_facturacion();
   });
 
   $('#form_main_facturacion_reportes #fecha_f').on('change',function(){
-    pagination(1);
+    listar_reporte_facturacion();
   });
 	//FIN PAGINATION (PARA LAS BUSQUEDAS SEGUN SELECCIONES)
 });
@@ -121,9 +117,10 @@ if (getUsuarioSistema() == 1 || getUsuarioSistema() == 2 || getUsuarioSistema() 
 
 //INICIO AGRUPAR FUNCIONES DE PACIENTES
 function funciones(){
+	listar_reporte_facturacion();
 	getEstado();
-  getTipoPacienteGrupo();
-  getPacienteGrupo(1);
+	getTipoPacienteGrupo();
+	getPacienteGrupo(1);
 }
 //FIN AGRUPAR FUNCIONES DE PACIENTES
 
@@ -195,7 +192,7 @@ function agregarCobros(){
 				});
 				$('#formCobros #comentario').val("");
 				$("#formCobros #generar").attr('disabled', true);
-				pagination(1);
+				listar_reporte_facturacion();
 				return false;
 			}else if(registro == 2){
 				swal({
@@ -227,71 +224,6 @@ function agregarCobros(){
 	return false;
 }
 //FIN PARA AGREGAR LA FACTURACION DE LOS USUARIOS DE FORMA MANUAL
-
-//INICIO PAGINACION DE REGISTROS
-function pagination(partida){
-  var url = '<?php echo SERVERURL; ?>php/reporte_facturacion/paginar.php';
-
-  var fechai = $('#form_main_facturacion_reportes #fecha_b').val();
-  var fechaf = $('#form_main_facturacion_reportes #fecha_f').val();
-  var dato =  $('#form_main_facturacion_reportes #bs_regis').val()
-  var pacientesIDGrupo = $('#form_main_facturacion_reportes #pacientesIDGrupo').val()
-  var estado = '';
-
-  if($('#form_main_facturacion_reportes #estado').val() == ""){
-    estado = 1;
-  }else{
-    estado = $('#form_main_facturacion_reportes #estado').val();
-  }
-
-	$.ajax({
-		type:'POST',
-		url:url,
-		async: true,
-		data:'partida='+partida+'&fechai='+fechai+'&fechaf='+fechaf+'&dato='+dato+'&pacientesIDGrupo='+pacientesIDGrupo+'&estado='+estado,
-		success:function(data){
-			var array = eval(data);
-			$('#agrega-registros').html(array[0]);
-			$('#pagination').html(array[1]);
-		}
-	});
-	return false;
-}
-//FIN PAGINACION DE REGISTROS
-
-$('#form_main_facturacion_reportes #reporte').on('click', function(e){
-    e.preventDefault();
-    reporteEXCEL();
-});
-
-//INICIO REPORTE DE FACTURACION
-function reporteEXCEL(){
-	var colaborador = '';
-	var desde = $('#form_main_facturacion_reportes #fecha_b').val();
-	var hasta = $('#form_main_facturacion_reportes #fecha_f').val();
-	var url = '';
-	
-	var dato =  $('#form_main_facturacion_reportes #bs_regis').val()
-	var pacientesIDGrupo = $('#form_main_facturacion_reportes #pacientesIDGrupo').val()
-	var estado = '';
-
-	if($('#form_main_facturacion_reportes #estado').val() == ""){
-		estado = 1;
-	}else{
-		estado = $('#form_main_facturacion_reportes #estado').val();
-	}	
-
-    if($('#form_main_facturacion_reportes #profesional').val() == "" || $('#form_main_facturacion_reportes #profesional').val() == null){
-		colaborador = '';
-	}else{
-		colaborador = $('#form_main_facturacion_reportes #profesional').val();
-	}
-
-	url = '<?php echo SERVERURL; ?>php/reporte_facturacion/reporte.php?desde='+desde+'&hasta='+hasta+'&colaborador='+colaborador+'&estado='+estado+'&dato='+dato+'&pacientesIDGrupo='+pacientesIDGrupo,
-
-	window.open(url);
-}
-//FIN REPORTE DE FACTURACION
 
 //INICIO DETALLES DE FACTURA
 function invoicesDetails(facturas_id){
@@ -361,7 +293,7 @@ function rollback(facturas_id,comentario){
 		  data:'facturas_id='+facturas_id+'&comentario='+comentario,
 		  success: function(registro){
 			  if(registro == 1){
-			    pagination(1);
+			    listar_reporte_facturacion();
 				swal({
 					title: "Success",
 					text: "Factura cancelada correctamente",
@@ -508,4 +440,189 @@ function getPacienteGrupo(tipo_paciente){
 $('#form_main_facturacion_reportes #tipo_paciente_grupo').on('change',function(){
 	getPacienteGrupo($('#form_main_facturacion_reportes #tipo_paciente_grupo').val());
 });
+
+var listar_reporte_facturacion = function(){
+	var fechai = $('#form_main_facturacion_reportes #fecha_b').val();
+	var fechaf = $('#form_main_facturacion_reportes #fecha_f').val();
+	var pacientesIDGrupo = $('#form_main_facturacion_reportes #pacientesIDGrupo').val()
+	var estado = '';
+
+	if($('#form_main_facturacion_reportes #estado').val() == ""){
+		estado = 1;
+	}else{
+		estado = $('#form_main_facturacion_reportes #estado').val();
+	}	
+	
+	var table_reporte_facturacion  = $("#dataTableReporteFacturacionMain").DataTable({
+		"destroy":true,	
+		"ajax":{
+			"method":"POST",
+			"url": "<?php echo SERVERURL; ?>php/reporte_facturacion/llenarDataTableReporteFacturas.php",
+            "data": function(d) {
+                d.fechai = fechai;
+                d.fechaf = fechaf;
+                d.pacientesIDGrupo = pacientesIDGrupo;			
+				d.estado = estado;
+            }		
+		},		
+		"columns":[
+			{
+				"data": "fecha",
+				"render": function(data, type, row) {
+					return '<a href="#" class="showInvoiceDetail">' + data + '</a>';
+				}
+			},									
+			{"data": "TipoPago"},
+			{"data": "muestra"},
+			{"data": "factura"},
+			{"data": "paciente"},
+			{"data": "identidad"},										
+			{"data": "profesional"},
+			{"data": "precio"},
+			{"data": "isv_neto"},	
+			{"data": "descuento"},
+			{"data": "total"},
+			{"data": "servicio"},								
+			{
+				"data": null,
+				"defaultContent": 
+					'<div class="btn-group">' +
+						'<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+							'<i class="fas fa-cog"></i>' +
+						'</button>' +
+						'<div class="dropdown-menu">' +
+							'<a class="dropdown-item printBill" href="#"><i class="fas fa-print fa-lg"></i> Imprimir</a>' +
+							'<a class="dropdown-item closeBill" href="#"><i class="fas fa-calculator fa-lg"></i> Cierre</a>' +
+							'<a class="dropdown-item deleteBill" href="#"><i class="fas fa-download fa-lg"></i> Anular</a>' +
+						'</div>' +
+					'</div>'
+			}
+		],		
+        "lengthMenu": lengthMenu20,
+		"stateSave": true,
+		"bDestroy": true,		
+		"language": idioma_español,//esta se encuenta en el archivo main.js
+		"dom": dom,			
+		"buttons":[		
+			{
+				text:      '<i class="fas fa-sync-alt fa-lg"></i> Actualizar',
+				titleAttr: 'Actualizar Pacientes',
+				className: 'btn btn-info',
+				action: 	function(){
+					listar_reporte_facturacion();
+				}
+			},		
+			{
+				text:      '<i class="fas fa-calculator fa-lg"></i> Cierre',
+				titleAttr: 'Agregar Pacientes',
+				className: 'btn btn-primary',
+				action: 	function(){
+					cierreBill();
+				}
+			},		
+			{
+				extend:    'excelHtml5',
+				text:      '<i class="fas fa-file-excel fa-lg"></i> Excel',
+				titleAttr: 'Excel',
+				title: 'Reporte Facturación',
+				className: 'btn btn-success',
+				exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6,7,8,9,10,11]
+                },				
+			},
+			{
+				extend: 'pdf',
+				orientation: 'landscape',
+				text: '<i class="fas fa-file-pdf fa-lg"></i> PDF',
+				titleAttr: 'PDF',
+				title: 'Reporte Facturación',
+				className: 'btn btn-danger',
+				exportOptions: {
+					modifier: {
+						page: 'current' // Solo exporta las filas visibles en la página actual
+					},
+					columns: [0, 1, 2, 3, 4, 5, 6,7,8,9,10,11] // Define las columnas a exportar
+				},
+				customize: function(doc) {
+					// Asegúrate de que `imagen` contenga la cadena base64 de la imagen
+					doc.content.splice(1, 0, {
+						margin: [0, 0, 0, 12],
+						alignment: 'left',
+						image: imagen, // Usando la variable que ya tiene la imagen base64
+						width: 170, // Ajusta el tamaño si es necesario
+						height: 45 // Ajusta el tamaño si es necesario
+					});
+				}
+			},
+			{
+				extend: 'print',
+				text: '<i class="fas fa-print fa-lg"></i> Imprimir',  // Correcta colocación del icono
+				titleAttr: 'Imprimir',
+				title: 'Reporte Facturación',
+				className: 'btn btn-secondary',
+				exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6,7,8,9,10,11]
+                },
+			}
+		]		
+	});	 
+	table_reporte_facturacion.search('').draw();
+	$('#buscar').focus();
+	
+	show_invoice_detail_dataTable("#dataTableReporteFacturacionMain tbody", table_reporte_facturacion);
+	print_bill_dataTable("#dataTableReporteFacturacionMain tbody", table_reporte_facturacion);
+	close_bill_dataTable("#dataTableReporteFacturacionMain tbody", table_reporte_facturacion);
+	delete_bill_dataTable("#dataTableReporteFacturacionMain tbody", table_reporte_facturacion);	
+}
+
+var show_invoice_detail_dataTable = function(tbody, table){
+	$(tbody).off("click", "a.showInvoiceDetail");
+	$(tbody).on("click", "a.showInvoiceDetail", function(e){
+		e.preventDefault();
+		var data = table.row( $(this).parents("tr") ).data();
+		
+		swal({
+			title: "Información",
+			text: "Esta opción se encuentra en desarrollo",
+			type: "warning",
+			confirmButtonClass: 'btn-warning'
+		});		
+		//invoicesDetails(data.pacientes_id)
+	});
+}
+
+var print_bill_dataTable = function(tbody, table){
+	$(tbody).off("click", "a.printBill");
+	$(tbody).on("click", "a.printBill", function(e){
+		e.preventDefault();
+		var data = table.row( $(this).parents("tr") ).data();
+		
+		printBill(data.pacientes_id)	
+	});
+}
+
+var close_bill_dataTable = function(tbody, table){
+	$(tbody).off("click", "a.closeBill");
+	$(tbody).on("click", "a.closeBill", function(e){
+		e.preventDefault();
+		var data = table.row( $(this).parents("tr") ).data();
+		
+		swal({
+			title: "Información",
+			text: "Esta opción se encuentra en desarrollo",
+			type: "warning",
+			confirmButtonClass: 'btn-warning'
+		});
+	});
+}
+
+var delete_bill_dataTable = function(tbody, table){
+	$(tbody).off("click", "a.deleteBill");
+	$(tbody).on("click", "a.deleteBill", function(e){
+		e.preventDefault();
+		var data = table.row( $(this).parents("tr") ).data();
+		
+		modal_rollback(data.facturas_id, data.pacientes_id)
+	});
+}
 </script>
