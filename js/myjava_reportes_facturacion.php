@@ -597,7 +597,7 @@ var print_bill_dataTable = function(tbody, table){
 		e.preventDefault();
 		var data = table.row( $(this).parents("tr") ).data();
 		
-		printBill(data.pacientes_id)	
+		printBill(data.facturas_id);
 	});
 }
 
